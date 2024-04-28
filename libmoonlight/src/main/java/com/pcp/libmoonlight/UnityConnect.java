@@ -2,17 +2,19 @@ package com.pcp.libmoonlight;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.SurfaceTexture;
 import android.hardware.HardwareBuffer;
 import android.opengl.GLES30;
 import android.os.Build;
 import android.view.Gravity;
+import android.view.Surface;
+import android.view.TextureView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.robot9.shared.SharedTexture;
@@ -22,9 +24,10 @@ import com.tlab.viewtohardwarebuffer.ViewToHWBRenderer;
 import com.unity3d.player.UnityPlayer;
 
 import java.io.File;
+import java.io.IOException;
 
 
-public class UnityConnect extends Fragment {
+public class UnityConnect extends Fragment implements TextureView.SurfaceTextureListener, MoviePlayer.PlayerFeedback {
 
     // ---------------------------------------------------------------------------------------------------------
     // Renderer
@@ -143,8 +146,9 @@ public class UnityConnect extends Fragment {
     }
 
     // ---------------------------------------------------------------------------------------------------------
-    // Initialize webview
+    // Initialize streamView
     //
+    private TextureView streamView;
 
     /**
      *
@@ -212,17 +216,15 @@ public class UnityConnect extends Fragment {
             if (!new File(mFilePath).exists()) {
                 LimeLog.severe("File does not exist");
             }
-            Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
-            //set the image size to the screen size
-            bitmap = Bitmap.createScaledBitmap(bitmap, mTexWidth, mTexHeight, false);
-            ImageView imageView = new ImageView(UnityPlayer.currentActivity);
-            imageView.setImageBitmap(bitmap);
+
+            streamView = new TextureView(UnityPlayer.currentActivity);
+            streamView.setSurfaceTextureListener(this);
 
             UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
-            mGlLayout.addView(imageView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
+            mGlLayout.addView(streamView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-            LimeLog.info("Finished init");
+            LimeLog.info("Finished init2");
             mInitialized = true;
         });
     }
@@ -330,4 +332,93 @@ public class UnityConnect extends Fragment {
         });
     }
 
+    private boolean mSurfaceTextureReady = false;
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+        mSurfaceTextureReady = false;
+        // assume activity is pausing, so don't need to update controls
+        return true;    // caller should release ST
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        // ignore
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+        LimeLog.info("SurfaceTexture ready (" + width + "x" + height + ")");
+        mSurfaceTextureReady = true;
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
+
+    }
+
+    private void adjustAspectRatio(int videoWidth, int videoHeight) {
+        int viewWidth = streamView.getWidth();
+        int viewHeight = streamView.getHeight();
+        double aspectRatio = (double) videoHeight / videoWidth;
+
+        int newWidth, newHeight;
+        if (viewHeight > (int) (viewWidth * aspectRatio)) {
+            // limited by narrow width; restrict height
+            newWidth = viewWidth;
+            newHeight = (int) (viewWidth * aspectRatio);
+        } else {
+            // limited by short height; restrict width
+            newWidth = (int) (viewHeight / aspectRatio);
+            newHeight = viewHeight;
+        }
+        int xoff = (viewWidth - newWidth) / 2;
+        int yoff = (viewHeight - newHeight) / 2;
+        LimeLog.info(
+                "video=" + videoWidth + "x" + videoHeight +
+                        " view=" + viewWidth + "x" + viewHeight +
+                        " newView=" + newWidth + "x" + newHeight +
+                        " off=" + xoff + "," + yoff);
+
+        Matrix txform = new Matrix();
+        streamView.getTransform(txform);
+        txform.setScale((float) newWidth / viewWidth, (float) newHeight / viewHeight);
+        //txform.postRotate(10);          // just for fun
+        // Haha
+        txform.postTranslate(xoff, yoff);
+        streamView.setTransform(txform);
+        //FIXME:Layout should also set here
+    }
+
+    private MoviePlayer.PlayTask mPlayTask;
+
+    public void playVideo() {
+        UnityPlayer.currentActivity.runOnUiThread(() -> {
+            LimeLog.info("starting movie");
+            SurfaceTexture st = streamView.getSurfaceTexture();
+            Surface surface = new Surface(st);
+            MoviePlayer player = null;
+            SpeedControlCallback callback = new SpeedControlCallback();
+            callback.setFixedPlaybackRate(60);
+            try {
+                player = new MoviePlayer(
+                        new File(mFilePath), surface, callback);
+            } catch (IOException ioe) {
+                LimeLog.severe("Unable to play movie::" + ioe);
+                surface.release();
+                return;
+            }
+            adjustAspectRatio(player.getVideoWidth(), player.getVideoHeight());
+
+            mPlayTask = new MoviePlayer.PlayTask(player, this);
+            mPlayTask.setLoopMode(true);
+            mPlayTask.execute();
+        });
+    }
+
+
+    @Override
+    public void playbackStopped() {
+        mPlayTask.setLoopMode(true);
+    }
 }
