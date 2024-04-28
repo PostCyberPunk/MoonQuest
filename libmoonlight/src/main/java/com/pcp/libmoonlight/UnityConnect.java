@@ -6,11 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.HardwareBuffer;
-import android.net.Uri;
 import android.opengl.GLES30;
 import android.os.Build;
 import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
@@ -63,7 +63,6 @@ public class UnityConnect extends Fragment {
     private int[] mHWBFboID;
 
     private String mFilePath;
-    private BitmapVideoView streamView;
     private final static String TAG = "libmoonlight";
 
     // ---------------------------------------------------------------------------------------------------------
@@ -215,15 +214,15 @@ public class UnityConnect extends Fragment {
             }
             Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
             //set the image size to the screen size
-            streamView = new BitmapVideoView(UnityPlayer.currentActivity);
-            streamView.setVideoURI(Uri.parse(mFilePath));
-            streamView.start();
+            bitmap = Bitmap.createScaledBitmap(bitmap, mTexWidth, mTexHeight, false);
+            ImageView imageView = new ImageView(UnityPlayer.currentActivity);
+            imageView.setImageBitmap(bitmap);
 
             UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
-            mGlLayout.addView(streamView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
+            mGlLayout.addView(imageView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-            LimeLog.info("Finished inited");
+            LimeLog.info("Finished init");
             mInitialized = true;
         });
     }
