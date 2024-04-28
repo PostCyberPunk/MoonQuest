@@ -4,17 +4,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.SurfaceTexture;
 import android.hardware.HardwareBuffer;
+import android.media.MediaPlayer;
 import android.opengl.GLES30;
 import android.os.Build;
 import android.view.Gravity;
-import android.view.Surface;
-import android.view.TextureView;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.robot9.shared.SharedTexture;
@@ -27,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class UnityConnect extends Fragment implements TextureView.SurfaceTextureListener, MoviePlayer.PlayerFeedback {
+public class UnityConnect extends Fragment {
 
     // ---------------------------------------------------------------------------------------------------------
     // Renderer
@@ -148,7 +147,7 @@ public class UnityConnect extends Fragment implements TextureView.SurfaceTexture
     // ---------------------------------------------------------------------------------------------------------
     // Initialize streamView
     //
-    private TextureView streamView;
+    private SurfaceView streamView;
 
     /**
      *
@@ -217,15 +216,17 @@ public class UnityConnect extends Fragment implements TextureView.SurfaceTexture
                 LimeLog.severe("File does not exist");
             }
 
-            streamView = new TextureView(UnityPlayer.currentActivity);
-            streamView.setSurfaceTextureListener(this);
+            streamView = new SurfaceView(UnityPlayer.currentActivity);
+            surfaceHolder = streamView.getHolder();
 
             UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
-            mGlLayout.addView(streamView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
+
+            //mGlLayout.addView(streamView, new GLLinearLayout.LayoutParams(GLLinearLayout.LayoutParams.MATCH_PARENT, GLLinearLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             LimeLog.info("Finished init2");
             mInitialized = true;
+            surfaceHolder.setFixedSize(mTexWidth, mTexHeight);
         });
     }
 
@@ -332,31 +333,6 @@ public class UnityConnect extends Fragment implements TextureView.SurfaceTexture
         });
     }
 
-    private boolean mSurfaceTextureReady = false;
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
-        mSurfaceTextureReady = false;
-        // assume activity is pausing, so don't need to update controls
-        return true;    // caller should release ST
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        // ignore
-    }
-
-    @Override
-    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
-        LimeLog.info("SurfaceTexture ready (" + width + "x" + height + ")");
-        mSurfaceTextureReady = true;
-    }
-
-    @Override
-    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
-
-    }
-
     private void adjustAspectRatio(int videoWidth, int videoHeight) {
         int viewWidth = streamView.getWidth();
         int viewHeight = streamView.getHeight();
@@ -381,44 +357,35 @@ public class UnityConnect extends Fragment implements TextureView.SurfaceTexture
                         " off=" + xoff + "," + yoff);
 
         Matrix txform = new Matrix();
-        streamView.getTransform(txform);
-        txform.setScale((float) newWidth / viewWidth, (float) newHeight / viewHeight);
-        //txform.postRotate(10);          // just for fun
-        // Haha
-        txform.postTranslate(xoff, yoff);
-        streamView.setTransform(txform);
-        //FIXME:Layout should also set here
     }
 
-    private MoviePlayer.PlayTask mPlayTask;
+    MediaPlayer mediaPlayer = new MediaPlayer();
+
+    private SurfaceHolder surfaceHolder;
 
     public void playVideo() {
         UnityPlayer.currentActivity.runOnUiThread(() -> {
-            LimeLog.info("starting movie");
-            SurfaceTexture st = streamView.getSurfaceTexture();
-            Surface surface = new Surface(st);
-            MoviePlayer player = null;
-            SpeedControlCallback callback = new SpeedControlCallback();
-            callback.setFixedPlaybackRate(60);
-            try {
-                player = new MoviePlayer(
-                        new File(mFilePath), surface, callback);
-            } catch (IOException ioe) {
-                LimeLog.severe("Unable to play movie::" + ioe);
-                surface.release();
+            LimeLog.warning("width" + streamView.getWidth());
+            if (surfaceHolder == null) {
+                LimeLog.severe("Surface is null");
                 return;
             }
-            adjustAspectRatio(player.getVideoWidth(), player.getVideoHeight());
-
-            mPlayTask = new MoviePlayer.PlayTask(player, this);
-            mPlayTask.setLoopMode(true);
-            mPlayTask.execute();
+            LimeLog.info("starting movie");
+            mediaPlayer.setDisplay(surfaceHolder); // Set the SurfaceHolder for rendering
+            try {
+                mediaPlayer.setDataSource(mFilePath);
+                mediaPlayer.prepare(); // Prepare the player
+            } catch (IOException e) {
+                LimeLog.severe("File not found:" + e);
+                return;
+            }
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mediaPlayer.start(); // Start playing the video
+                }
+            });
         });
     }
 
-
-    @Override
-    public void playbackStopped() {
-        mPlayTask.setLoopMode(true);
-    }
 }
