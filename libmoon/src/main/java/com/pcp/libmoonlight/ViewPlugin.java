@@ -5,9 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.HardwareBuffer;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.opengl.GLES30;
 //import android.os.Build;
+import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,6 +26,7 @@ import com.tlab.viewtohardwarebuffer.ViewToHWBRenderer;
 import com.unity3d.player.UnityPlayer;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ViewPlugin {
     private ViewToHWBRenderer mRenderer;
@@ -39,7 +46,7 @@ public class ViewPlugin {
     // Manger var
     private boolean mIsInitialized = false;
 
-//    @RequiresApi(api = Build.VERSION_CODES.R)
+    //    @RequiresApi(api = Build.VERSION_CODES.R)
     public void Init(int textureWidth, int textureHeight, int screenWidth, int screenHeight) {
         mTexWidth = textureWidth;
         mTexHeight = textureHeight;
@@ -171,10 +178,10 @@ public class ViewPlugin {
     //My View
     private ImageView mImageView;
 
-    private void initMyView(GLLinearLayout l) {
-        mImageView = new ImageView(UnityPlayer.currentActivity);
-        l.addView(mImageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-    }
+//    private void initMyView(GLLinearLayout l) {
+//        mImageView = new ImageView(UnityPlayer.currentActivity);
+//        l.addView(mImageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+//    }
 
     private void destroyMyView() {
         mImageView = null;
@@ -196,6 +203,52 @@ public class ViewPlugin {
             mImageView.setImageBitmap(bitmap);
             LimeLog.info("Image load at" + path);
         });
+    }
+
+    private MediaPlayer mMediaPlayer;
+    private SurfaceView mSurfaceView;
+
+    private void initMyView(GLLinearLayout l) {
+        mSurfaceView = new SurfaceView(UnityPlayer.currentActivity);
+        l.addView(mSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                initPlayer();
+            }
+
+            @Override
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+            }
+            // Other methods...
+        });
+    }
+
+    private void initPlayer() {
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+        }
+        if (mSurfaceView != null) {
+            mMediaPlayer.setSurface(mSurfaceView.getHolder().getSurface());
+        }
+        try {
+            File file = new File("/sdcard/Pictures/q.mp4");
+//            mMediaPlayer.setAudioStreamType(.STREAM_MUSIC);
+            mMediaPlayer.setDataSource(Uri.fromFile(file).toString());
+            mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            LimeLog.severe("Opps:" + e);
+        }
+    }
+
+    public void PlayMovie() {
+        mMediaPlayer.start();
     }
 //End of Class
 }
