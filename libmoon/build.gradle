@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.pcp.libmoon'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+        consumerProguardFiles "consumer-rules.pro"
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++11'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    externalNativeBuild {
+        cmake {
+            path = "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
+    dependencies {
+      compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+
+        implementation 'com.android.support:appcompat-v7:28.0.0'
+//    implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+//    implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
+//    implementation 'org.jcodec:jcodec:0.2.5'
+//    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+//    implementation 'org.jmdns:jmdns:3.5.9'
+//    implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
+    }
+    ndkVersion '26.2.11394342'
+//    android.libraryVariants.configureEach { variant ->
+//        variant.outputs.each {
+//            output.packageLibrary.exclude('libs/classes.jar')
+//        }
+//
+//    }
+}
+
+//dependencies {
+//    implementation files('libs/classes.jar')
+//}
