@@ -1,21 +1,28 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Don't obfuscate code
+-dontobfuscate
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Our code
+-keep class com.limelight.binding.input.evdev.* {*;}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Moonlight common
+-keep class com.limelight.nvstream.jni.* {*;}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Okio
+-keep class sun.misc.Unsafe {*;}
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn okio.**
+
+# BouncyCastle
+-keep class org.bouncycastle.jcajce.provider.asymmetric.* {*;}
+-keep class org.bouncycastle.jcajce.provider.asymmetric.util.* {*;}
+-keep class org.bouncycastle.jcajce.provider.asymmetric.rsa.* {*;}
+-keep class org.bouncycastle.jcajce.provider.digest.** {*;}
+-keep class org.bouncycastle.jcajce.provider.symmetric.** {*;}
+-keep class org.bouncycastle.jcajce.spec.* {*;}
+-keep class org.bouncycastle.jce.** {*;}
+-dontwarn javax.naming.**
+
+# jMDNS
+-dontwarn javax.jmdns.impl.DNSCache
+-dontwarn org.slf4j.**
