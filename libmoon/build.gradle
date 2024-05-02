@@ -41,19 +41,6 @@ android {
         }
     }
 
-    bundle {
-        language {
-            // Avoid splitting by language, since we allow users
-            // to manually switch language in settings.
-            enableSplit = false
-        }
-        density {
-            // FIXME: This should not be necessary but we get
-            // weird crashes due to missing drawable resources
-            // when this split is enabled.
-            enableSplit = false
-        }
-    }
 
     compileOptions {
         encoding "UTF-8"

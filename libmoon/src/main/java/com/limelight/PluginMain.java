@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.widget.RelativeLayout;
+import com.pcp.libmoon.R;
 
 import com.limelight.types.UnityPluginObject;
 

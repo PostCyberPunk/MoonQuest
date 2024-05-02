@@ -46,7 +46,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.limelight.BuildConfig;
+import com.pcp.libmoon.BuildConfig;
 import com.limelight.LimeLog;
 import com.limelight.nvstream.ConnectionContext;
 import com.limelight.nvstream.http.PairingManager.PairState;
@@ -76,7 +76,7 @@ public class NvHTTP {
     private HttpUrl baseUrlHttp;
 
     private int httpsPort;
-    
+
     private OkHttpClient httpClientLongConnectTimeout;
     private OkHttpClient httpClientLongConnectNoReadTimeout;
     private OkHttpClient httpClientShortConnectTimeout;
@@ -198,7 +198,7 @@ public class NvHTTP {
 
         return new HttpUrl.Builder().scheme("https").host(baseUrlHttp.host()).port(httpsPort).build();
     }
-    
+
     public NvHTTP(ComputerDetails.AddressTuple address, int httpsPort, String uniqueId, X509Certificate serverCert, LimelightCryptoProvider cryptoProvider) throws IOException {
         // Use the same UID for all Moonlight clients so we can quit games
         // started by other Moonlight clients.
@@ -244,7 +244,7 @@ public class NvHTTP {
         xpp.setInput(r);
         int eventType = xpp.getEventType();
         Stack<String> currentTag = new Stack<String>();
-        
+
         while (eventType != XmlPullParser.END_DOCUMENT) {
             switch (eventType) {
             case (XmlPullParser.START_TAG):
@@ -279,7 +279,7 @@ public class NvHTTP {
     static String getXmlString(String str, String tagname, boolean throwIfMissing) throws XmlPullParserException, IOException {
         return getXmlString(new StringReader(str), tagname, throwIfMissing);
     }
-    
+
     private static void verifyResponseStatus(XmlPullParser xpp) throws HostHttpResponseException {
         // We use Long.parseLong() because in rare cases GFE can send back a status code of
         // 0xFFFFFFFF, which will cause Integer.parseInt() to throw a NumberFormatException due
@@ -297,13 +297,13 @@ public class NvHTTP {
             throw new HostHttpResponseException(statusCode, statusMsg);
         }
     }
-    
+
     public String getServerInfo(boolean likelyOnline) throws IOException, XmlPullParserException {
         String resp;
 
         // If we believe the PC is online, give it a little extra time to respond
         OkHttpClient client = likelyOnline ? httpClientLongConnectTimeout : httpClientShortConnectTimeout;
-        
+
         //
         // TODO: Shield Hub uses HTTP for this and is able to get an accurate PairStatus with HTTP.
         // For some reason, we always see PairStatus is 0 over HTTP and only 1 over HTTPS. It looks
@@ -390,7 +390,7 @@ public class NvHTTP {
 
         return details;
     }
-    
+
     public ComputerDetails getComputerDetails(boolean likelyOnline) throws IOException, XmlPullParserException {
         return getComputerDetails(getServerInfo(likelyOnline));
     }
@@ -432,16 +432,16 @@ public class NvHTTP {
         Response response = performAndroidTlsHack(client).newCall(request).execute();
 
         ResponseBody body = response.body();
-        
+
         if (response.isSuccessful()) {
             return body;
         }
-        
+
         // Unsuccessful, so close the response body
         if (body != null) {
             body.close();
         }
-        
+
         if (response.code() == 404) {
             throw new FileNotFoundException(completeUrl.toString());
         }
@@ -470,7 +470,7 @@ public class NvHTTP {
                 LimeLog.warning(getCompleteUrl(baseUrl, path, query)+" -> "+e.getMessage());
                 e.printStackTrace();
             }
-            
+
             throw e;
         }
     }
@@ -489,7 +489,7 @@ public class NvHTTP {
         return NvHTTP.getXmlString(serverInfo, "PairStatus", true).equals("1") ?
                 PairState.PAIRED : PairState.NOT_PAIRED;
     }
-    
+
     public long getMaxLumaPixelsH264(String serverInfo) throws XmlPullParserException, IOException {
         // MaxLumaPixelsH264 wasn't present on old GFE versions
         String str = getXmlString(serverInfo, "MaxLumaPixelsH264", false);
@@ -499,7 +499,7 @@ public class NvHTTP {
             return 0;
         }
     }
-    
+
     public long getMaxLumaPixelsHEVC(String serverInfo) throws XmlPullParserException, IOException {
         // MaxLumaPixelsHEVC wasn't present on old GFE versions
         String str = getXmlString(serverInfo, "MaxLumaPixelsHEVC", false);
@@ -527,7 +527,7 @@ public class NvHTTP {
             return 0;
         }
     }
-    
+
     public String getGpuType(String serverInfo) throws XmlPullParserException, IOException {
         // ServerCodecModeSupport wasn't present on old GFE versions
         return getXmlString(serverInfo, "gputype", false);
@@ -537,7 +537,7 @@ public class NvHTTP {
         // ServerCodecModeSupport wasn't present on old GFE versions
         return getXmlString(serverInfo, "GfeVersion", false);
     }
-    
+
     public boolean supports4K(String serverInfo) throws XmlPullParserException, IOException {
         // Only allow 4K on GFE 3.x. GfeVersion wasn't present on very old versions of GFE.
         String gfeVersionStr = getXmlString(serverInfo, "GfeVersion", false);
@@ -595,7 +595,7 @@ public class NvHTTP {
         }
         return null;
     }
-    
+
     /* NOTE: Only use this function if you know what you're doing.
      * It's totally valid to have two apps named the same thing,
      * or even nothing at all! Look apps up by ID if at all possible
@@ -613,7 +613,7 @@ public class NvHTTP {
     public PairingManager getPairingManager() {
         return pm;
     }
-    
+
     public static LinkedList<NvApp> getAppListByReader(Reader r) throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -655,31 +655,31 @@ public class NvHTTP {
             }
             eventType = xpp.next();
         }
-        
+
         // Throw a malformed XML exception if we've not seen the root tag ended
         if (!rootTerminated) {
             throw new XmlPullParserException("Malformed XML: Root tag was not terminated");
         }
-        
+
         // Ensure that all apps in the list are initialized
         ListIterator<NvApp> i = appList.listIterator();
         while (i.hasNext()) {
             NvApp app = i.next();
-            
+
             // Remove uninitialized apps
             if (!app.isInitialized()) {
                 LimeLog.warning("GFE returned incomplete app: "+app.getAppId()+" "+app.getAppName());
                 i.remove();
             }
         }
-        
+
         return appList;
     }
-    
+
     public String getAppListRaw() throws IOException {
         return openHttpConnectionToString(httpClientLongConnectTimeout, getHttpsUrl(true), "applist");
     }
-    
+
     public LinkedList<NvApp> getAppList() throws HostHttpResponseException, IOException, XmlPullParserException {
         if (verbose) {
             // Use the raw function so the app list is printed
@@ -705,16 +705,16 @@ public class NvHTTP {
     public void unpair() throws IOException {
         openHttpConnectionToString(httpClientLongConnectTimeout, baseUrlHttp, "unpair");
     }
-    
+
     public InputStream getBoxArt(NvApp app) throws IOException {
         ResponseBody resp = openHttpConnection(httpClientLongConnectTimeout, getHttpsUrl(true), "appasset", "appid=" + app.getAppId() + "&AssetType=2&AssetIdx=0");
         return resp.byteStream();
     }
-    
+
     public int getServerMajorVersion(String serverInfo) throws XmlPullParserException, IOException {
         return getServerAppVersionQuad(serverInfo)[0];
     }
-    
+
     public int[] getServerAppVersionQuad(String serverInfo) throws XmlPullParserException, IOException {
         String serverVersion = getServerVersion(serverInfo);
         if (serverVersion == null) {
@@ -741,7 +741,7 @@ public class NvHTTP {
         }
         return new String(hexChars);
     }
-    
+
     public boolean launchApp(ConnectionContext context, String verb, int appId, boolean enableHdr) throws IOException, XmlPullParserException {
         // Using an FPS value over 60 causes SOPS to default to 720p60,
         // so force it to 0 to ensure the correct resolution is set. We
@@ -788,7 +788,7 @@ public class NvHTTP {
             return false;
         }
     }
-    
+
     public boolean quitApp() throws IOException, XmlPullParserException {
         String xmlStr = openHttpConnectionToString(httpClientLongConnectNoReadTimeout, getHttpsUrl(true), "cancel");
         if (getXmlString(xmlStr, "cancel", true).equals("0")) {
