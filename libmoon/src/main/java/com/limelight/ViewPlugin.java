@@ -58,7 +58,6 @@ public class ViewPlugin {
         LimeLog.severe("Initializing ViewManager");
         LimeLog.info("Texture width: " + mTexWidth + " Texture height: " + mTexHeight + " Screen width: " + mScreenWidth + " Screen height: " + mScreenHeight);
         initView();
-        mPlugin = new PluginMain(UnityPlayer.currentActivity, mGlLinearLayout);
     }
 
     private void initView() {
@@ -87,11 +86,12 @@ public class ViewPlugin {
             mGlLinearLayout.setBackgroundColor(Color.RED);
 
             //TODO: Initize view and aad it to gl layout here
-            initMyView(mGlLinearLayout);
+//            initMyView(mGlLinearLayout);
 
             UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLinearLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+            mPlugin = new PluginMain(UnityPlayer.currentActivity, mGlLinearLayout);
             LimeLog.info("Finished init3");
 
             mIsInitialized = true;
@@ -212,27 +212,27 @@ public class ViewPlugin {
     private MediaPlayer mMediaPlayer;
     private SurfaceView mSurfaceView;
 
-    private void initMyView(GLLinearLayout l) {
-        mSurfaceView = new SurfaceView(UnityPlayer.currentActivity);
-        l.addView(mSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                initPlayer();
-            }
-
-            @Override
-            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
-            }
-            // Other methods...
-        });
-    }
+//    private void initMyView(GLLinearLayout l) {
+//        mSurfaceView = new SurfaceView(UnityPlayer.currentActivity);
+//        l.addView(mSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+//        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+//            @Override
+//            public void surfaceCreated(SurfaceHolder holder) {
+//                initPlayer();
+//            }
+//
+//            @Override
+//            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+//
+//            }
+//
+//            @Override
+//            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+//
+//            }
+//            // Other methods...
+//        });
+//    }
 
     private void initPlayer() {
         if (mMediaPlayer == null) {
