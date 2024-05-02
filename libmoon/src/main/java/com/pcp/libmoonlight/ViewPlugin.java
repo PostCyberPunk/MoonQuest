@@ -1,5 +1,6 @@
 package com.pcp.libmoonlight;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 //import android.app.Fragment;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import android.widget.RelativeLayout;
 
 //import androidx.annotation.RequiresApi;
 
+import com.limelight.PluginMain;
 import com.robot9.shared.SharedTexture;
 import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
 import com.tlab.viewtohardwarebuffer.GLLinearLayout;
@@ -45,6 +47,8 @@ public class ViewPlugin {
     private int[] mHWBFboID;
     // Manger var
     private boolean mIsInitialized = false;
+    //TRY
+    private PluginMain mPlugin;
 
     //    @RequiresApi(api = Build.VERSION_CODES.R)
     public void Init(int textureWidth, int textureHeight, int screenWidth, int screenHeight) {
@@ -55,6 +59,7 @@ public class ViewPlugin {
         LimeLog.severe("Initializing ViewManager");
         LimeLog.info("Texture width: " + mTexWidth + " Texture height: " + mTexHeight + " Screen width: " + mScreenWidth + " Screen height: " + mScreenHeight);
         initView();
+        mPlugin = new PluginMain(UnityPlayer.currentActivity, mGlLinearLayout);
     }
 
     private void initView() {
@@ -248,7 +253,8 @@ public class ViewPlugin {
     }
 
     public void PlayMovie() {
-        mMediaPlayer.start();
+//        mMediaPlayer.start();
+        mPlugin.fakeStart();
     }
 //End of Class
 }

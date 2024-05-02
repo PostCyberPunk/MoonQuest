@@ -100,7 +100,7 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
             @Override
             public void run() {
                 streamView = new StreamView(mActivity);
-                mPluginMain.mRelativeLayout.addView(streamView, new RelativeLayout.LayoutParams(
+                mPluginMain.mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });

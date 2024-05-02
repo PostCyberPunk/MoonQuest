@@ -9,67 +9,62 @@ import android.preference.PreferenceManager;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.widget.RelativeLayout;
+
 import com.pcp.libmoon.R;
 
 import com.limelight.types.UnityPluginObject;
+import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
+import com.tlab.viewtohardwarebuffer.GLLinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PluginMain extends Activity {
+public class PluginMain {
     private AppPlugin m_AppPlugin;
     private PcPlugin m_PcPlugin;
     private Game m_Game;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
+    public GLLinearLayout mLayout;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public PluginMain(Activity a, GLLinearLayout l) {
         //TRY
-        mActivity = this;
+        mActivity = a;
+        mLayout = l;
 
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
-        initView();
         ActivatePcPlugin();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void Destroy() {
         for (UnityPluginObject plugin : m_PluginList) {
             if (plugin != null)
                 plugin.onDestroy();
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void onResume() {
         for (UnityPluginObject plugin : m_PluginList) {
             if (plugin != null)
                 plugin.onResume();
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    public void onPause() {
         for (UnityPluginObject plugin : m_PluginList) {
             if (plugin != null)
                 plugin.onPause();
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    public void onStop() {
         for (UnityPluginObject plugin : m_PluginList) {
             if (plugin != null)
                 plugin.onStop();
         }
     }
 
+    //plugins-----------
     public void ActivatePcPlugin() {
         LimeLog.info("PcPlugin starting");
         m_PcPlugin = new PcPlugin(this, mActivity);
@@ -128,26 +123,11 @@ public class PluginMain extends Activity {
         }
     }
 
-    public GLSurfaceView mGLSurfaceView;
-    public RelativeLayout mRelativeLayout;
-
-    private void initView() {
-        mActivity.runOnUiThread(() -> {
-            mRelativeLayout = new RelativeLayout(mActivity);
-            mRelativeLayout.setBackgroundColor(Color.GREEN);
-            mGLSurfaceView = new GLSurfaceView(mActivity);
-            mGLSurfaceView.setEGLContextClientVersion(3);
-            mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-            mGLSurfaceView.setPreserveEGLContextOnPause(true);
-            mGLSurfaceView.setBackgroundColor(0xff000000);
-            mActivity.addContentView(mRelativeLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
-//            mRelativeLayout.addView(mGLSurfaceView);
-        });
+    public Activity GetActivity() {
+        return mActivity;
     }
 
-    private class ViewManager {
-        public ViewManager() {
-        }
+    public void fakeStart() {
+       m_PcPlugin.fakeStart();
     }
 }

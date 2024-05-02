@@ -19,6 +19,7 @@ import com.limelight.types.UnityPluginObject;
 import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
 import com.limelight.utils.UiHelper;
+import com.pcp.libmoonlight.UnityMessager;
 
 import android.app.Activity;
 import android.app.Service;
@@ -86,13 +87,13 @@ public class PcPlugin extends UnityPluginObject {
         //TODO:move this to the main entry
 
         //Try
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fakeStart();
-            }
-        }, 1000);
+//        Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                fakeStart();
+//            }
+//        }, 1000);
     }
 
     @Override
@@ -161,6 +162,7 @@ public class PcPlugin extends UnityPluginObject {
 
                         // Spin the dialog off in a thread because it blocks
                         LimeLog.todo("Displaying Pairing Dialog");
+                        UnityMessager.Warn("PIN" + pinStr);
                         LimeLog.severe("PIN: " + pinStr);
 
                         PairingManager pm = httpConn.getPairingManager();
@@ -301,7 +303,7 @@ public class PcPlugin extends UnityPluginObject {
         doPair(computer.details);
     }
 
-    private void fakeStart() {
+    public void fakeStart() {
         if (pcList.getCount() == 0) {
             fakeAdd();
         } else {
