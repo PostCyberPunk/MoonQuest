@@ -43,24 +43,27 @@ android {
 //            path "src/main/jni/Android.mk"
 //        }
     }
+//    task runCmake(type: Exec) {
+//       excutable = 'cmake'
+//    }
     task runNdkBuild(type: Exec) {
         def ndkDir = '/home/pcp/Android/ndk/r26c'
         executable = "$ndkDir/ndk-build"
         args = ['NDK_PROJECT_PATH=build/intermediates/ndk',
-//                'NDK_LIBS_OUT=src/main/jniLibs',
+                'NDK_LIBS_OUT=src/main/jniLibs',
                 'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
                 'NDK_APPLICATION_MK=src/main/jni/Application.mk']
     }
     dependencies {
-      compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+        compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 
         implementation 'com.android.support:appcompat-v7:28.0.0'
-   implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
-   implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
-   implementation 'org.jcodec:jcodec:0.2.5'
-   implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-   implementation 'org.jmdns:jmdns:3.5.9'
-   implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
+        implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+        implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
+        implementation 'org.jcodec:jcodec:0.2.5'
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+        implementation 'org.jmdns:jmdns:3.5.9'
+        implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
     }
     ndkVersion '26.2.11394342'
 //    android.libraryVariants.configureEach { variant ->
