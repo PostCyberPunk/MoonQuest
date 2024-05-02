@@ -1,4 +1,4 @@
-package com.pcp.libmoonlight;
+package com.limelight;
 
 import android.app.Activity;
 

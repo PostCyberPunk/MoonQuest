@@ -18,19 +18,13 @@ import com.limelight.preferences.AddComputerManually;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
-import com.limelight.utils.UiHelper;
-import com.pcp.libmoonlight.UnityMessager;
 
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 
 import org.xmlpull.v1.XmlPullParserException;
 

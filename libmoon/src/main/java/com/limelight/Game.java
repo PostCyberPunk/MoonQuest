@@ -37,7 +37,7 @@ import com.limelight.preferences.PreferenceConfiguration;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.ui.StreamView;
 import com.limelight.utils.ServerHelper;
-import com.pcp.libmoon.R;
+import com.limelight.R;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;

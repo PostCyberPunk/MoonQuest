@@ -1,4 +1,4 @@
-package com.pcp.libmoonlight;
+package com.limelight;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 
 //import androidx.annotation.RequiresApi;
 
-import com.limelight.PluginMain;
 import com.robot9.shared.SharedTexture;
 import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
 import com.tlab.viewtohardwarebuffer.GLLinearLayout;

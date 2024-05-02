@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.pcp.libmoon'
+    namespace 'com.limelight'
     compileSdk 32
 
     defaultConfig {
@@ -36,7 +36,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

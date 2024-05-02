@@ -1,4 +1,4 @@
-package com.pcp.libmoonlight;
+package com.limelight;
 
 import android.app.Activity;
 import android.app.Application;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 
 import com.unity3d.player.UnityPlayer;
 

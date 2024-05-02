@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.limelight.Game;
 import com.limelight.LimeLog;
 import com.limelight.PluginMain;
-import com.pcp.libmoon.R;
+import com.limelight.R;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.computers.ComputerManagerService;
 import com.limelight.nvstream.http.ComputerDetails;

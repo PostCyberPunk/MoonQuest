@@ -7,7 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Button;
 
-import com.pcp.libmoon.R;
+import com.limelight.R;
 
 public class Dialog implements Runnable {
     private final String title;

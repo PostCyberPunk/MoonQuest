@@ -16,7 +16,7 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 
 import com.limelight.Game;
-import com.pcp.libmoon.R;
+import com.limelight.R;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.preferences.PreferenceConfiguration;
 
