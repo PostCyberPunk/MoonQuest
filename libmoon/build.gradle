@@ -68,8 +68,7 @@ android {
                 'NDK_APPLICATION_MK=src/main/jni/Application.mk']
     }
     dependencies {
-        compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-
+        compileOnly fileTree(dir: 'libs', include: ['unity_ref.jar'])
         implementation 'com.android.support:appcompat-v7:28.0.0'
         implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
         implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
