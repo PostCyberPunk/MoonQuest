@@ -27,7 +27,7 @@ public class PluginManager {
         return true;
     }
 
-    public PluginManager(int screenWidth, int screenHeight) {
+    public void Init(int screenWidth, int screenHeight) {
         //TRY
         mScreenWidth = screenWidth;
         mScreenHeight = screenHeight;
@@ -73,6 +73,7 @@ public class PluginManager {
         m_PcPlugin = new PcPlugin(this, mActivity);
         m_PluginList.add(m_PcPlugin);
     }
+
     public void StopPcPlugin() {
         if (m_PcPlugin == null)
             return;
@@ -81,11 +82,13 @@ public class PluginManager {
         m_PcPlugin = null;
         LimeLog.info("PcPlugin stopped");
     }
+
     public void ActivateAppPlugin(Intent i) {
         LimeLog.info("AppPlugin starting");
         m_AppPlugin = new AppPlugin(this, mActivity, i);
         m_PluginList.add(m_AppPlugin);
     }
+
     public void StopAppPlugin() {
         if (m_AppPlugin == null)
             return;
@@ -94,11 +97,13 @@ public class PluginManager {
         m_AppPlugin = null;
         LimeLog.info("AppPlugin stopped");
     }
+
     public void ActivateGamePlugin(Intent i) {
         LimeLog.info("GamePlugin starting");
         m_GamePlugin = new GamePlugin(this, mActivity, i);
         m_PluginList.add(m_GamePlugin);
     }
+
     public void StopGamePlugin() {
         if (m_GamePlugin == null)
             return;
@@ -107,11 +112,16 @@ public class PluginManager {
         m_GamePlugin = null;
         LimeLog.info("GamePlugin stopped");
     }
-    public void ActivateViewPlugin(int textureWidth, int textureHeight) {
+
+    public ViewPlugin ActivateViewPlugin(int textureWidth, int textureHeight) {
         LimeLog.info("ViewPlugin starting");
-        m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
+        mActivity.runOnUiThread(() -> {
+            m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
+        });
         m_PluginList.add(m_ViewPlugin);
+        return m_ViewPlugin;
     }
+
     public void StopViewPlugin() {
         if (m_ViewPlugin == null)
             return;
@@ -146,7 +156,9 @@ public class PluginManager {
         return mActivity;
     }
 
-    public void fakeStart() {
-        m_PcPlugin.fakeStart();
+    public void FakeStart() {
+        mActivity.runOnUiThread(() -> {
+            m_PcPlugin.fakeStart();
+        });
     }
 }

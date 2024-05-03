@@ -44,6 +44,7 @@ public class ViewPlugin extends UnityPluginObject {
     private int[] mHWBFboID;
     //my vars
     private boolean mIsPaused = false;
+
     //Lifecycle
     public ViewPlugin(PluginManager p, Activity a, int textureWidth, int textureHeight, int screenWidth, int screenHeight) {
         super(p, a);
@@ -60,24 +61,24 @@ public class ViewPlugin extends UnityPluginObject {
     @Override
     protected void onCreate() {
 
-        UnityPlayer.currentActivity.runOnUiThread(() -> {
+        mActivity.runOnUiThread(() -> {
             mRenderer = new ViewToHWBRenderer();
             mRenderer.SetTextureResolution(mTexWidth, mTexHeight);
 
-            mLayout = new RelativeLayout(UnityPlayer.currentActivity);
+            mLayout = new RelativeLayout(mActivity);
             mLayout.setGravity(Gravity.TOP);
             mLayout.setX(mScreenWidth);
             mLayout.setY(mScreenHeight);
             mLayout.setBackgroundColor(0xFFFFFFFF);
 
-            mGLSurfaceView = new CustomGLSurfaceView(UnityPlayer.currentActivity);
+            mGLSurfaceView = new CustomGLSurfaceView(mActivity);
             mGLSurfaceView.setEGLContextClientVersion(3);
             mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
             mGLSurfaceView.setPreserveEGLContextOnPause(true);
             mGLSurfaceView.setRenderer(mRenderer);
             mGLSurfaceView.setBackgroundColor(0x00000000);
 
-            mGlLinearLayout = new GLLinearLayout(UnityPlayer.currentActivity, 1, 1);
+            mGlLinearLayout = new GLLinearLayout(mActivity, 1, 1);
             mGlLinearLayout.setViewToGLRenderer(mRenderer);
             mGlLinearLayout.setGravity(Gravity.START);
             mGlLinearLayout.setOrientation(GLLinearLayout.HORIZONTAL);
@@ -85,8 +86,9 @@ public class ViewPlugin extends UnityPluginObject {
 
             //TODO: Initize view and aad it to gl layout here
 //            initMyView(mGlLinearLayout);
+            mPluginManager.mLayout=mGlLinearLayout;
 
-            UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
+            mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLinearLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             LimeLog.info("Finished init3");
@@ -96,7 +98,7 @@ public class ViewPlugin extends UnityPluginObject {
 
     @Override
     public void onDestroy() {
-        UnityPlayer.currentActivity.runOnUiThread(() -> {
+        mActivity.runOnUiThread(() -> {
             if (mSharedTexture != null) {
                 mSharedTexture.release();
                 mSharedTexture = null;
@@ -173,7 +175,7 @@ public class ViewPlugin extends UnityPluginObject {
         mTexWidth = w;
         mTexHeight = h;
 
-        UnityPlayer.currentActivity.runOnUiThread(() -> {
+        mActivity.runOnUiThread(() -> {
             if (mRenderer != null) {
                 mRenderer.SetTextureResolution(mTexWidth, mTexHeight);
                 mRenderer.requestResize();
