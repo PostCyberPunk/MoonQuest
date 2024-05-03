@@ -1,6 +1,6 @@
 package com.limelight;
 
-import android.app.Application;
+import android.app.Activity;
 import android.graphics.Bitmap;
 //import android.app.Fragment;
 import android.graphics.BitmapFactory;
@@ -10,16 +10,14 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.opengl.GLES30;
 //import android.os.Build;
-import android.support.annotation.NonNull;
 import android.view.Gravity;
-import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 //import androidx.annotation.RequiresApi;
 
+import com.limelight.types.UnityPluginObject;
 import com.robot9.shared.SharedTexture;
 import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
 import com.tlab.viewtohardwarebuffer.GLLinearLayout;
@@ -29,7 +27,7 @@ import com.unity3d.player.UnityPlayer;
 import java.io.File;
 import java.io.IOException;
 
-public class ViewPlugin {
+public class ViewPlugin extends UnityPluginObject {
     private ViewToHWBRenderer mRenderer;
     private CustomGLSurfaceView mGLSurfaceView;
     //Layout
@@ -44,23 +42,23 @@ public class ViewPlugin {
     private HardwareBuffer mShareBuffer;
     private int[] mHWBFboTextureId;
     private int[] mHWBFboID;
-    // Manger var
-    private boolean mIsInitialized = false;
-    //TRY
-    private PluginMain mPlugin;
-
-    //    @RequiresApi(api = Build.VERSION_CODES.R)
-    public void Init(int textureWidth, int textureHeight, int screenWidth, int screenHeight) {
+    //my vars
+    private boolean mIsPaused = false;
+    //Lifecycle
+    public ViewPlugin(PluginManager p, Activity a, int textureWidth, int textureHeight, int screenWidth, int screenHeight) {
+        super(p, a);
         mTexWidth = textureWidth;
         mTexHeight = textureHeight;
         mScreenWidth = screenWidth;
         mScreenHeight = screenHeight;
         LimeLog.severe("Initializing ViewManager");
         LimeLog.info("Texture width: " + mTexWidth + " Texture height: " + mTexHeight + " Screen width: " + mScreenWidth + " Screen height: " + mScreenHeight);
-        initView();
+        onCreate();
+        isInitialized = true;
     }
 
-    private void initView() {
+    @Override
+    protected void onCreate() {
 
         UnityPlayer.currentActivity.runOnUiThread(() -> {
             mRenderer = new ViewToHWBRenderer();
@@ -91,19 +89,35 @@ public class ViewPlugin {
             UnityPlayer.currentActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             mLayout.addView(mGlLinearLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-            mPlugin = new PluginMain(UnityPlayer.currentActivity, mGlLinearLayout);
             LimeLog.info("Finished init3");
 
-            mIsInitialized = true;
         });
     }
 
-    public boolean IsInitialized() {
-        return mIsInitialized;
+    @Override
+    public void onDestroy() {
+        UnityPlayer.currentActivity.runOnUiThread(() -> {
+            if (mSharedTexture != null) {
+                mSharedTexture.release();
+                mSharedTexture = null;
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        mIsPaused = false;
+    }
+
+    @Override
+    public void onPause() {
+        mIsPaused = true;
     }
 
     ////////Texture methods
     public void updateSurface() {
+        if (!isInitialized || mIsPaused)
+            return;
         mGlLinearLayout.postInvalidate();
     }
 
@@ -154,17 +168,6 @@ public class ViewPlugin {
         mShareBuffer = sb;
     }
 
-    public void Destroy() {
-        UnityPlayer.currentActivity.runOnUiThread(() -> {
-            //TODO:Destroy the view here
-//            destroyMyView();
-            if (mSharedTexture != null) {
-                mSharedTexture.release();
-                mSharedTexture = null;
-            }
-        });
-    }
-
     //Misc Tex methods
     public void resizeTex(int w, int h) {
         mTexWidth = w;
@@ -176,84 +179,6 @@ public class ViewPlugin {
                 mRenderer.requestResize();
             }
         });
-    }
-
-
-    //My View
-    private ImageView mImageView;
-
-//    private void initMyView(GLLinearLayout l) {
-//        mImageView = new ImageView(UnityPlayer.currentActivity);
-//        l.addView(mImageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-//    }
-
-    private void destroyMyView() {
-        mImageView = null;
-    }
-
-    public void LoadImage(String path) {
-        UnityPlayer.currentActivity.runOnUiThread(() -> {
-            if (!new File(path).exists()) {
-                LimeLog.severe("File not found");
-                return;
-            }
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
-            if (bitmap == null) {
-                LimeLog.severe("Failed to load image");
-                return;
-            }
-//            LimeLog.info("Image loaded" + bitmap.getWidth() + "," + bitmap.getHeight() + "at" + path);
-            bitmap = Bitmap.createScaledBitmap(bitmap, mTexWidth, mTexHeight, false);
-            mImageView.setImageBitmap(bitmap);
-            LimeLog.info("Image load at" + path);
-        });
-    }
-
-    private MediaPlayer mMediaPlayer;
-    private SurfaceView mSurfaceView;
-
-//    private void initMyView(GLLinearLayout l) {
-//        mSurfaceView = new SurfaceView(UnityPlayer.currentActivity);
-//        l.addView(mSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-//        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-//            @Override
-//            public void surfaceCreated(SurfaceHolder holder) {
-//                initPlayer();
-//            }
-//
-//            @Override
-//            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-//
-//            }
-//
-//            @Override
-//            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-//
-//            }
-//            // Other methods...
-//        });
-//    }
-
-    private void initPlayer() {
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-        }
-        if (mSurfaceView != null) {
-            mMediaPlayer.setSurface(mSurfaceView.getHolder().getSurface());
-        }
-        try {
-            File file = new File("/sdcard/Pictures/q.mp4");
-//            mMediaPlayer.setAudioStreamType(.STREAM_MUSIC);
-            mMediaPlayer.setDataSource(Uri.fromFile(file).toString());
-            mMediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            LimeLog.severe("Opps:" + e);
-        }
-    }
-
-    public void PlayMovie() {
-//        mMediaPlayer.start();
-        mPlugin.fakeStart();
     }
 //End of Class
 }

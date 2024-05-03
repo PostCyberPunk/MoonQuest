@@ -2,7 +2,6 @@ package com.limelight.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.GameManager;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,12 +9,10 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Insets;
 import android.os.Build;
-import android.os.LocaleList;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 
-import com.limelight.Game;
 import com.limelight.R;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.preferences.PreferenceConfiguration;

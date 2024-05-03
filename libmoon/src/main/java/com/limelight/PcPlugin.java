@@ -62,9 +62,10 @@ public class PcPlugin extends UnityPluginObject {
         }
     };
 
-    public PcPlugin(PluginMain p, Activity a) {
+    public PcPlugin(PluginManager p, Activity a) {
         super(p, a);
         onCreate();
+        isInitialized= true;
     }
 
     @Override
@@ -77,17 +78,6 @@ public class PcPlugin extends UnityPluginObject {
                 Service.BIND_AUTO_CREATE);
 
         pcList = new PcList();
-
-        //TODO:move this to the main entry
-
-        //Try
-//        Handler h = new Handler();
-//        h.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                fakeStart();
-//            }
-//        }, 1000);
     }
 
     @Override
@@ -215,7 +205,7 @@ public class PcPlugin extends UnityPluginObject {
         Intent i = new Intent(mActivity, AppPlugin.class);
         i.putExtra(AppPlugin.NAME_EXTRA, computer.name);
         i.putExtra(AppPlugin.UUID_EXTRA, computer.uuid);
-        mPluginMain.ActivateAppPlugin(i);
+        mPluginManager.ActivateAppPlugin(i);
         finish();
     }
 

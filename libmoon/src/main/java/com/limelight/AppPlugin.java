@@ -1,7 +1,5 @@
 package com.limelight;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -88,9 +86,27 @@ public class AppPlugin extends UnityPluginObject {
         }
     };
 
-    public AppPlugin(PluginMain p, Activity a, Intent i) {
+    public AppPlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
         onCreate();
+        isInitialized = true;
+    }
+
+    @Override
+    protected void onCreate() {
+        // Assume we're in the foreground when created to avoid a race
+        // between binding to CMS and onResume()
+        inForeground = true;
+
+        uuidString = getIntent().getStringExtra(UUID_EXTRA);
+
+        String computerName = getIntent().getStringExtra(NAME_EXTRA);
+
+        LimeLog.todo("AppPlugin created for pc : " + computerName);
+
+        // Bind to the computer manager service
+        bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
+                Service.BIND_AUTO_CREATE);
     }
 
     private void startComputerUpdates() {
@@ -185,24 +201,6 @@ public class AppPlugin extends UnityPluginObject {
         }
     }
 
-    @Override
-    protected void onCreate() {
-        // Assume we're in the foreground when created to avoid a race
-        // between binding to CMS and onResume()
-        inForeground = true;
-
-        uuidString = getIntent().getStringExtra(UUID_EXTRA);
-
-        String computerName = getIntent().getStringExtra(NAME_EXTRA);
-
-        LimeLog.todo("AppPlugin created for pc : " + computerName);
-
-        // Bind to the computer manager service
-        bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
-                Service.BIND_AUTO_CREATE);
-    }
-
-
     private void populateAppGridWithCache() {
         try {
             // Try to load from cache
@@ -220,7 +218,6 @@ public class AppPlugin extends UnityPluginObject {
             //TODO:block
         }
     }
-
 
     @Override
     public void onDestroy() {
@@ -281,7 +278,7 @@ public class AppPlugin extends UnityPluginObject {
                 if (count > 0) {
                     final AppObject app = (AppObject) m_AppList.getItem(0);
                     LimeLog.info("Starting app: " + app.app.getAppName());
-                    ServerHelper.doStart(mPluginMain, app.app, computer, managerBinder);
+                    ServerHelper.doStart(mPluginManager, app.app, computer, managerBinder);
                 }
             }
         });

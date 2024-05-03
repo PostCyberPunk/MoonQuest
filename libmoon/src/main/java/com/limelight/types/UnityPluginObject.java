@@ -1,26 +1,25 @@
 package com.limelight.types;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.service.quickaccesswallet.GetWalletCardsCallback;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.limelight.PluginMain;
+import com.limelight.LimeLog;
+import com.limelight.PluginManager;
 
 import java.io.File;
 
 public abstract class UnityPluginObject {
     protected Activity mActivity;
     protected Intent mIntent;
-    protected PluginMain mPluginMain;
+    protected PluginManager mPluginManager;
+    protected boolean isInitialized = false;
 
     //TODO: why not working?
 //    protected UnityPluginObject(Activity activity) {
@@ -28,13 +27,13 @@ public abstract class UnityPluginObject {
 //        this.onCreate();
 //    }
 //    protected abstract void onCreate();
-    protected UnityPluginObject(PluginMain p, Activity a) {
-        mPluginMain = p;
+    protected UnityPluginObject(PluginManager p, Activity a) {
+        mPluginManager = p;
         mActivity = a;
     }
 
-    protected UnityPluginObject(PluginMain p, Activity a, Intent i) {
-        mPluginMain = p;
+    protected UnityPluginObject(PluginManager p, Activity a, Intent i) {
+        mPluginManager = p;
         mActivity = a;
         mIntent = i;
     }
@@ -52,10 +51,18 @@ public abstract class UnityPluginObject {
 
     ;
 
-    protected void finish() {
-        mPluginMain.DestroyPlugin(this);
+    public boolean IsInitialized() {
+        return isInitialized;
     }
 
+    public void Poke() {
+    }
+
+    protected void finish() {
+        mPluginManager.DestroyPlugin(this);
+    }
+
+    //Ported Methods
     protected Intent getIntent() {
         return mIntent;
     }
@@ -95,6 +102,7 @@ public abstract class UnityPluginObject {
     protected PackageManager getPackageManager() {
         return mActivity.getPackageManager();
     }
+
     protected Resources getResources() {
         return mActivity.getResources();
     }

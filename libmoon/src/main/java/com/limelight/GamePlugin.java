@@ -11,7 +11,6 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -37,7 +36,6 @@ import com.limelight.preferences.PreferenceConfiguration;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.ui.StreamView;
 import com.limelight.utils.ServerHelper;
-import com.limelight.R;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
@@ -47,7 +45,7 @@ import java.util.Locale;
 
 
 
-public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
+public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callback,
         NvConnectionListener, PerfOverlayListener {
     private PreferenceConfiguration prefConfig;
     private SharedPreferences tombstonePrefs;
@@ -77,9 +75,10 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
     public static final String EXTRA_APP_HDR = "HDR";
     public static final String EXTRA_SERVER_CERT = "ServerCert";
 
-    public Game(PluginMain p, Activity a, Intent i) {
+    public GamePlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
         onCreate();
+        isInitialized = true;
     }
 
     @Override
@@ -92,15 +91,13 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
 
         // Read the stream preferences
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
-        tombstonePrefs = Game.this.getSharedPreferences("DecoderTombstone", 0);
+        tombstonePrefs = GamePlugin.this.getSharedPreferences("DecoderTombstone", 0);
 
-        // Listen for non-touch events on the game surface
-//        streamView = findViewById(R.id.surfaceView);
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 streamView = new StreamView(mActivity);
-                mPluginMain.mLayout.addView(streamView, new RelativeLayout.LayoutParams(
+                mPluginManager.mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });
@@ -534,11 +531,11 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
             // In multi-window mode on N+, we need to drop our layout flags or we'll
             // be drawing underneath the system UI.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInMultiWindowMode()) {
-                Game.this.getWindow().getDecorView().setSystemUiVisibility(
+                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             } else {
                 // Use immersive mode
-                Game.this.getWindow().getDecorView().setSystemUiVisibility(
+                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
@@ -820,7 +817,7 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
         computer.name = pcName;
-        computer.uuid = Game.this.getIntent().getStringExtra(EXTRA_PC_UUID);
+        computer.uuid = GamePlugin.this.getIntent().getStringExtra(EXTRA_PC_UUID);
 //        ShortcutHelper shortcutHelper = new ShortcutHelper(this);
 //        shortcutHelper.reportComputerShortcutUsed(computer);
 //        if (appName != null) {
@@ -844,7 +841,7 @@ public class Game extends UnityPluginObject implements SurfaceHolder.Callback,
 
             decoderRenderer.setRenderTarget(holder);
             conn.start(new AndroidAudioRenderer(mActivity, prefConfig.enableAudioFx),
-                    decoderRenderer, Game.this);
+                    decoderRenderer, GamePlugin.this);
         }
     }
 

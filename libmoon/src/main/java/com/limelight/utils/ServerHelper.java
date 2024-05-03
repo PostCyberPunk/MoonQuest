@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.limelight.Game;
+import com.limelight.GamePlugin;
 import com.limelight.LimeLog;
-import com.limelight.PluginMain;
+import com.limelight.PluginManager;
 import com.limelight.R;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.computers.ComputerManagerService;
@@ -54,19 +54,19 @@ public class ServerHelper {
 
     public static Intent createStartIntent(Activity parent, NvApp app, ComputerDetails computer,
                                            ComputerManagerService.ComputerManagerBinder managerBinder) {
-        Intent intent = new Intent(parent, Game.class);
-        intent.putExtra(Game.EXTRA_HOST, computer.activeAddress.address);
-        intent.putExtra(Game.EXTRA_PORT, computer.activeAddress.port);
-        intent.putExtra(Game.EXTRA_HTTPS_PORT, computer.httpsPort);
-        intent.putExtra(Game.EXTRA_APP_NAME, app.getAppName());
-        intent.putExtra(Game.EXTRA_APP_ID, app.getAppId());
-        intent.putExtra(Game.EXTRA_APP_HDR, app.isHdrSupported());
-        intent.putExtra(Game.EXTRA_UNIQUEID, managerBinder.getUniqueId());
-        intent.putExtra(Game.EXTRA_PC_UUID, computer.uuid);
-        intent.putExtra(Game.EXTRA_PC_NAME, computer.name);
+        Intent intent = new Intent(parent, GamePlugin.class);
+        intent.putExtra(GamePlugin.EXTRA_HOST, computer.activeAddress.address);
+        intent.putExtra(GamePlugin.EXTRA_PORT, computer.activeAddress.port);
+        intent.putExtra(GamePlugin.EXTRA_HTTPS_PORT, computer.httpsPort);
+        intent.putExtra(GamePlugin.EXTRA_APP_NAME, app.getAppName());
+        intent.putExtra(GamePlugin.EXTRA_APP_ID, app.getAppId());
+        intent.putExtra(GamePlugin.EXTRA_APP_HDR, app.isHdrSupported());
+        intent.putExtra(GamePlugin.EXTRA_UNIQUEID, managerBinder.getUniqueId());
+        intent.putExtra(GamePlugin.EXTRA_PC_UUID, computer.uuid);
+        intent.putExtra(GamePlugin.EXTRA_PC_NAME, computer.name);
         try {
             if (computer.serverCert != null) {
-                intent.putExtra(Game.EXTRA_SERVER_CERT, computer.serverCert.getEncoded());
+                intent.putExtra(GamePlugin.EXTRA_SERVER_CERT, computer.serverCert.getEncoded());
             }
         } catch (CertificateEncodingException e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class ServerHelper {
         return intent;
     }
 
-    public static void doStart(PluginMain parent, NvApp app, ComputerDetails computer,
+    public static void doStart(PluginManager parent, NvApp app, ComputerDetails computer,
                                ComputerManagerService.ComputerManagerBinder managerBinder) {
         if (computer.state == ComputerDetails.State.OFFLINE || computer.activeAddress == null) {
             LimeLog.todo("Attempted to start app on offline computer");
