@@ -244,7 +244,11 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         }
 
         // Set to the optimal mode for streaming
-        float displayRefreshRate = prepareDisplayForRendering();
+//        float displayRefreshRate = prepareDisplayForRendering();
+        //TRY
+        float displayRefreshRate = 60;
+        prefConfig.width = 3440;
+        prefConfig.height = 1440;
         LimeLog.info("Display refresh rate: " + displayRefreshRate);
 
         // If the user requested frame pacing using a capped FPS, we will need to change our
