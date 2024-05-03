@@ -114,10 +114,11 @@ public class PluginManager {
     }
 
     public ViewPlugin ActivateViewPlugin(int textureWidth, int textureHeight) {
+        if (m_ViewPlugin != null) {
+            LimeLog.severe("ViewPlugin is already created");
+        }
         LimeLog.info("ViewPlugin starting");
-        mActivity.runOnUiThread(() -> {
-            m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
-        });
+        m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
         m_PluginList.add(m_ViewPlugin);
         return m_ViewPlugin;
     }
