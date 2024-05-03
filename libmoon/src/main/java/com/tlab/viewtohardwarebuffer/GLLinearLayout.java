@@ -45,17 +45,17 @@ public class GLLinearLayout extends LinearLayout implements GLRenderable {
      */
     @Override
     public void draw(Canvas canvas) {
-        if (mViewToHWBRenderer == null) {
-            return;
-        }
+//        if (mViewToHWBRenderer == null) {
+//            return;
+//        }
+//
+//        Canvas glAttachedCanvas = mViewToHWBRenderer.onDrawViewBegin();
+//
+//        if (glAttachedCanvas != null) {
+//            super.draw(glAttachedCanvas);
+//        }
 
-        Canvas glAttachedCanvas = mViewToHWBRenderer.onDrawViewBegin();
-
-        if (glAttachedCanvas != null) {
-            super.draw(glAttachedCanvas);
-        }
-
-        mViewToHWBRenderer.onDrawViewEnd();
+//        mViewToHWBRenderer.onDrawViewEnd();
     }
 
     /**

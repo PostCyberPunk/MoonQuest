@@ -13,6 +13,7 @@ import android.view.Surface;
 
 import com.android.grafika.gles.EglCore;
 import com.android.grafika.gles.GlUtil;
+import com.limelight.LimeLog;
 import com.robot9.shared.SharedTexture;
 
 import java.nio.ByteBuffer;
@@ -193,7 +194,7 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
      * @param width  view's resolution x
      * @param height view's resolution y
      */
-    public void createSurfaceAndSurfaceTexture(int width, int height) {
+    public void createSurfaceAndSurfaceTexture() {
         releaseSurfaceAndSurfaceTexture();
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
@@ -209,8 +210,12 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
         GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
 
         mSurfaceTexture = new SurfaceTexture(mSurfaceTextureID[0]);
-        mSurfaceTexture.setDefaultBufferSize(width, height);
         mSurface = new Surface(mSurfaceTexture);
+    }
+
+    public void createSurfaceAndSurfaceTexture(int width, int height) {
+        createSurfaceAndSurfaceTexture();
+        mSurfaceTexture.setDefaultBufferSize(width, height);
     }
 
     private void destroyVbo() {
@@ -279,7 +284,7 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
      */
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        LimeLog.severe("Render:Surface ceated");
         if (mInitialized) {
             return;
         }
@@ -295,6 +300,7 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
      */
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        LimeLog.severe("Render:Surface changed");
         createSurfaceAndSurfaceTexture(width, height);
         initHWBFboTexture();
     }
@@ -357,30 +363,30 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
      *
      * @return hardware canvas (this is the result of hardware acceleration).
      */
-    public Canvas onDrawViewBegin() {
-        mSurfaceCanvas = null;
-
-        if (mSurface != null) {
-            try {
-                mSurfaceCanvas = mSurface.lockHardwareCanvas();
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-        }
-
-        return mSurfaceCanvas;
-    }
-
-    /**
-     *
-     */
-    public void onDrawViewEnd() {
-        if (mSurfaceCanvas != null) {
-            mSurface.unlockCanvasAndPost(mSurfaceCanvas);
-        }
-
-        mSurfaceCanvas = null;
-    }
+//    public Canvas onDrawViewBegin() {
+//        mSurfaceCanvas = null;
+//
+//        if (mSurface != null) {
+//            try {
+//                mSurfaceCanvas = mSurface.lockHardwareCanvas();
+//            } catch (Exception e) {
+//                Log.e(TAG, e.toString());
+//            }
+//        }
+//
+//        return mSurfaceCanvas;
+//    }
+//
+//    /**
+//     *
+//     */
+//    public void onDrawViewEnd() {
+//        if (mSurfaceCanvas != null) {
+//            mSurface.unlockCanvasAndPost(mSurfaceCanvas);
+//        }
+//
+//        mSurfaceCanvas = null;
+//    }
 
     /**
      * @return
@@ -417,7 +423,14 @@ public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
             mEglCore = null;
         }
     }
+
     public SurfaceTexture getSurfaceTexture() {
+//        createSurfaceAndSurfaceTexture();
         return mSurfaceTexture;
+    }
+
+    public Surface getSurface() {
+        LimeLog.severe("height width: " + mTextureHeight + " " + mTextureWidth);
+        return mSurface;
     }
 }

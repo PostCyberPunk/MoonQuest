@@ -8,10 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.SurfaceTexture;
+import android.hardware.HardwareBuffer;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.opengl.GLES30;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -37,6 +42,9 @@ import com.limelight.preferences.PreferenceConfiguration;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.ui.StreamView;
 import com.limelight.utils.ServerHelper;
+import com.robot9.shared.SharedTexture;
+import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
+import com.tlab.viewtohardwarebuffer.ViewToHWBRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
@@ -46,7 +54,7 @@ import java.util.Locale;
 
 
 public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callback,
-        NvConnectionListener, PerfOverlayListener {
+        NvConnectionListener, PerfOverlayListener /*SurfaceTexture.OnFrameAvailableListener*/ {
     private PreferenceConfiguration prefConfig;
     private SharedPreferences tombstonePrefs;
     private NvConnection conn;
@@ -59,7 +67,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     private String appName;
     private NvApp app;
     private float desiredRefreshRate;
-    private StreamView streamView;
+    private CustomGLSurfaceView streamView;
     private MediaCodecDecoderRenderer decoderRenderer;
     private boolean reportedCrash;
     private WifiManager.WifiLock highPerfWifiLock;
@@ -92,12 +100,31 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         // Read the stream preferences
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
         tombstonePrefs = GamePlugin.this.getSharedPreferences("DecoderTombstone", 0);
+        prefConfig.playHostAudio = true;
+        prefConfig.bitrate=60000;
 
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                streamView = new StreamView(mActivity);
-                mPluginManager.mLayout.addView(streamView, new RelativeLayout.LayoutParams(
+                mRenderer = new ViewToHWBRenderer();
+                mRenderer.SetTextureResolution(mPluginManager.mTexWidth, mPluginManager.mTextHeight);
+                RelativeLayout mLayout = new RelativeLayout(mActivity);
+                mLayout.setGravity(Gravity.BOTTOM);
+                mLayout.setX(10000);
+                mLayout.setY(10000);
+                mLayout.setBackgroundColor(0xFFFFFFFF);
+                streamView = new CustomGLSurfaceView(mActivity);
+                streamView.setEGLContextClientVersion(3);
+                streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+                streamView.setPreserveEGLContextOnPause(true);
+                streamView.setRenderer(mRenderer);
+//                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                streamView.setBackgroundColor(0x00000000);
+
+//                mSurfaceTexture = streamView.getSurfaceTexture();
+//                mSurfaceTexture.setOnFrameAvailableListener(GamePlugin.this);
+                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mPluginManager.mTexWidth, mPluginManager.mTextHeight));
+                mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });
@@ -845,7 +872,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
             // Update GameManager state to indicate we're "loading" while connecting
 //            UiHelper.notifyStreamConnecting(Game.this);
 
-            decoderRenderer.setRenderTarget(holder);
+            decoderRenderer.setRenderTarget(streamView);
             conn.start(new AndroidAudioRenderer(mActivity, prefConfig.enableAudioFx),
                     decoderRenderer, GamePlugin.this);
         }
@@ -947,7 +974,75 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     }
 
 //    @Override
+//    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+//        streamView.requstRender();
+//    }
+
+//    @Override
 //    public void onPointerCaptureChanged(boolean hasCapture) {
 //        super.onPointerCaptureChanged(hasCapture);
 //    }
+
+    //////////////////////Shared Texture//////////////////////
+    public ViewToHWBRenderer mRenderer;
+    private SharedTexture mSharedTexture;
+    private HardwareBuffer mShareBuffer;
+    private int[] mHWBFboTextureId;
+    private int[] mHWBFboID;
+
+    private boolean mIsPaused = false;
+
+    public void updateSurface() {
+        if (!isInitialized || mIsPaused)
+            return;
+    }
+
+    public int getTexturePtr() {
+        updateSurface();
+        return mHWBFboTextureId == null ? 0 : mHWBFboTextureId[0];
+    }
+
+    public void releaseSharedTexture() {
+        if (mHWBFboTextureId != null) {
+            GLES30.glDeleteTextures(mHWBFboTextureId.length, mHWBFboTextureId, 0);
+            mHWBFboTextureId = null;
+        }
+
+        if (mHWBFboID != null) {
+            GLES30.glDeleteTextures(mHWBFboID.length, mHWBFboID, 0);
+            mHWBFboID = null;
+        }
+
+        if (mSharedTexture != null) {
+            mSharedTexture.release();
+            mSharedTexture = null;
+        }
+    }
+
+    public void updateSharedTexture() {
+        HardwareBuffer sb = mRenderer.getHardwareBuffer();
+        if (sb == null || mShareBuffer == sb) {
+            return;
+        }
+
+        releaseSharedTexture();
+
+        mHWBFboTextureId = new int[1];
+        mHWBFboID = new int[1];
+
+        GLES30.glGenTextures(mHWBFboTextureId.length, mHWBFboTextureId, 0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mHWBFboTextureId[0]);
+
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+
+        SharedTexture sharedTexture = new SharedTexture(sb);
+
+        sharedTexture.bindTexture(mHWBFboTextureId[0]);
+        mSharedTexture = sharedTexture;
+        mShareBuffer = sb;
+    }
+    //End of class
 }
