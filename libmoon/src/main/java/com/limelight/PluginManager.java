@@ -22,6 +22,9 @@ public class PluginManager {
     public GLLinearLayout mLayout;
     private int mScreenWidth;
     private int mScreenHeight;
+    //TRY
+    public int mTexWidth;
+    public int mTextHeight;
 
     public boolean IsInitialized() {
         return true;
@@ -117,6 +120,8 @@ public class PluginManager {
         if (m_ViewPlugin != null) {
             LimeLog.severe("ViewPlugin is already created");
         }
+        mTexWidth = textureWidth;
+        mTextHeight = textureHeight;
         LimeLog.info("ViewPlugin starting");
         m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
         m_PluginList.add(m_ViewPlugin);

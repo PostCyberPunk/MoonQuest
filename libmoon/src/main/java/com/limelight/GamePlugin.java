@@ -14,6 +14,7 @@ import android.os.Build;
 import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -42,7 +43,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
-
 
 
 public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callback,
@@ -247,8 +247,10 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //        float displayRefreshRate = prepareDisplayForRendering();
         //TRY
         float displayRefreshRate = 60;
-        prefConfig.width = 3440;
-        prefConfig.height = 1440;
+        prefConfig.width = mPluginManager.mTexWidth;
+        prefConfig.height = mPluginManager.mTextHeight;
+//        streamView.getHolder().setFixedSize(pref, 100);
+
         LimeLog.info("Display refresh rate: " + displayRefreshRate);
 
         // If the user requested frame pacing using a capped FPS, we will need to change our

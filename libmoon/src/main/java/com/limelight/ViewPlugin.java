@@ -87,7 +87,7 @@ public class ViewPlugin extends UnityPluginObject {
             mGlLinearLayout.setBackgroundColor(Color.RED);
 
             //TODO: Initize view and aad it to gl layout here
-            initMyView(mGlLinearLayout);
+//            initMyView(mGlLinearLayout);
 //            initMovieView(mGlLinearLayout);
 //            LoadImage("/sdcard/Pictures/1.jpg");
             mPluginManager.mLayout = mGlLinearLayout;
