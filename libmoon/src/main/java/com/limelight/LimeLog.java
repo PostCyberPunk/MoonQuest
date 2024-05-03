@@ -5,7 +5,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 public class LimeLog {
-    private static final Logger LOGGER = Logger.getLogger(LimeLog.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("com.liblime.log");
 
     public static void info(String msg) {
         LOGGER.info(msg);
@@ -19,7 +19,7 @@ public class LimeLog {
         LOGGER.severe(msg);
     }
     public static void todo(String msg) {
-        LOGGER.warning(msg);
+        LOGGER.severe(msg);
     }
     public static void setFileHandler(String fileName) throws IOException {
         LOGGER.addHandler(new FileHandler(fileName));

@@ -1149,7 +1149,9 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
         };
         rendererThread.setName("Video - Renderer (MediaCodec)");
         rendererThread.setPriority(Thread.NORM_PRIORITY + 2);
+        LimeLog.todo("xxxStart0");
         rendererThread.start();
+        LimeLog.todo("xxxStart1");
     }
 
     private boolean fetchNextInputBuffer() {
