@@ -56,9 +56,6 @@ android {
 //            path "src/main/jni/Android.mk"
 //        }
     }
-//    task runCmake(type: Exec) {
-//       excutable = 'cmake'
-//    }
     task runNdkBuild(type: Exec) {
         def ndkDir = '/home/pcp/Android/ndk/r26c'
         executable = "$ndkDir/ndk-build"
@@ -78,15 +75,5 @@ android {
 //        implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
     }
     ndkVersion '26.2.11394342'
-//    android.libraryVariants.configureEach { variant ->
-//        variant.outputs.each {
-//            output.packageLibrary.exclude('libs/classes.jar')
-//        }
-//
-//    }
 }
-
-//dependencies {
-//    implementation files('libs/classes.jar')
-//}
 preBuild.dependsOn runNdkBuild
