@@ -10,7 +10,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.opengl.GLES30;
 //import android.os.Build;
+import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -85,8 +87,10 @@ public class ViewPlugin extends UnityPluginObject {
             mGlLinearLayout.setBackgroundColor(Color.RED);
 
             //TODO: Initize view and aad it to gl layout here
-//            initMyView(mGlLinearLayout);
-            mPluginManager.mLayout=mGlLinearLayout;
+            initMyView(mGlLinearLayout);
+//            initMovieView(mGlLinearLayout);
+//            LoadImage("/sdcard/Pictures/1.jpg");
+            mPluginManager.mLayout = mGlLinearLayout;
 
             mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
             mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -181,6 +185,80 @@ public class ViewPlugin extends UnityPluginObject {
                 mRenderer.requestResize();
             }
         });
+    }
+
+    //My View
+    private ImageView mImageView;
+
+    private void initMyView(GLLinearLayout l) {
+        mImageView = new ImageView(UnityPlayer.currentActivity);
+        l.addView(mImageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+    }
+
+    private void destroyMyView() {
+        mImageView = null;
+    }
+
+    public void LoadImage(String path) {
+        UnityPlayer.currentActivity.runOnUiThread(() -> {
+            if (!new File(path).exists()) {
+                LimeLog.severe("File not found");
+                return;
+            }
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            if (bitmap == null) {
+                LimeLog.severe("Failed to load image");
+                return;
+            }
+            LimeLog.info("Image loaded" + bitmap.getWidth() + "," + bitmap.getHeight() + "at" + path);
+            bitmap = Bitmap.createScaledBitmap(bitmap, mTexWidth, mTexHeight, false);
+            mImageView.setImageBitmap(bitmap);
+            LimeLog.info("Image load at" + path);
+        });
+    }
+
+    private MediaPlayer mMediaPlayer;
+    private SurfaceView mSurfaceView;
+
+    private void initMovieView(GLLinearLayout l) {
+        mSurfaceView = new SurfaceView(UnityPlayer.currentActivity);
+        l.addView(mSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                initPlayer();
+            }
+
+            @Override
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+            }
+            // Other methods...
+        });
+    }
+
+    private void initPlayer() {
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+        }
+        if (mSurfaceView != null) {
+            mMediaPlayer.setSurface(mSurfaceView.getHolder().getSurface());
+        }
+        try {
+            File file = new File("/sdcard/Pictures/q.mp4");
+//            mMediaPlayer.setAudioStreamType(.STREAM_MUSIC);
+//            mMediaPlayer.setDataSource(Uri.fromFile(file).toString());
+            mMediaPlayer.setDataSource("/sdcard/Pictures/q.mp4");
+            mMediaPlayer.prepareAsync();
+            LimeLog.severe("Playing video");
+        } catch (IOException e) {
+            LimeLog.severe("Opps:" + e);
+        }
     }
 //End of Class
 }
