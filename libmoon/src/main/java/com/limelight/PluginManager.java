@@ -1,8 +1,11 @@
 package com.limelight;
 
 import android.app.Activity;
+import android.app.GameManager;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.limelight.types.UnityPluginObject;
@@ -16,15 +19,15 @@ public class PluginManager {
     private AppPlugin m_AppPlugin;
     private PcPlugin m_PcPlugin;
     private GamePlugin m_GamePlugin;
-    private ViewPlugin m_ViewPlugin;
+    public ViewPlugin m_ViewPlugin;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
-    public GLLinearLayout mLayout;
+    //    public GLLinearLayout mLayout;
     private int mScreenWidth;
     private int mScreenHeight;
     //TRY
-    public int mTexWidth;
-    public int mTextHeight;
+    public int mTexWidth = 3440;
+    public int mTextHeight = 1440;
 
     public boolean IsInitialized() {
         return true;
@@ -166,5 +169,10 @@ public class PluginManager {
         mActivity.runOnUiThread(() -> {
             m_PcPlugin.fakeStart();
         });
+    }
+
+    public GamePlugin GetGamePlugin() {
+        LimeLog.info("xxxx:" + (m_GamePlugin == null));
+        return m_GamePlugin;
     }
 }

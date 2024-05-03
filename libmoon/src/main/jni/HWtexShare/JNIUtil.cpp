@@ -62,7 +62,7 @@ jint JNI_OnLoad(JavaVM *vm, void* reserved) {
 
     g_jvm->AttachCurrentThread(&env, NULL);
 
-    g_class_unity_connect = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/ViewPlugin"));
+    g_class_unity_connect = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/GamePlugin"));
 
     if (g_class_unity_connect == NULL) {
         LOGE("JNI Class 'ViewPlugin' not found");

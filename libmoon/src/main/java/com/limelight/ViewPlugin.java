@@ -30,11 +30,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class ViewPlugin extends UnityPluginObject {
-    private ViewToHWBRenderer mRenderer;
-    private CustomGLSurfaceView mGLSurfaceView;
+    public ViewToHWBRenderer mRenderer;
+    public CustomGLSurfaceView mGLSurfaceView;
     //Layout
-    private RelativeLayout mLayout;
-    private GLLinearLayout mGlLinearLayout;
+    public RelativeLayout mLayout;
     //Tex var
     private int mTexWidth;
     private int mTexHeight;
@@ -64,37 +63,38 @@ public class ViewPlugin extends UnityPluginObject {
     protected void onCreate() {
 
         mActivity.runOnUiThread(() -> {
-            mRenderer = new ViewToHWBRenderer();
-            mRenderer.SetTextureResolution(mTexWidth, mTexHeight);
+//            mRenderer = new ViewToHWBRenderer();
+//            mRenderer.SetTextureResolution(mTexWidth, mTexHeight);
+//
+//            mLayout = new RelativeLayout(mActivity);
+//            mLayout.setGravity(Gravity.TOP);
+//            mLayout.setX(mScreenWidth);
+//            mLayout.setY(mScreenHeight);
+//            mLayout.setBackgroundColor(0xFFFFFFFF);
 
-            mLayout = new RelativeLayout(mActivity);
-            mLayout.setGravity(Gravity.TOP);
-            mLayout.setX(mScreenWidth);
-            mLayout.setY(mScreenHeight);
-            mLayout.setBackgroundColor(0xFFFFFFFF);
+//            mGLSurfaceView = new CustomGLSurfaceView(mActivity);
+//            mGLSurfaceView.setEGLContextClientVersion(3);
+//            mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+//            mGLSurfaceView.setPreserveEGLContextOnPause(true);
+//            mGLSurfaceView.setRenderer(mRenderer);
+//            mGLSurfaceView.setBackgroundColor(0x00000000);
 
-            mGLSurfaceView = new CustomGLSurfaceView(mActivity);
-            mGLSurfaceView.setEGLContextClientVersion(3);
-            mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-            mGLSurfaceView.setPreserveEGLContextOnPause(true);
-            mGLSurfaceView.setRenderer(mRenderer);
-            mGLSurfaceView.setBackgroundColor(0x00000000);
-
-            mGlLinearLayout = new GLLinearLayout(mActivity, 1, 1);
-            mGlLinearLayout.setViewToGLRenderer(mRenderer);
-            mGlLinearLayout.setGravity(Gravity.START);
-            mGlLinearLayout.setOrientation(GLLinearLayout.HORIZONTAL);
-            mGlLinearLayout.setBackgroundColor(Color.RED);
+//            mGlLinearLayout = new GLLinearLayout(mActivity, 1, 1);
+//            mGlLinearLayout.setViewToGLRenderer(mRenderer);
+//            mGlLinearLayout.setGravity(Gravity.START);
+//            mGlLinearLayout.setOrientation(GLLinearLayout.HORIZONTAL);
+//            mGlLinearLayout.setBackgroundColor(Color.RED);
 
             //TODO: Initize view and aad it to gl layout here
 //            initMyView(mGlLinearLayout);
 //            initMovieView(mGlLinearLayout);
 //            LoadImage("/sdcard/Pictures/1.jpg");
-            mPluginManager.mLayout = mGlLinearLayout;
+//            mPluginManager.mLayout = mLayout;
 
-            mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
-            mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-            mLayout.addView(mGlLinearLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+//            mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTexHeight));
+
+//            mLayout.addView(mGLSurfaceView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+//            mLayout.addView(mGlLinearLayout, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             LimeLog.info("Finished init3");
 
         });
@@ -124,7 +124,7 @@ public class ViewPlugin extends UnityPluginObject {
     public void updateSurface() {
         if (!isInitialized || mIsPaused)
             return;
-        mGlLinearLayout.postInvalidate();
+//        mGlLinearLayout.postInvalidate();
     }
 
     public int getTexturePtr() {
@@ -154,6 +154,7 @@ public class ViewPlugin extends UnityPluginObject {
         if (sb == null || mShareBuffer == sb) {
             return;
         }
+
         releaseSharedTexture();
 
         mHWBFboTextureId = new int[1];
