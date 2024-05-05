@@ -21,9 +21,13 @@ public class StreamView extends GLSurfaceView {
     private static final String TAG = "libmoonlight";
     private StreamRenderer mRenderer;
 
-    /**
-     * @return
-     */
+    public StreamView(Context context) {
+        super(context);
+    }
+
+    public StreamView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
     private int[] getContextAttributes() {
         // https://developer.android.com/reference/android/opengl/EGL14#EGL_CONTEXT_CLIENT_VERSION
         return new int[]{
@@ -65,9 +69,6 @@ public class StreamView extends GLSurfaceView {
         }
     };
 
-    /**
-     * @param renderer the renderer to use to perform OpenGL drawing.
-     */
     @Override
     public void setRenderer(Renderer renderer) {
         setEGLContextFactory(mEGLContextFactory);
@@ -75,23 +76,6 @@ public class StreamView extends GLSurfaceView {
         mRenderer = (StreamRenderer) renderer;
     }
 
-    /**
-     * @param context
-     */
-    public StreamView(Context context) {
-        super(context);
-    }
-
-    /**
-     * @param context
-     * @param attrs
-     */
-    public StreamView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-    public SurfaceTexture getSurfaceTexture() {
-        return mRenderer.getSurfaceTexture();
-    }
     public Surface getSurface() {
         return mRenderer.getSurface();
     }
