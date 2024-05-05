@@ -239,6 +239,8 @@ public class AddComputerManually {
         if (mPlugin != null) {
             mPlugin.stopAddComputerManually();
         }
-
+        else {
+            Destroy();
+        }
     }
 }

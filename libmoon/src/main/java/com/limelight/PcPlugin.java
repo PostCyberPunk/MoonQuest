@@ -16,7 +16,6 @@ import com.limelight.nvstream.http.PairingManager;
 import com.limelight.nvstream.http.PairingManager.PairState;
 import com.limelight.preferences.AddComputerManually;
 import com.limelight.types.UnityPluginObject;
-import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
 
 import android.app.Activity;
@@ -71,7 +70,6 @@ public class PcPlugin extends UnityPluginObject {
     @Override
     protected void onCreate() {
         inForeground = true;
-        LimeLog.severe("PcPlugin onCreate2");
 
         // Bind to the computer manager service
         bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
@@ -107,8 +105,8 @@ public class PcPlugin extends UnityPluginObject {
 
     @Override
     public void onStop() {
-
-        Dialog.closeDialogs();
+        stopComputerUpdates(true);
+        stopAddComputerManually();
     }
 
     private void doPair(final ComputerDetails computer) {
@@ -218,7 +216,7 @@ public class PcPlugin extends UnityPluginObject {
                 @Override
                 public void notifyComputerUpdated(final ComputerDetails details) {
                     if (!freezeUpdates) {
-                        LimeLog.severe("Computer updated: " + details.pairState);
+                        LimeLog.verbose("Computer updated: " + details.pairState);
                         updateComputer(details);
                     }
                 }
@@ -266,7 +264,7 @@ public class PcPlugin extends UnityPluginObject {
             pcList.addComputer(new ComputerObject(details));
 
         }
-        LimeLog.todo("Update the computer list view");
+        LimeLog.verbose("Update the computer list view");
     }
 
     public void stopAddComputerManually() {
@@ -282,7 +280,7 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     public void fakePair() {
-        LimeLog.severe("Start fakePair");
+        LimeLog.debug("Start fakePair");
         ComputerObject computer = (ComputerObject) pcList.getItem(0);
         doPair(computer.details);
     }

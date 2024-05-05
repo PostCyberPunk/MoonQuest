@@ -14,7 +14,6 @@ import com.limelight.nvstream.http.PairingManager;
 import com.limelight.types.AppObject;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.utils.CacheHelper;
-import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
 
 import android.app.Activity;
@@ -102,7 +101,7 @@ public class AppPlugin extends UnityPluginObject {
 
         String computerName = getIntent().getStringExtra(NAME_EXTRA);
 
-        LimeLog.todo("AppPlugin created for pc : " + computerName);
+        LimeLog.debug("AppPlugin created for pc : " + computerName);
 
         // Bind to the computer manager service
         bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
@@ -119,6 +118,7 @@ public class AppPlugin extends UnityPluginObject {
             @Override
             public void notifyComputerUpdated(final ComputerDetails details) {
                 // Do nothing if updates are suspended
+                //TODO:This also need to be apply on unity side
                 if (suspendGridUpdates) {
                     return;
                 }
@@ -222,8 +222,6 @@ public class AppPlugin extends UnityPluginObject {
     @Override
     public void onDestroy() {
 
-        Dialog.closeDialogs();
-
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
@@ -244,6 +242,7 @@ public class AppPlugin extends UnityPluginObject {
     }
 
 
+    //TODO:notify unity here
     private void updateUiWithServerinfo(final ComputerDetails details) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -272,9 +271,8 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-                LimeLog.todo("AppList Updated finish");
                 int count = m_AppList.getCount();
-                LimeLog.severe("App count" + count);
+                LimeLog.debug("App count" + count);
                 if (count > 0) {
                     final AppObject app = (AppObject) m_AppList.getItem(0);
                     LimeLog.info("Starting app: " + app.app.getAppName());

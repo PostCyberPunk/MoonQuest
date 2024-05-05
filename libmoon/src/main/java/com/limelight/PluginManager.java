@@ -1,15 +1,10 @@
 package com.limelight;
 
 import android.app.Activity;
-import android.app.GameManager;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.limelight.types.UnityPluginObject;
-import com.tlab.viewtohardwarebuffer.GLLinearLayout;
 import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;
@@ -18,25 +13,15 @@ import java.util.List;
 public class PluginManager {
     private AppPlugin m_AppPlugin;
     private PcPlugin m_PcPlugin;
-    private GamePlugin m_GamePlugin;
-    public ViewPlugin m_ViewPlugin;
+    private StreamPlugin m_StreamPlugin;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
-    //    public GLLinearLayout mLayout;
-    private int mScreenWidth;
-    private int mScreenHeight;
-    //TRY
-    public int mTexWidth = 3440;
-    public int mTextHeight = 1440;
-
     public boolean IsInitialized() {
         return true;
     }
 
-    public void Init(int screenWidth, int screenHeight) {
+    public void Init() {
         //TRY
-        mScreenWidth = screenWidth;
-        mScreenHeight = screenHeight;
         mActivity = UnityPlayer.currentActivity;
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
         ActivatePcPlugin();
@@ -104,41 +89,19 @@ public class PluginManager {
         LimeLog.info("AppPlugin stopped");
     }
 
-    public void ActivateGamePlugin(Intent i) {
-        LimeLog.info("GamePlugin starting");
-        m_GamePlugin = new GamePlugin(this, mActivity, i);
-        m_PluginList.add(m_GamePlugin);
+    public void ActivateStreamPlugin(Intent i) {
+        LimeLog.info("StreamPlugin starting");
+        m_StreamPlugin = new StreamPlugin(this, mActivity, i);
+        m_PluginList.add(m_StreamPlugin);
     }
 
-    public void StopGamePlugin() {
-        if (m_GamePlugin == null)
+    public void StopStreamPlugin() {
+        if (m_StreamPlugin == null)
             return;
-        m_PluginList.remove(m_GamePlugin);
-        m_GamePlugin.onDestroy();
-        m_GamePlugin = null;
-        LimeLog.info("GamePlugin stopped");
-    }
-
-    public ViewPlugin ActivateViewPlugin(int textureWidth, int textureHeight) {
-        if (m_ViewPlugin != null) {
-            LimeLog.severe("ViewPlugin is already created");
-        }
-        mTexWidth = textureWidth;
-        mTextHeight = textureHeight;
-        LimeLog.info("ViewPlugin starting");
-        m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
-        m_PluginList.add(m_ViewPlugin);
-        return m_ViewPlugin;
-    }
-
-    public void StopViewPlugin() {
-        if (m_ViewPlugin == null)
-            return;
-        m_PluginList.remove(m_ViewPlugin);
-        m_ViewPlugin.onDestroy();
-        //get raw pointer of the object
-        m_ViewPlugin = null;
-        LimeLog.info("ViewPlugin stopped");
+        m_PluginList.remove(m_StreamPlugin);
+        m_StreamPlugin.onDestroy();
+        m_StreamPlugin = null;
+        LimeLog.info("StreamPlugin stopped");
     }
 
     public void DestroyPlugin(UnityPluginObject plugin) {
@@ -149,10 +112,8 @@ public class PluginManager {
             StopAppPlugin();
         } else if (plugin instanceof PcPlugin) {
             StopPcPlugin();
-        } else if (plugin instanceof GamePlugin) {
-            StopGamePlugin();
-        } else if (plugin instanceof ViewPlugin) {
-            StopViewPlugin();
+        } else if (plugin instanceof StreamPlugin) {
+            StopStreamPlugin();
         }
     }
 
@@ -171,8 +132,7 @@ public class PluginManager {
         });
     }
 
-    public GamePlugin GetGamePlugin() {
-        LimeLog.info("xxxx:" + (m_GamePlugin == null));
-        return m_GamePlugin;
+    public StreamPlugin GetStreamPlugin() {
+        return m_StreamPlugin;
     }
 }

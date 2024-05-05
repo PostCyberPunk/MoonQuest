@@ -29,8 +29,6 @@ import android.view.WindowInsets;
 import com.limelight.LimeLog;
 import com.limelight.R;
 import com.limelight.binding.video.MediaCodecHelper;
-import com.limelight.utils.Dialog;
-import com.limelight.utils.UiHelper;
 
 import java.util.Arrays;
 
@@ -622,14 +620,6 @@ public class StreamSettings extends Activity {
                         }
                     }
 
-                    // If this is native resolution, show the warning dialog
-                    if (isNativeRes) {
-                        Dialog.displayDialog(getActivity(),
-                                getResources().getString(R.string.title_native_res_dialog),
-                                getResources().getString(R.string.text_native_res_dialog),
-                                false);
-                    }
-
                     // Write the new bitrate value
                     resetBitrateToDefault(prefs, valueStr, null);
 
@@ -646,10 +636,7 @@ public class StreamSettings extends Activity {
                     // If this is native frame rate, show the warning dialog
                     CharSequence[] values = ((ListPreference)preference).getEntryValues();
                     if (nativeFramerateShown && values[values.length - 1].toString().equals(newValue.toString())) {
-                        Dialog.displayDialog(getActivity(),
-                                getResources().getString(R.string.title_native_fps_dialog),
-                                getResources().getString(R.string.text_native_res_dialog),
-                                false);
+                                LimeLog.todo("Native frame may not be surpported");
                     }
 
                     // Write the new bitrate value

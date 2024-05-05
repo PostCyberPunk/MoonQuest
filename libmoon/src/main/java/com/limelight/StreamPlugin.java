@@ -8,18 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.graphics.SurfaceTexture;
 import android.hardware.HardwareBuffer;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -40,11 +37,10 @@ import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.GlPreferences;
 import com.limelight.preferences.PreferenceConfiguration;
 import com.limelight.types.UnityPluginObject;
-import com.limelight.ui.StreamView;
 import com.limelight.utils.ServerHelper;
 import com.robot9.shared.SharedTexture;
-import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
-import com.tlab.viewtohardwarebuffer.ViewToHWBRenderer;
+import com.limelight.ui.StreamView;
+import com.limelight.ui.StreamRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
@@ -53,7 +49,7 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 
 
-public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callback,
+public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Callback,
         NvConnectionListener, PerfOverlayListener /*SurfaceTexture.OnFrameAvailableListener*/ {
     private PreferenceConfiguration prefConfig;
     private SharedPreferences tombstonePrefs;
@@ -67,7 +63,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     private String appName;
     private NvApp app;
     private float desiredRefreshRate;
-    private CustomGLSurfaceView streamView;
+    private StreamView streamView;
     private MediaCodecDecoderRenderer decoderRenderer;
     private boolean reportedCrash;
     private WifiManager.WifiLock highPerfWifiLock;
@@ -83,37 +79,41 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     public static final String EXTRA_APP_HDR = "HDR";
     public static final String EXTRA_SERVER_CERT = "ServerCert";
 
-    public GamePlugin(PluginManager p, Activity a, Intent i) {
+    public StreamPlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
         onCreate();
         isInitialized = true;
     }
 
+    private final int mTexWidth = 3440;
+    private final int mTextHeight = 1440;
+
+    //TODO extract this to methods for better management
     @Override
     protected void onCreate() {
 
-        // Inflate the content
-//        setContentView(R.layout.activity_game);
-
-        // Start the spinner
-
         // Read the stream preferences
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
-        tombstonePrefs = GamePlugin.this.getSharedPreferences("DecoderTombstone", 0);
-        prefConfig.playHostAudio = true;
-        prefConfig.bitrate=60000;
+        tombstonePrefs = StreamPlugin.this.getSharedPreferences("DecoderTombstone", 0);
 
+        //TRY:Remove this
+        prefConfig.playHostAudio = true;
+        prefConfig.bitrate = 60000;
+        prefConfig.enablePerfOverlay = true;
+        prefConfig.enableSops = false;
+
+        //Initialize the StreamView
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRenderer = new ViewToHWBRenderer();
-                mRenderer.SetTextureResolution(mPluginManager.mTexWidth, mPluginManager.mTextHeight);
+                mRenderer = new StreamRenderer();
+                mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
                 RelativeLayout mLayout = new RelativeLayout(mActivity);
                 mLayout.setGravity(Gravity.BOTTOM);
                 mLayout.setX(10000);
                 mLayout.setY(10000);
                 mLayout.setBackgroundColor(0xFFFFFFFF);
-                streamView = new CustomGLSurfaceView(mActivity);
+                streamView = new StreamView(mActivity);
                 streamView.setEGLContextClientVersion(3);
                 streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
                 streamView.setPreserveEGLContextOnPause(true);
@@ -121,14 +121,11 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                 streamView.setBackgroundColor(0x00000000);
 
-//                mSurfaceTexture = streamView.getSurfaceTexture();
-//                mSurfaceTexture.setOnFrameAvailableListener(GamePlugin.this);
-                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mPluginManager.mTexWidth, mPluginManager.mTextHeight));
+                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
                 mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });
-
 
         // Warn the user if they're on a metered connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -274,8 +271,8 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //        float displayRefreshRate = prepareDisplayForRendering();
         //TRY
         float displayRefreshRate = 60;
-        prefConfig.width = mPluginManager.mTexWidth;
-        prefConfig.height = mPluginManager.mTextHeight;
+        prefConfig.width = mTexWidth;
+        prefConfig.height = mTextHeight;
 //        streamView.getHolder().setFixedSize(pref, 100);
 
         LimeLog.info("Display refresh rate: " + displayRefreshRate);
@@ -564,11 +561,11 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
             // In multi-window mode on N+, we need to drop our layout flags or we'll
             // be drawing underneath the system UI.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInMultiWindowMode()) {
-                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
+                StreamPlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             } else {
                 // Use immersive mode
-                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
+                StreamPlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
@@ -594,10 +591,12 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
     @Override
     public void onPause() {
+        mIsPaused = true;
     }
 
     @Override
     public void onResume() {
+        mIsPaused = false;
     }
 
     @Override
@@ -850,7 +849,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
         computer.name = pcName;
-        computer.uuid = GamePlugin.this.getIntent().getStringExtra(EXTRA_PC_UUID);
+        computer.uuid = StreamPlugin.this.getIntent().getStringExtra(EXTRA_PC_UUID);
 //        ShortcutHelper shortcutHelper = new ShortcutHelper(this);
 //        shortcutHelper.reportComputerShortcutUsed(computer);
 //        if (appName != null) {
@@ -858,7 +857,6 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //            shortcutHelper.reportGameLaunched(computer, app);
 //        }
     }
-
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -874,7 +872,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
             decoderRenderer.setRenderTarget(streamView);
             conn.start(new AndroidAudioRenderer(mActivity, prefConfig.enableAudioFx),
-                    decoderRenderer, GamePlugin.this);
+                    decoderRenderer, StreamPlugin.this);
         }
     }
 
@@ -940,7 +938,8 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
     @Override
     public void onPerfUpdate(final String text) {
-        LimeLog.todo("Perfomance Debug: " + text);
+        //TODO:Get this from java to unity
+        LimeLog.verbose("Perfomance Debug: " + text);
     }
 
     @Override
@@ -984,21 +983,14 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //    }
 
     //////////////////////Shared Texture//////////////////////
-    public ViewToHWBRenderer mRenderer;
+    public StreamRenderer mRenderer;
     private SharedTexture mSharedTexture;
     private HardwareBuffer mShareBuffer;
     private int[] mHWBFboTextureId;
     private int[] mHWBFboID;
-
     private boolean mIsPaused = false;
 
-    public void updateSurface() {
-        if (!isInitialized || mIsPaused)
-            return;
-    }
-
     public int getTexturePtr() {
-        updateSurface();
         return mHWBFboTextureId == null ? 0 : mHWBFboTextureId[0];
     }
 
