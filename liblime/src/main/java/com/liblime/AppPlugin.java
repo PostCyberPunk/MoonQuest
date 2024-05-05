@@ -1,18 +1,19 @@
-package com.limelight;
+package com.liblime;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
+import com.limelight.LimeLog;
 import com.limelight.computers.ComputerManagerListener;
 import com.limelight.computers.ComputerManagerService;
-import com.limelight.types.AppList;
+import com.liblime.types.AppList;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.nvstream.http.NvApp;
 import com.limelight.nvstream.http.NvHTTP;
 import com.limelight.nvstream.http.PairingManager;
-import com.limelight.types.AppObject;
-import com.limelight.types.UnityPluginObject;
+import com.liblime.types.AppObject;
+import com.liblime.types.UnityPluginObject;
 import com.limelight.utils.CacheHelper;
 import com.limelight.utils.ServerHelper;
 

@@ -1,21 +1,22 @@
-package com.limelight;
+package com.liblime;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import com.limelight.LimeLog;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.binding.crypto.AndroidCryptoProvider;
 import com.limelight.computers.ComputerManagerListener;
 import com.limelight.computers.ComputerManagerService;
-import com.limelight.types.ComputerObject;
-import com.limelight.types.PcList;
+import com.liblime.types.ComputerObject;
+import com.liblime.types.PcList;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.nvstream.http.NvHTTP;
 import com.limelight.nvstream.http.PairingManager;
 import com.limelight.nvstream.http.PairingManager.PairState;
 import com.limelight.preferences.AddComputerManually;
-import com.limelight.types.UnityPluginObject;
+import com.liblime.types.UnityPluginObject;
 import com.limelight.utils.ServerHelper;
 
 import android.app.Activity;

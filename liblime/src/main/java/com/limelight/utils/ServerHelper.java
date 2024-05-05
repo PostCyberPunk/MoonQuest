@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.limelight.StreamPlugin;
+import com.liblime.StreamPlugin;
 import com.limelight.LimeLog;
-import com.limelight.PluginManager;
-import com.limelight.R;
+import com.liblime.PluginManager;
+import com.liblime.R;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.computers.ComputerManagerService;
 import com.limelight.nvstream.http.ComputerDetails;

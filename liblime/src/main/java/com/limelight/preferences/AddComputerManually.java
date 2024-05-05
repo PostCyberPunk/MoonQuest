@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.limelight.LimeLog;
-import com.limelight.PcPlugin;
+import com.liblime.PcPlugin;
 import com.limelight.computers.ComputerManagerService;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.nvstream.http.NvHTTP;

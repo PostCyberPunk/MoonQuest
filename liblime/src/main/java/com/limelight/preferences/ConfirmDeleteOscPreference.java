@@ -8,7 +8,7 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
-import com.limelight.R;
+import com.liblime.R;
 
 public class ConfirmDeleteOscPreference extends DialogPreference {
     public ConfirmDeleteOscPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

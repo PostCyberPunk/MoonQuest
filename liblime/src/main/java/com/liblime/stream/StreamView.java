@@ -1,7 +1,6 @@
-package com.limelight.ui;
+package com.liblime.stream;
 
 import android.content.Context;
-import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGL15;
 import android.opengl.EGLExt;

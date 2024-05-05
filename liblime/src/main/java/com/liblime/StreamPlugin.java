@@ -1,4 +1,4 @@
-package com.limelight;
+package com.liblime;
 
 
 import android.annotation.SuppressLint;
@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.limelight.LimeLog;
+import com.liblime.R;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.binding.audio.AndroidAudioRenderer;
 import com.limelight.binding.video.CrashListener;
@@ -36,11 +38,11 @@ import com.limelight.nvstream.http.NvHTTP;
 import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.GlPreferences;
 import com.limelight.preferences.PreferenceConfiguration;
-import com.limelight.types.UnityPluginObject;
+import com.liblime.types.UnityPluginObject;
 import com.limelight.utils.ServerHelper;
 import com.robot9.shared.SharedTexture;
-import com.limelight.ui.StreamView;
-import com.limelight.ui.StreamRenderer;
+import com.liblime.stream.StreamView;
+import com.liblime.stream.StreamRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;

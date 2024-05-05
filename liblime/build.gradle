@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.limelight'
+    namespace 'com.liblime'
     compileSdk 32
 
     defaultConfig {

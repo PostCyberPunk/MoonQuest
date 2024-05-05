@@ -1,4 +1,4 @@
-package com.limelight;
+package com.liblime;
 
 import android.app.Activity;
 

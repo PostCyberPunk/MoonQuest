@@ -14,11 +14,11 @@ import org.jcodec.codecs.h264.io.model.SeqParameterSet;
 import org.jcodec.codecs.h264.io.model.VUIParameters;
 
 import com.limelight.LimeLog;
-import com.limelight.R;
+import com.liblime.R;
 import com.limelight.nvstream.av.video.VideoDecoderRenderer;
 import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.PreferenceConfiguration;
-import com.limelight.ui.StreamView;
+import com.liblime.stream.StreamView;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

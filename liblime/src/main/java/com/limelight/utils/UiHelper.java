@@ -14,7 +14,7 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 
 import com.limelight.LimeLog;
-import com.limelight.R;
+import com.liblime.R;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.preferences.PreferenceConfiguration;
 

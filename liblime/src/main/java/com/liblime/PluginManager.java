@@ -1,10 +1,12 @@
-package com.limelight;
+package com.liblime;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-import com.limelight.types.UnityPluginObject;
+import com.limelight.LimeLog;
+import com.liblime.R;
+import com.liblime.types.UnityPluginObject;
 import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;

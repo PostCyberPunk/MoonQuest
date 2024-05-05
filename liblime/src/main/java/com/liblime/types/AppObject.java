@@ -1,4 +1,4 @@
-package com.limelight.types;
+package com.liblime.types;
 
 import com.limelight.nvstream.http.NvApp;
 

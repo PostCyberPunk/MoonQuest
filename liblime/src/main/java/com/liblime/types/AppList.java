@@ -1,6 +1,4 @@
-package com.limelight.types;
-
-import com.limelight.AppPlugin;
+package com.liblime.types;
 
 import java.util.ArrayList;
 import java.util.Collections;

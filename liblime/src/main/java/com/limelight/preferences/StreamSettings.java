@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 
 import com.limelight.LimeLog;
-import com.limelight.R;
+import com.liblime.R;
 import com.limelight.binding.video.MediaCodecHelper;
 
 import java.util.Arrays;

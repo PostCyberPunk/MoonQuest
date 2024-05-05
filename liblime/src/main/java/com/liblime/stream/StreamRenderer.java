@@ -1,4 +1,4 @@
-package com.limelight.ui;
+package com.liblime.stream;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.HardwareBuffer;
