@@ -88,17 +88,17 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     @Override
     protected void onCreate() {
 
-        // Inflate the content
-//        setContentView(R.layout.activity_game);
-
-        // Start the spinner
-
         // Read the stream preferences
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
         tombstonePrefs = GamePlugin.this.getSharedPreferences("DecoderTombstone", 0);
-        prefConfig.playHostAudio = true;
-        prefConfig.bitrate=60000;
 
+        //TRY:Remove this
+        prefConfig.playHostAudio = true;
+        prefConfig.bitrate = 60000;
+        prefConfig.enablePerfOverlay = true;
+        prefConfig.enableSops = false;
+
+        //Initialize the StreamView
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -117,14 +117,11 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                 streamView.setBackgroundColor(0x00000000);
 
-//                mSurfaceTexture = streamView.getSurfaceTexture();
-//                mSurfaceTexture.setOnFrameAvailableListener(GamePlugin.this);
                 mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mPluginManager.mTexWidth, mPluginManager.mTextHeight));
                 mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });
-
 
         // Warn the user if they're on a metered connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -590,10 +587,12 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
     @Override
     public void onPause() {
+        mIsPaused = true;
     }
 
     @Override
     public void onResume() {
+        mIsPaused = false;
     }
 
     @Override
@@ -855,7 +854,6 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //        }
     }
 
-
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if (!surfaceCreated) {
@@ -985,16 +983,9 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     private HardwareBuffer mShareBuffer;
     private int[] mHWBFboTextureId;
     private int[] mHWBFboID;
-
     private boolean mIsPaused = false;
 
-    public void updateSurface() {
-        if (!isInitialized || mIsPaused)
-            return;
-    }
-
     public int getTexturePtr() {
-        updateSurface();
         return mHWBFboTextureId == null ? 0 : mHWBFboTextureId[0];
     }
 
