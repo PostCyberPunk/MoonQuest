@@ -1,15 +1,10 @@
 package com.limelight;
 
 import android.app.Activity;
-import android.app.GameManager;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.limelight.types.UnityPluginObject;
-import com.tlab.viewtohardwarebuffer.GLLinearLayout;
 import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;
@@ -19,10 +14,8 @@ public class PluginManager {
     private AppPlugin m_AppPlugin;
     private PcPlugin m_PcPlugin;
     private GamePlugin m_GamePlugin;
-    public ViewPlugin m_ViewPlugin;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
-    //    public GLLinearLayout mLayout;
     private int mScreenWidth;
     private int mScreenHeight;
     //TRY
@@ -119,28 +112,6 @@ public class PluginManager {
         LimeLog.info("GamePlugin stopped");
     }
 
-    public ViewPlugin ActivateViewPlugin(int textureWidth, int textureHeight) {
-        if (m_ViewPlugin != null) {
-            LimeLog.severe("ViewPlugin is already created");
-        }
-        mTexWidth = textureWidth;
-        mTextHeight = textureHeight;
-        LimeLog.info("ViewPlugin starting");
-        m_ViewPlugin = new ViewPlugin(this, mActivity, textureWidth, textureHeight, mScreenWidth, mScreenHeight);
-        m_PluginList.add(m_ViewPlugin);
-        return m_ViewPlugin;
-    }
-
-    public void StopViewPlugin() {
-        if (m_ViewPlugin == null)
-            return;
-        m_PluginList.remove(m_ViewPlugin);
-        m_ViewPlugin.onDestroy();
-        //get raw pointer of the object
-        m_ViewPlugin = null;
-        LimeLog.info("ViewPlugin stopped");
-    }
-
     public void DestroyPlugin(UnityPluginObject plugin) {
         if (plugin == null)
             return;
@@ -151,8 +122,6 @@ public class PluginManager {
             StopPcPlugin();
         } else if (plugin instanceof GamePlugin) {
             StopGamePlugin();
-        } else if (plugin instanceof ViewPlugin) {
-            StopViewPlugin();
         }
     }
 

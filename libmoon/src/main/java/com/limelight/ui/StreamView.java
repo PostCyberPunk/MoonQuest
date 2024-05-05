@@ -1,4 +1,4 @@
-package com.tlab.viewtohardwarebuffer;
+package com.limelight.ui;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
@@ -16,10 +16,10 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 // An attempt to share EGLContext and update textures from a Frame Buffer Object.
 
-public class CustomGLSurfaceView extends GLSurfaceView {
+public class StreamView extends GLSurfaceView {
 
     private static final String TAG = "libmoonlight";
-    private ViewToHWBRenderer mRenderer;
+    private StreamRenderer mRenderer;
 
     /**
      * @return
@@ -72,13 +72,13 @@ public class CustomGLSurfaceView extends GLSurfaceView {
     public void setRenderer(Renderer renderer) {
         setEGLContextFactory(mEGLContextFactory);
         super.setRenderer(renderer);
-        mRenderer = (ViewToHWBRenderer) renderer;
+        mRenderer = (StreamRenderer) renderer;
     }
 
     /**
      * @param context
      */
-    public CustomGLSurfaceView(Context context) {
+    public StreamView(Context context) {
         super(context);
     }
 
@@ -86,7 +86,7 @@ public class CustomGLSurfaceView extends GLSurfaceView {
      * @param context
      * @param attrs
      */
-    public CustomGLSurfaceView(Context context, AttributeSet attrs) {
+    public StreamView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
     public SurfaceTexture getSurfaceTexture() {

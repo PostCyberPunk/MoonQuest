@@ -1,4 +1,4 @@
-package com.tlab.viewtohardwarebuffer;
+package com.limelight.ui;
 
 import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
@@ -23,7 +23,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class ViewToHWBRenderer implements GLSurfaceView.Renderer {
+public class StreamRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = "libmoonlight";
 

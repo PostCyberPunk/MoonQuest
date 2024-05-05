@@ -8,18 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.graphics.SurfaceTexture;
 import android.hardware.HardwareBuffer;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -40,11 +37,10 @@ import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.GlPreferences;
 import com.limelight.preferences.PreferenceConfiguration;
 import com.limelight.types.UnityPluginObject;
-import com.limelight.ui.StreamView;
 import com.limelight.utils.ServerHelper;
 import com.robot9.shared.SharedTexture;
-import com.tlab.viewtohardwarebuffer.CustomGLSurfaceView;
-import com.tlab.viewtohardwarebuffer.ViewToHWBRenderer;
+import com.limelight.ui.StreamView;
+import com.limelight.ui.StreamRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
@@ -67,7 +63,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     private String appName;
     private NvApp app;
     private float desiredRefreshRate;
-    private CustomGLSurfaceView streamView;
+    private StreamView streamView;
     private MediaCodecDecoderRenderer decoderRenderer;
     private boolean reportedCrash;
     private WifiManager.WifiLock highPerfWifiLock;
@@ -106,14 +102,14 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRenderer = new ViewToHWBRenderer();
+                mRenderer = new StreamRenderer();
                 mRenderer.SetTextureResolution(mPluginManager.mTexWidth, mPluginManager.mTextHeight);
                 RelativeLayout mLayout = new RelativeLayout(mActivity);
                 mLayout.setGravity(Gravity.BOTTOM);
                 mLayout.setX(10000);
                 mLayout.setY(10000);
                 mLayout.setBackgroundColor(0xFFFFFFFF);
-                streamView = new CustomGLSurfaceView(mActivity);
+                streamView = new StreamView(mActivity);
                 streamView.setEGLContextClientVersion(3);
                 streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
                 streamView.setPreserveEGLContextOnPause(true);
@@ -984,7 +980,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //    }
 
     //////////////////////Shared Texture//////////////////////
-    public ViewToHWBRenderer mRenderer;
+    public StreamRenderer mRenderer;
     private SharedTexture mSharedTexture;
     private HardwareBuffer mShareBuffer;
     private int[] mHWBFboTextureId;

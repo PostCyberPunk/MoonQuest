@@ -20,7 +20,7 @@ int add(int x, int y) {
 
 JavaVM* g_jvm;
 
-static jclass g_class_unity_connect = NULL;
+static jclass g_class_stream_plguin = NULL;
 
 static jmethodID g_func_update_surface = NULL;
 
@@ -62,19 +62,19 @@ jint JNI_OnLoad(JavaVM *vm, void* reserved) {
 
     g_jvm->AttachCurrentThread(&env, NULL);
 
-    g_class_unity_connect = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/GamePlugin"));
+    g_class_stream_plguin = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/GamePlugin"));
 
-    if (g_class_unity_connect == NULL) {
+    if (g_class_stream_plguin == NULL) {
         LOGE("JNI Class 'ViewPlugin' not found");
     }
 
-    g_func_update_surface = env->GetMethodID(g_class_unity_connect, "updateSharedTexture", "()V");
+    g_func_update_surface = env->GetMethodID(g_class_stream_plguin, "updateSharedTexture", "()V");
 
     if (g_func_update_surface == NULL) {
         LOGE("JNI Function 'updateSharedTexture' not found");
     }
 
-    g_func_get_texture_ptr = env->GetMethodID(g_class_unity_connect, "getTexturePtr", "()I");
+    g_func_get_texture_ptr = env->GetMethodID(g_class_stream_plguin, "getTexturePtr", "()I");
 
     if (g_func_get_texture_ptr == NULL) {
         LOGE("JNI Function 'getTexturePtr' not found");
