@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.limelight.GamePlugin;
+import com.limelight.StreamPlugin;
 import com.limelight.LimeLog;
 import com.limelight.PluginManager;
 import com.limelight.R;
@@ -54,19 +54,19 @@ public class ServerHelper {
 
     public static Intent createStartIntent(Activity parent, NvApp app, ComputerDetails computer,
                                            ComputerManagerService.ComputerManagerBinder managerBinder) {
-        Intent intent = new Intent(parent, GamePlugin.class);
-        intent.putExtra(GamePlugin.EXTRA_HOST, computer.activeAddress.address);
-        intent.putExtra(GamePlugin.EXTRA_PORT, computer.activeAddress.port);
-        intent.putExtra(GamePlugin.EXTRA_HTTPS_PORT, computer.httpsPort);
-        intent.putExtra(GamePlugin.EXTRA_APP_NAME, app.getAppName());
-        intent.putExtra(GamePlugin.EXTRA_APP_ID, app.getAppId());
-        intent.putExtra(GamePlugin.EXTRA_APP_HDR, app.isHdrSupported());
-        intent.putExtra(GamePlugin.EXTRA_UNIQUEID, managerBinder.getUniqueId());
-        intent.putExtra(GamePlugin.EXTRA_PC_UUID, computer.uuid);
-        intent.putExtra(GamePlugin.EXTRA_PC_NAME, computer.name);
+        Intent intent = new Intent(parent, StreamPlugin.class);
+        intent.putExtra(StreamPlugin.EXTRA_HOST, computer.activeAddress.address);
+        intent.putExtra(StreamPlugin.EXTRA_PORT, computer.activeAddress.port);
+        intent.putExtra(StreamPlugin.EXTRA_HTTPS_PORT, computer.httpsPort);
+        intent.putExtra(StreamPlugin.EXTRA_APP_NAME, app.getAppName());
+        intent.putExtra(StreamPlugin.EXTRA_APP_ID, app.getAppId());
+        intent.putExtra(StreamPlugin.EXTRA_APP_HDR, app.isHdrSupported());
+        intent.putExtra(StreamPlugin.EXTRA_UNIQUEID, managerBinder.getUniqueId());
+        intent.putExtra(StreamPlugin.EXTRA_PC_UUID, computer.uuid);
+        intent.putExtra(StreamPlugin.EXTRA_PC_NAME, computer.name);
         try {
             if (computer.serverCert != null) {
-                intent.putExtra(GamePlugin.EXTRA_SERVER_CERT, computer.serverCert.getEncoded());
+                intent.putExtra(StreamPlugin.EXTRA_SERVER_CERT, computer.serverCert.getEncoded());
             }
         } catch (CertificateEncodingException e) {
             e.printStackTrace();
@@ -81,7 +81,7 @@ public class ServerHelper {
 //            Toast.makeText(parent, parent.getResources().getString(R.string.pair_pc_offline), Toast.LENGTH_SHORT).show();
             return;
         }
-        parent.ActivateGamePlugin(createStartIntent(parent.GetActivity(), app, computer, managerBinder));
+        parent.ActivateStreamPlugin(createStartIntent(parent.GetActivity(), app, computer, managerBinder));
     }
 
     public static void doNetworkTest(final Activity parent) {

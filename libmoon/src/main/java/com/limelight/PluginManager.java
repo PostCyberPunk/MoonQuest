@@ -13,7 +13,7 @@ import java.util.List;
 public class PluginManager {
     private AppPlugin m_AppPlugin;
     private PcPlugin m_PcPlugin;
-    private GamePlugin m_GamePlugin;
+    private StreamPlugin m_StreamPlugin;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
     public boolean IsInitialized() {
@@ -89,19 +89,19 @@ public class PluginManager {
         LimeLog.info("AppPlugin stopped");
     }
 
-    public void ActivateGamePlugin(Intent i) {
-        LimeLog.info("GamePlugin starting");
-        m_GamePlugin = new GamePlugin(this, mActivity, i);
-        m_PluginList.add(m_GamePlugin);
+    public void ActivateStreamPlugin(Intent i) {
+        LimeLog.info("StreamPlugin starting");
+        m_StreamPlugin = new StreamPlugin(this, mActivity, i);
+        m_PluginList.add(m_StreamPlugin);
     }
 
-    public void StopGamePlugin() {
-        if (m_GamePlugin == null)
+    public void StopStreamPlugin() {
+        if (m_StreamPlugin == null)
             return;
-        m_PluginList.remove(m_GamePlugin);
-        m_GamePlugin.onDestroy();
-        m_GamePlugin = null;
-        LimeLog.info("GamePlugin stopped");
+        m_PluginList.remove(m_StreamPlugin);
+        m_StreamPlugin.onDestroy();
+        m_StreamPlugin = null;
+        LimeLog.info("StreamPlugin stopped");
     }
 
     public void DestroyPlugin(UnityPluginObject plugin) {
@@ -112,8 +112,8 @@ public class PluginManager {
             StopAppPlugin();
         } else if (plugin instanceof PcPlugin) {
             StopPcPlugin();
-        } else if (plugin instanceof GamePlugin) {
-            StopGamePlugin();
+        } else if (plugin instanceof StreamPlugin) {
+            StopStreamPlugin();
         }
     }
 
@@ -132,7 +132,7 @@ public class PluginManager {
         });
     }
 
-    public StreamPlugin GetGamePlugin() {
+    public StreamPlugin GetStreamPlugin() {
         return m_StreamPlugin;
     }
 }

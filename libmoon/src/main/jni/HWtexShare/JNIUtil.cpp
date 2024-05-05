@@ -62,7 +62,7 @@ jint JNI_OnLoad(JavaVM *vm, void* reserved) {
 
     g_jvm->AttachCurrentThread(&env, NULL);
 
-    g_class_stream_plguin = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/GamePlugin"));
+    g_class_stream_plguin = (jclass)env->NewGlobalRef(env->FindClass("com/limelight/StreamPlugin"));
 
     if (g_class_stream_plguin == NULL) {
         LOGE("JNI Class 'ViewPlugin' not found");

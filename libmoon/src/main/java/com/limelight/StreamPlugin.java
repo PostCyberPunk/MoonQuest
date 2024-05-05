@@ -49,7 +49,7 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 
 
-public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callback,
+public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Callback,
         NvConnectionListener, PerfOverlayListener /*SurfaceTexture.OnFrameAvailableListener*/ {
     private PreferenceConfiguration prefConfig;
     private SharedPreferences tombstonePrefs;
@@ -79,7 +79,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
     public static final String EXTRA_APP_HDR = "HDR";
     public static final String EXTRA_SERVER_CERT = "ServerCert";
 
-    public GamePlugin(PluginManager p, Activity a, Intent i) {
+    public StreamPlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
         onCreate();
         isInitialized = true;
@@ -94,7 +94,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
         // Read the stream preferences
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
-        tombstonePrefs = GamePlugin.this.getSharedPreferences("DecoderTombstone", 0);
+        tombstonePrefs = StreamPlugin.this.getSharedPreferences("DecoderTombstone", 0);
 
         //TRY:Remove this
         prefConfig.playHostAudio = true;
@@ -561,11 +561,11 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
             // In multi-window mode on N+, we need to drop our layout flags or we'll
             // be drawing underneath the system UI.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInMultiWindowMode()) {
-                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
+                StreamPlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             } else {
                 // Use immersive mode
-                GamePlugin.this.getWindow().getDecorView().setSystemUiVisibility(
+                StreamPlugin.this.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
@@ -849,7 +849,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
         computer.name = pcName;
-        computer.uuid = GamePlugin.this.getIntent().getStringExtra(EXTRA_PC_UUID);
+        computer.uuid = StreamPlugin.this.getIntent().getStringExtra(EXTRA_PC_UUID);
 //        ShortcutHelper shortcutHelper = new ShortcutHelper(this);
 //        shortcutHelper.reportComputerShortcutUsed(computer);
 //        if (appName != null) {
@@ -872,7 +872,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 
             decoderRenderer.setRenderTarget(streamView);
             conn.start(new AndroidAudioRenderer(mActivity, prefConfig.enableAudioFx),
-                    decoderRenderer, GamePlugin.this);
+                    decoderRenderer, StreamPlugin.this);
         }
     }
 
