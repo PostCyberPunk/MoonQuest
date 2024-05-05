@@ -938,7 +938,8 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
     @Override
     public void onPerfUpdate(final String text) {
-        LimeLog.todo("Perfomance Debug: " + text);
+        //TODO:Get this from java to unity
+        LimeLog.verbose("Perfomance Debug: " + text);
     }
 
     @Override

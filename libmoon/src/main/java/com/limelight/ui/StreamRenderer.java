@@ -301,7 +301,7 @@ public class StreamRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        LimeLog.severe("Render:Surface ceated");
+        LimeLog.debug("Render:Surface ceated");
         if (mInitialized) {
             return;
         }
@@ -310,7 +310,7 @@ public class StreamRenderer implements GLSurfaceView.Renderer {
     }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        LimeLog.severe("Render:Surface changed");
+        LimeLog.debug("Render:Surface changed");
         createSurfaceAndSurfaceTexture(width, height);
         initHWBFboTexture();
     }
@@ -325,7 +325,7 @@ public class StreamRenderer implements GLSurfaceView.Renderer {
             LimeLog.severe("Try to load an null surface from renderer");
         } else {
 
-            LimeLog.todo("height width: " + mTextureHeight + " " + mTextureWidth);
+            LimeLog.debug("Getting streaming surface:" + mTextureHeight + "x" + mTextureWidth);
         }
         return mSurface;
     }

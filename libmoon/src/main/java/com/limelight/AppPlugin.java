@@ -101,7 +101,7 @@ public class AppPlugin extends UnityPluginObject {
 
         String computerName = getIntent().getStringExtra(NAME_EXTRA);
 
-        LimeLog.todo("AppPlugin created for pc : " + computerName);
+        LimeLog.debug("AppPlugin created for pc : " + computerName);
 
         // Bind to the computer manager service
         bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
@@ -242,6 +242,7 @@ public class AppPlugin extends UnityPluginObject {
     }
 
 
+    //TODO:notify unity here
     private void updateUiWithServerinfo(final ComputerDetails details) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -270,9 +271,8 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-                LimeLog.todo("AppList Updated finish");
                 int count = m_AppList.getCount();
-                LimeLog.severe("App count" + count);
+                LimeLog.debug("App count" + count);
                 if (count > 0) {
                     final AppObject app = (AppObject) m_AppList.getItem(0);
                     LimeLog.info("Starting app: " + app.app.getAppName());
