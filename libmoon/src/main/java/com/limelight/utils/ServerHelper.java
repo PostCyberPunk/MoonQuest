@@ -105,11 +105,7 @@ public class ServerHelper {
                     dialogSummary = parent.getResources().getString(R.string.nettest_text_failure);
                     dialogSummary += MoonBridge.stringifyPortFlags(ret, "\n");
                 }
-
-                Dialog.displayDialog(parent,
-                        parent.getResources().getString(R.string.nettest_title_done),
-                        dialogSummary,
-                        false);
+                LimeLog.todo("Network test result: " + dialogSummary);
             }
         }).start();
     }

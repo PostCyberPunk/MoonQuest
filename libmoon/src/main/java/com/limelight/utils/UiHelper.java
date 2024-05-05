@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 
+import com.limelight.LimeLog;
 import com.limelight.R;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.preferences.PreferenceConfiguration;
@@ -47,25 +48,21 @@ public class UiHelper {
         setGameModeStatus(context, false, false);
     }
 
-    public static void setLocale(Activity activity)
-    {
+    public static void setLocale(Activity activity) {
         String locale = PreferenceConfiguration.readPreferences(activity).language;
         if (!locale.equals(PreferenceConfiguration.DEFAULT_LANGUAGE)) {
-                Configuration config = new Configuration(activity.getResources().getConfiguration());
+            Configuration config = new Configuration(activity.getResources().getConfiguration());
 
-                // Some locales include both language and country which must be separated
-                // before calling the Locale constructor.
-                if (locale.contains("-"))
-                {
-                    config.locale = new Locale(locale.substring(0, locale.indexOf('-')),
-                            locale.substring(locale.indexOf('-') + 1));
-                }
-                else
-                {
-                    config.locale = new Locale(locale);
-                }
+            // Some locales include both language and country which must be separated
+            // before calling the Locale constructor.
+            if (locale.contains("-")) {
+                config.locale = new Locale(locale.substring(0, locale.indexOf('-')),
+                        locale.substring(locale.indexOf('-') + 1));
+            } else {
+                config.locale = new Locale(locale);
+            }
 
-                activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+            activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
         }
     }
 
@@ -86,8 +83,7 @@ public class UiHelper {
         }
     }
 
-    public static void notifyNewRootView(final Activity activity)
-    {
+    public static void notifyNewRootView(final Activity activity) {
         View rootView = activity.findViewById(android.R.id.content);
         UiModeManager modeMgr = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
 
@@ -107,13 +103,12 @@ public class UiHelper {
         if (modeMgr.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
             // Increase view padding on TVs
             float scale = activity.getResources().getDisplayMetrics().density;
-            int verticalPaddingPixels = (int) (TV_VERTICAL_PADDING_DP*scale + 0.5f);
-            int horizontalPaddingPixels = (int) (TV_HORIZONTAL_PADDING_DP*scale + 0.5f);
+            int verticalPaddingPixels = (int) (TV_VERTICAL_PADDING_DP * scale + 0.5f);
+            int horizontalPaddingPixels = (int) (TV_HORIZONTAL_PADDING_DP * scale + 0.5f);
 
             rootView.setPadding(horizontalPaddingPixels, verticalPaddingPixels,
                     horizontalPaddingPixels, verticalPaddingPixels);
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Draw under the status bar on Android Q devices
 
             // Using getDecorView() here breaks the translucent status/navigation bar when gestures are disabled
@@ -130,8 +125,7 @@ public class UiHelper {
                     // Show a translucent navigation bar if we can't tap there
                     if (tappableInsets.bottom != 0) {
                         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                    }
-                    else {
+                    } else {
                         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                     }
 
@@ -155,37 +149,40 @@ public class UiHelper {
             if (crashCount % 3 == 0) {
                 // At 3 consecutive crashes, we'll forcefully reset their settings
                 PreferenceConfiguration.resetStreamingSettings(activity);
-                Dialog.displayDialog(activity,
-                        activity.getResources().getString(R.string.title_decoding_reset),
-                        activity.getResources().getString(R.string.message_decoding_reset),
+                LimeLog.todo("Resetting streaming settings due to decoder crash");
+
+                //TODO:Refactor this
+                activity.runOnUiThread(
                         new Runnable() {
                             @Override
                             public void run() {
                                 // Mark notification as acknowledged on dismissal
                                 prefs.edit().putInt("LastNotifiedCrashCount", crashCount).apply();
                             }
-                        });
-            }
-            else {
-                Dialog.displayDialog(activity,
-                        activity.getResources().getString(R.string.title_decoding_error),
-                        activity.getResources().getString(R.string.message_decoding_error),
+                        }
+                );
+            } else {
+                LimeLog.todo("Video decoder crashed " + crashCount + " times,Moonlight has crashed due to an incompatibility with this device\'s video decoder. Try adjusting the streaming settings if the crashes continue.");
+
+                activity.runOnUiThread(
                         new Runnable() {
                             @Override
                             public void run() {
                                 // Mark notification as acknowledged on dismissal
                                 prefs.edit().putInt("LastNotifiedCrashCount", crashCount).apply();
                             }
-                        });
+                        }
+                );
             }
         }
     }
 
-    public static void displayQuitConfirmationDialog(Activity parent, final Runnable onYes, final Runnable onNo) {
+    public static void displayQuitConfirmationDialog(Activity parent, final Runnable onYes,
+                                                     final Runnable onNo) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         if (onYes != null) {
                             onYes.run();
@@ -208,11 +205,12 @@ public class UiHelper {
                 .show();
     }
 
-    public static void displayDeletePcConfirmationDialog(Activity parent, ComputerDetails computer, final Runnable onYes, final Runnable onNo) {
+    public static void displayDeletePcConfirmationDialog(Activity parent, ComputerDetails
+            computer, final Runnable onYes, final Runnable onNo) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         if (onYes != null) {
                             onYes.run();

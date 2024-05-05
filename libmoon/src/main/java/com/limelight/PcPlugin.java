@@ -16,7 +16,6 @@ import com.limelight.nvstream.http.PairingManager;
 import com.limelight.nvstream.http.PairingManager.PairState;
 import com.limelight.preferences.AddComputerManually;
 import com.limelight.types.UnityPluginObject;
-import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
 
 import android.app.Activity;
@@ -107,8 +106,8 @@ public class PcPlugin extends UnityPluginObject {
 
     @Override
     public void onStop() {
-
-        Dialog.closeDialogs();
+        stopComputerUpdates(true);
+        stopAddComputerManually();
     }
 
     private void doPair(final ComputerDetails computer) {
