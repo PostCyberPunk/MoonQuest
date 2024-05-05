@@ -4,24 +4,21 @@ plugins {
 
 android {
     namespace 'com.liblime'
+    //noinspection GradleDependency
     compileSdk 32
 
     defaultConfig {
         minSdk 26
+        //noinspection ExpiredTargetSdkVersion
         targetSdk 32
         versionCode 1
         versionName "1.0"
         consumerProguardFiles "consumer-rules.pro"
 
+        //FIXME: ndk doesnt auto include the libc++_shared.so in the final build
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
-
-        externalNativeBuild {
-            cmake {
-                cppFlags '-std=c++11'
-            }
+            abiFilters 'arm64-v8a'
         }
     }
 
@@ -49,20 +46,9 @@ android {
     }
 
     externalNativeBuild {
-        cmake {
-            path = "src/main/jni/HWtexShare/CMakeLists.txt"
+        ndkBuild {
+            path "src/main/jni/Android.mk"
         }
-//        ndkBuild {
-//            path "src/main/jni/Android.mk"
-//        }
-    }
-    task runNdkBuild(type: Exec) {
-        def ndkDir = '/home/pcp/Android/ndk/r26c'
-        executable = "$ndkDir/ndk-build"
-        args = ['NDK_PROJECT_PATH=build/intermediates/ndk',
-                'NDK_LIBS_OUT=src/main/jniLibs',
-                'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
-                'NDK_APPLICATION_MK=src/main/jni/Application.mk']
     }
     dependencies {
         compileOnly fileTree(dir: 'libs', include: ['unity_ref.jar'])
@@ -76,4 +62,3 @@ android {
     }
     ndkVersion '26.2.11394342'
 }
-preBuild.dependsOn runNdkBuild
