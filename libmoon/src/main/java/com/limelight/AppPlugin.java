@@ -14,7 +14,6 @@ import com.limelight.nvstream.http.PairingManager;
 import com.limelight.types.AppObject;
 import com.limelight.types.UnityPluginObject;
 import com.limelight.utils.CacheHelper;
-import com.limelight.utils.Dialog;
 import com.limelight.utils.ServerHelper;
 
 import android.app.Activity;
@@ -119,6 +118,7 @@ public class AppPlugin extends UnityPluginObject {
             @Override
             public void notifyComputerUpdated(final ComputerDetails details) {
                 // Do nothing if updates are suspended
+                //TODO:This also need to be apply on unity side
                 if (suspendGridUpdates) {
                     return;
                 }
@@ -221,8 +221,6 @@ public class AppPlugin extends UnityPluginObject {
 
     @Override
     public void onDestroy() {
-
-        Dialog.closeDialogs();
 
         if (managerBinder != null) {
             unbindService(serviceConnection);

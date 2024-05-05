@@ -71,7 +71,7 @@ public class PcPlugin extends UnityPluginObject {
     @Override
     protected void onCreate() {
         inForeground = true;
-        LimeLog.severe("PcPlugin onCreate2");
+        LimeLog.debug("PcPlugin onCreate");
 
         // Bind to the computer manager service
         bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
@@ -218,7 +218,7 @@ public class PcPlugin extends UnityPluginObject {
                 @Override
                 public void notifyComputerUpdated(final ComputerDetails details) {
                     if (!freezeUpdates) {
-                        LimeLog.severe("Computer updated: " + details.pairState);
+                        LimeLog.debug("Computer updated: " + details.pairState);
                         updateComputer(details);
                     }
                 }
@@ -282,7 +282,7 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     public void fakePair() {
-        LimeLog.severe("Start fakePair");
+        LimeLog.debug("Start fakePair");
         ComputerObject computer = (ComputerObject) pcList.getItem(0);
         doPair(computer.details);
     }

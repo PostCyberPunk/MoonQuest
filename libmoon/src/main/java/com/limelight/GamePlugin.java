@@ -85,6 +85,10 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
         isInitialized = true;
     }
 
+    private final int mTexWidth = 3440;
+    private final int mTextHeight = 1440;
+
+    //TODO extract this to methods for better management
     @Override
     protected void onCreate() {
 
@@ -103,7 +107,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
             @Override
             public void run() {
                 mRenderer = new StreamRenderer();
-                mRenderer.SetTextureResolution(mPluginManager.mTexWidth, mPluginManager.mTextHeight);
+                mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
                 RelativeLayout mLayout = new RelativeLayout(mActivity);
                 mLayout.setGravity(Gravity.BOTTOM);
                 mLayout.setX(10000);
@@ -117,7 +121,7 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                 streamView.setBackgroundColor(0x00000000);
 
-                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mPluginManager.mTexWidth, mPluginManager.mTextHeight));
+                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
                 mLayout.addView(streamView, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
@@ -267,8 +271,8 @@ public class GamePlugin extends UnityPluginObject implements SurfaceHolder.Callb
 //        float displayRefreshRate = prepareDisplayForRendering();
         //TRY
         float displayRefreshRate = 60;
-        prefConfig.width = mPluginManager.mTexWidth;
-        prefConfig.height = mPluginManager.mTextHeight;
+        prefConfig.width = mTexWidth;
+        prefConfig.height = mTextHeight;
 //        streamView.getHolder().setFixedSize(pref, 100);
 
         LimeLog.info("Display refresh rate: " + displayRefreshRate);

@@ -16,20 +16,12 @@ public class PluginManager {
     private GamePlugin m_GamePlugin;
     private final List<UnityPluginObject> m_PluginList = new ArrayList<>();
     private Activity mActivity;
-    private int mScreenWidth;
-    private int mScreenHeight;
-    //TRY
-    public int mTexWidth = 3440;
-    public int mTextHeight = 1440;
-
     public boolean IsInitialized() {
         return true;
     }
 
-    public void Init(int screenWidth, int screenHeight) {
+    public void Init() {
         //TRY
-        mScreenWidth = screenWidth;
-        mScreenHeight = screenHeight;
         mActivity = UnityPlayer.currentActivity;
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
         ActivatePcPlugin();
@@ -140,8 +132,7 @@ public class PluginManager {
         });
     }
 
-    public GamePlugin GetGamePlugin() {
-        LimeLog.info("xxxx:" + (m_GamePlugin == null));
-        return m_GamePlugin;
+    public StreamPlugin GetGamePlugin() {
+        return m_StreamPlugin;
     }
 }
