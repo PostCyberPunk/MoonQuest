@@ -1,0 +1,64 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.liblime'
+    //noinspection GradleDependency
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 26
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+        consumerProguardFiles "consumer-rules.pro"
+
+        //FIXME: ndk doesnt auto include the libc++_shared.so in the final build
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    lint {
+        disable 'MissingTranslation'
+        lintConfig file('lint.xml')
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
+    dependencies {
+        compileOnly fileTree(dir: 'libs', include: ['unity_ref.jar'])
+        implementation 'com.android.support:appcompat-v7:28.0.0'
+        implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+        implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
+        implementation 'org.jcodec:jcodec:0.2.5'
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+        implementation 'org.jmdns:jmdns:3.5.9'
+//        implementation 'com.github.cgutman:ShieldControllerExtensions:1.0.1'
+    }
+    ndkVersion '26.2.11394342'
+}
