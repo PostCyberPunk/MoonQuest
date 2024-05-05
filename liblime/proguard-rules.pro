@@ -1,14 +1,11 @@
 # Don't obfuscate code
 -dontobfuscate
 
-# Our code
--keep class com.limelight.binding.input.evdev.* {*;}
 
 # Moonlight common
 -keep class com.limelight.nvstream.jni.* {*;}
 
 # Okio
--keep class sun.misc.Unsafe {*;}
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
