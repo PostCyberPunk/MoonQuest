@@ -23,7 +23,11 @@ namespace PCP.LibLime
 		{
 			mRawObject = mPlugin.GetRawObject();
 			mRawImage.rectTransform.sizeDelta = new Vector2(mTexWidth, mTexHeight);
-			mRawImage.texture = new Texture2D(mTexWidth, mTexHeight, TextureFormat.ARGB32, false, false);
+			mRawImage.texture = new Texture2D(mTexWidth, mTexHeight, TextureFormat.ARGB32, false, false)
+			{
+				filterMode = FilterMode.Trilinear,
+				anisoLevel = 16
+			};
 		}
 
 		protected override void OnDestroy()
