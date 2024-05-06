@@ -67,6 +67,7 @@ public class PcPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.PC;
         onCreate();
         isInitialized = true;
+        LimeLog.debug("PcPlugin Initialized");
     }
 
     @Override
@@ -198,13 +199,14 @@ public class PcPlugin extends UnityPluginObject {
             return;
         }
         if (managerBinder == null) {
-            LimeLog.todo("Manager binder is null");
+            LimeLog.severe("Manager binder is null");
             return;
         }
 
         Intent i = new Intent(mActivity, AppPlugin.class);
         i.putExtra(AppPlugin.NAME_EXTRA, computer.name);
         i.putExtra(AppPlugin.UUID_EXTRA, computer.uuid);
+        LimeLog.debug("Starting AppPlugin");
         mPluginManager.ActivatePlugin(PluginManager.PluginType.APP, i);
         finish();
     }

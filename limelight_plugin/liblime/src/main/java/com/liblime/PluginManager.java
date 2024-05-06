@@ -39,7 +39,7 @@ public class PluginManager {
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
-        LimeLog.verbose("PluginManager Initialized");
+        LimeLog.debug("PluginManager Initialized");
         //TRY
         ActivatePlugin(PluginType.PC, null);
     }
@@ -84,20 +84,20 @@ public class PluginManager {
         } else if (pluginType == PluginType.STREAM) {
             m_PluginMap.put(pluginType, new StreamPlugin(this, mActivity, i));
         }
-        LimeLog.verbose("Plugin " + pluginType + ":Activating");
+        LimeLog.debug("Plugin " + pluginType + ":Activating");
     }
 
     public void DeActivePlugin(PluginType t) {
         var plugin = m_PluginMap.get(t);
         if (plugin != null) {
-            LimeLog.verbose("Plugin " + t + ":Deactivating");
+            LimeLog.debug("Plugin " + t + ":Deactivating");
             plugin.onDestroy();
             m_PluginMap.remove(t);
         }
     }
 
     public void DestroyAllPlugins() {
-        LimeLog.verbose("Destroying all plugins");
+        LimeLog.debug("Destroying all plugins");
         for (UnityPluginObject plugin : m_PluginMap.values()) {
             if (plugin != null)
                 plugin.onDestroy();

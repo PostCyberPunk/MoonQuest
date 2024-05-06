@@ -37,6 +37,10 @@ public class LimeLog {
             LOGGER.info("verbose:" + msg);
     }
 
+    public static void temp(String msg) {
+        LOGGER.severe("xxxx:" + msg);
+    }
+
     public static void setFileHandler(String fileName) throws IOException {
         LOGGER.addHandler(new FileHandler(fileName));
     }

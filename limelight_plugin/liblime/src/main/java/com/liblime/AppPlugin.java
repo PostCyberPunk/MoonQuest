@@ -91,6 +91,7 @@ public class AppPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
+        LimeLog.debug("AppPlugin created");
     }
 
     @Override
@@ -103,11 +104,10 @@ public class AppPlugin extends UnityPluginObject {
 
         String computerName = getIntent().getStringExtra(NAME_EXTRA);
 
-        LimeLog.debug("AppPlugin created for pc : " + computerName);
-
         // Bind to the computer manager service
         bindService(new Intent(mActivity, ComputerManagerService.class), serviceConnection,
                 Service.BIND_AUTO_CREATE);
+        LimeLog.debug("AppPlugin created for pc : " + computerName);
     }
 
     private void startComputerUpdates() {

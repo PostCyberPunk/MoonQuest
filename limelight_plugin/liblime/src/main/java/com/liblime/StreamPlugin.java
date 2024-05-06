@@ -82,10 +82,12 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     public static final String EXTRA_SERVER_CERT = "ServerCert";
 
     public StreamPlugin(PluginManager p, Activity a, Intent i) {
+        //super(p,a,i, PluginManager.PluginType.STREAM);
         super(p, a, i);
         mPluginType= PluginManager.PluginType.STREAM;
         onCreate();
         isInitialized = true;
+        LimeLog.debug("StreamPlugin initialized");
     }
 
     private final int mTexWidth = 3440;
