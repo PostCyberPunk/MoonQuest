@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+**APPLY_PLUGINS**
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+ 	  implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+ 		implementation 'org.bouncycastle:bcpkix-jdk18on:1.77'
+ 	  implementation 'org.jcodec:jcodec:0.2.5'
+ 	  implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+ 	 	implementation 'org.jmdns:jmdns:3.5.9'
+**DEPS**}
+
+android {
+    ndkPath "**NDKPATH**"
+
+    compileSdkVersion **APIVERSION**
+    buildToolsVersion '**BUILDTOOLS**'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion **MINSDKVERSION**
+        targetSdkVersion **TARGETSDKVERSION**
+        ndk {
+            abiFilters **ABIFILTERS**
+        }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }**PACKAGING_OPTIONS**
+}
+**IL_CPP_BUILD_SETUP**
+**SOURCE_BUILD_SETUP**
+**EXTERNAL_SOURCES**
