@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -26,7 +25,7 @@ namespace PCP.LibLime
 
 		public GameObject GameObject => gameObject;
 
-		protected void Init(AndroidJavaObject o)
+		public void Init(AndroidJavaObject o)
 		{
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */

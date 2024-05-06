@@ -12,6 +12,15 @@ namespace PCP.LibLime
 		private readonly string mTag = "LimePluginManager";
 		private AndroidJavaObject mPluginManager;
 		private StreamManager mStreamManager;
+		private PcManager mPcManager;
+		private enum PluginType
+		{
+			Pc,
+			App,
+			Stream,
+		}
+
+		//LifeCycle///////////
 		private void Awake()
 		{
 			if (Instance != null)
@@ -21,9 +30,20 @@ namespace PCP.LibLime
 			}
 			Instance = this;
 		}
+
 		private void Start()
 		{
 			CreatePluginObject();
+		}
+		public void CreatePluginObject()
+		{
+			mPluginManager = new AndroidJavaObject("com.liblime.PluginManager");
+			mPluginManager.Call("Init");
+		}
+
+		private void OnDestroy()
+		{
+			StartCoroutine(Destroy());
 		}
 		private IEnumerator Destroy()
 		{
@@ -37,11 +57,7 @@ namespace PCP.LibLime
 			mPluginManager.Dispose();
 			mPluginManager = null;
 		}
-		private void OnDestroy()
-		{
-			StartCoroutine(Destroy());
-		}
-
+		//Plugin Methods///////////
 		public bool IsAlive()
 		{
 			Destroy(mStreamManager);
@@ -65,15 +81,19 @@ namespace PCP.LibLime
 		{
 			return mPluginManager.Call<bool>("HasRunningPlugin");
 		}
-		//PERF:!!Change This to a hashmap?
+
 		public void DestroyPluginObject(string pluginName)
 		{
 			mPluginManager.Call("DestroyPlugin", pluginName);
 		}
-		public void CreatePluginObject()
+		public void DestroyAllPluginObjects(string pluginName)
 		{
-			mPluginManager = new AndroidJavaObject("com.liblime.PluginManager");
-			mPluginManager.Call("Init");
+			mPluginManager.Call("DestroyAllPlugin", pluginName);
+		}
+
+		public void RestartPlugin()
+		{
+			StartCoroutine(TaskRestartPlugin());
 		}
 		private IEnumerator TaskRestartPlugin()
 		{
@@ -90,45 +110,39 @@ namespace PCP.LibLime
 			}
 			CreatePluginObject();
 		}
-		//Creating PluginObjects
+		//Manager Methods///////////
 		public RawImage image;
-		public void CreateStreamObject()
-		{
-			//TRY
-			int w = 3440;
-			int h = 1440;
-			mStreamManager = gameObject.AddComponent<StreamManager>();
-			mStreamManager.Init(mPluginManager.Call<AndroidJavaObject>("GetStreamPlugin"), image, w, h);
-		}
 
-		//TRY Debug
-		public void FakeStart()
-		{
-			mPluginManager.Call("FakeStart");
-		}
-		public void DumbyStart()
-		{
-			FakeStart();
-			StartCoroutine(StartPlugin());
-
-		}
-		private IEnumerator StartPlugin()
+		private IEnumerator StartStreamManager()
 		{
 			int w = 3440;
 			int h = 1440;
 			mStreamManager = gameObject.AddComponent<StreamManager>();
-			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetStreamPlugin");
+			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Stream);
 			while (o == null)
 			{
 				yield return new WaitForSeconds(1);
-				o = mPluginManager.Call<AndroidJavaObject>("GetStreamPlugin");
+				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Stream);
 			}
 			mStreamManager.Init(o, image, w, h);
 		}
-		public void RestartPlugin()
-		{
-			StartCoroutine(TaskRestartPlugin());
-		}
 
+		private IEnumerator StartPcMananger()
+		{
+			mPcManager = gameObject.AddComponent<PcManager>();
+			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
+			while (o == null)
+			{
+				yield return new WaitForSeconds(1);
+				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
+			}
+			mPcManager.Init(o);
+		}
+		//TRY Debug
+		public void DumbyStart()
+		{
+			StartCoroutine(StartPcMananger());
+			StartCoroutine(StartStreamManager());
+		}
 	}
 }

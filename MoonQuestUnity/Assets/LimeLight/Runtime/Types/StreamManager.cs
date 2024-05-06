@@ -14,9 +14,9 @@ namespace PCP.LibLime
 		{
 			mTexWidth = w;
 			mTexHeight = h;
-			Init(o);
 			mRawImage = img;
 			mTag = "StreamManager";
+			Init(o);
 		}
 
 		protected override void OnCreate()

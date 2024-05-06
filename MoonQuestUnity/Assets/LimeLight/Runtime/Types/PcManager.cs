@@ -1,4 +1,3 @@
-using UnityEngine;
 
 namespace PCP.LibLime
 {
@@ -10,7 +9,7 @@ namespace PCP.LibLime
 		}
 		protected override void OnCreate()
 		{
-
+			mPlugin.Call("fakeStart");
 		}
 		protected override void OnDestroy()
 		{
