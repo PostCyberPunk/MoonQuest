@@ -273,13 +273,7 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-                int count = m_AppList.getCount();
-                LimeLog.debug("App count" + count);
-                if (count > 0) {
-                    final AppObject app = (AppObject) m_AppList.getItem(0);
-                    LimeLog.info("Starting app: " + app.app.getAppName());
-                    ServerHelper.doStart(mPluginManager, app.app, computer, managerBinder);
-                }
+                QuickStart();
             }
         });
     }
@@ -344,8 +338,20 @@ public class AppPlugin extends UnityPluginObject {
                     // Move on to the next item
                     i++;
                 }
+
+                QuickStart();
             }
         });
+    }
+
+    private void QuickStart() {
+        int count = m_AppList.getCount();
+        LimeLog.debug("App count" + count);
+        if (count > 0) {
+            final AppObject app = (AppObject) m_AppList.getItem(0);
+            LimeLog.info("Starting app: " + app.app.getAppName());
+            ServerHelper.doStart(mPluginManager, app.app, computer, managerBinder);
+        }
     }
 
 }

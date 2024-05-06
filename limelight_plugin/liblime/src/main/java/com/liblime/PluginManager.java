@@ -77,6 +77,7 @@ public class PluginManager {
             DeActivePlugin(pluginType);
             LimeLog.warning("Duplicated " + pluginType + " found,create a new one");
         }
+        LimeLog.debug("Plugin " + pluginType + ":Activating");
         if (pluginType == PluginType.PC) {
             m_PluginMap.put(pluginType, new PcPlugin(this, mActivity));
         } else if (pluginType == PluginType.APP) {
@@ -84,7 +85,6 @@ public class PluginManager {
         } else if (pluginType == PluginType.STREAM) {
             m_PluginMap.put(pluginType, new StreamPlugin(this, mActivity, i));
         }
-        LimeLog.debug("Plugin " + pluginType + ":Activating");
     }
 
     public void DeActivePlugin(PluginType t) {
