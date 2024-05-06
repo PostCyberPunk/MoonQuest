@@ -64,8 +64,9 @@ public class PcPlugin extends UnityPluginObject {
 
     public PcPlugin(PluginManager p, Activity a) {
         super(p, a);
+        mPluginType = PluginManager.PluginType.PC;
         onCreate();
-        isInitialized= true;
+        isInitialized = true;
     }
 
     @Override
@@ -204,7 +205,7 @@ public class PcPlugin extends UnityPluginObject {
         Intent i = new Intent(mActivity, AppPlugin.class);
         i.putExtra(AppPlugin.NAME_EXTRA, computer.name);
         i.putExtra(AppPlugin.UUID_EXTRA, computer.uuid);
-        mPluginManager.ActivateAppPlugin(i);
+        mPluginManager.ActivatePlugin(PluginManager.PluginType.APP, i);
         finish();
     }
 

@@ -83,6 +83,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
     public StreamPlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
+        mPluginType= PluginManager.PluginType.STREAM;
         onCreate();
         isInitialized = true;
     }

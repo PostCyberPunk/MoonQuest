@@ -88,6 +88,7 @@ public class AppPlugin extends UnityPluginObject {
 
     public AppPlugin(PluginManager p, Activity a, Intent i) {
         super(p, a, i);
+        mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
     }

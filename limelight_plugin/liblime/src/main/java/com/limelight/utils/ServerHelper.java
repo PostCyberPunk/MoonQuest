@@ -81,7 +81,7 @@ public class ServerHelper {
 //            Toast.makeText(parent, parent.getResources().getString(R.string.pair_pc_offline), Toast.LENGTH_SHORT).show();
             return;
         }
-        parent.ActivateStreamPlugin(createStartIntent(parent.GetActivity(), app, computer, managerBinder));
+        parent.ActivatePlugin(PluginManager.PluginType.STREAM, createStartIntent(parent.GetActivity(), app, computer, managerBinder));
     }
 
     public static void doNetworkTest(final Activity parent) {

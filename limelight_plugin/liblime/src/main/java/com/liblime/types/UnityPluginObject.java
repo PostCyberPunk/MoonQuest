@@ -19,6 +19,7 @@ public abstract class UnityPluginObject {
     protected Intent mIntent;
     protected PluginManager mPluginManager;
     protected boolean isInitialized = false;
+    protected PluginManager.PluginType mPluginType;
 
     //TODO: why not working?
 //    protected UnityPluginObject(Activity activity) {
@@ -58,7 +59,7 @@ public abstract class UnityPluginObject {
     }
 
     protected void finish() {
-        mPluginManager.DestroyPlugin(this);
+        mPluginManager.DeActivePlugin(mPluginType);
     }
 
     //Ported Methods
