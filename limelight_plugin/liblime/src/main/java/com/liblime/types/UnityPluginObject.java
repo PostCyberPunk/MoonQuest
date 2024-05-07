@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.liblime.PluginManager;
+import com.limelight.LimeLog;
 
 import java.io.File;
 
@@ -40,22 +41,25 @@ public abstract class UnityPluginObject {
 
     protected abstract void onCreate();
 
-    public abstract void onDestroy();
+    public abstract void onPause();
 
     public abstract void onResume();
 
-    public abstract void onPause();
+    public abstract void onDestroy();
 
-    public void onStop() {
+    protected void RevmoveReference() {
+        mPluginManager.RemovePlugin(mPluginType);
+        mActivity = null;
+        mIntent = null;
+        mPluginManager = null;
     }
-
-    ;
 
     public boolean IsInitialized() {
         return isInitialized;
     }
 
     public void Poke() {
+        LimeLog.verbose(mPluginType.toString() + " Plugin Poked");
     }
 
     protected void finish() {

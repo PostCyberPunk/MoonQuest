@@ -91,7 +91,6 @@ public class AppPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
-        LimeLog.debug("AppPlugin created");
     }
 
     @Override
@@ -221,13 +220,6 @@ public class AppPlugin extends UnityPluginObject {
         }
     }
 
-    @Override
-    public void onDestroy() {
-
-        if (managerBinder != null) {
-            unbindService(serviceConnection);
-        }
-    }
 
     @Override
     public void onResume() {
@@ -243,6 +235,15 @@ public class AppPlugin extends UnityPluginObject {
         stopComputerUpdates();
     }
 
+    @Override
+    public void onDestroy() {
+        inForeground = false;
+        stopComputerUpdates();
+        if (managerBinder != null) {
+            unbindService(serviceConnection);
+        }
+        RevmoveReference();
+    }
 
     //TODO:notify unity here
     private void updateUiWithServerinfo(final ComputerDetails details) {
@@ -273,7 +274,7 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-                QuickStart();
+//                QuickStart();
             }
         });
     }
@@ -339,7 +340,7 @@ public class AppPlugin extends UnityPluginObject {
                     i++;
                 }
 
-                QuickStart();
+//                QuickStart();
             }
         });
     }

@@ -34,7 +34,7 @@ namespace PCP.LibLime
 		{
 			base.OnDestroy();
 			//TODO: Need to Fix this;
-			/* Destroy(mRawImage.transform.parent.gameObject); */
+			mRawImage.texture = null;
 		}
 		private IntPtr GetTexturePtr()
 		{

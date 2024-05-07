@@ -19,6 +19,7 @@ namespace PCP.LibLime
 			App,
 			Stream,
 		}
+		public bool Blocking { private set; get; } = true;
 
 		//LifeCycle///////////
 		private void Awake()
@@ -39,21 +40,12 @@ namespace PCP.LibLime
 		{
 			mPluginManager = new AndroidJavaObject("com.liblime.PluginManager");
 			mPluginManager.Call("Init");
+			Blocking = false;
 		}
 
 		private void OnDestroy()
 		{
-			StartCoroutine(Destroy());
-		}
-		private IEnumerator Destroy()
-		{
 			mPluginManager.Call("Destroy");
-			yield return new WaitForSeconds(1);
-			while (IsAlive())
-			{
-				yield return new WaitForSeconds(1);
-				Debug.Log("Waiting for Plugin to Destroy");
-			}
 			mPluginManager.Dispose();
 			mPluginManager = null;
 		}
@@ -86,29 +78,30 @@ namespace PCP.LibLime
 		{
 			mPluginManager.Call("DestroyPlugin", pluginName);
 		}
-		public void DestroyAllPluginObjects(string pluginName)
+		public void DestroyAllPluginObjects()
 		{
-			mPluginManager.Call("DestroyAllPlugin", pluginName);
+			mPluginManager.Call("DestroyAllPlugins");
 		}
 
-		public void RestartPlugin()
+		public void ResetPlugin()
 		{
-			StartCoroutine(TaskRestartPlugin());
+			StartCoroutine(TaskResetPlugin());
 		}
-		private IEnumerator TaskRestartPlugin()
+		private IEnumerator TaskResetPlugin()
 		{
+			Blocking = false;
 			if (mPluginManager == null || !IsAlive())
 			{
 				Debug.LogError("PluginManager is null");
 				yield break;
 			}
-			StartCoroutine(Destroy());
+			DestroyAllPluginObjects();
 			yield return new WaitForSeconds(1);
-			while (HasRunningPlugin() || IsAlive())
+			while (HasRunningPlugin())
 			{
 				yield return new WaitForSeconds(1);
 			}
-			CreatePluginObject();
+			Blocking = false;
 		}
 		//Manager Methods///////////
 		public RawImage image;
@@ -134,15 +127,41 @@ namespace PCP.LibLime
 			while (o == null)
 			{
 				yield return new WaitForSeconds(1);
+				Debug.Log("PcManager is null");
 				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
 			}
 			mPcManager.Init(o);
 		}
+		private void DestroyManagers()
+		{
+			Destroy(mStreamManager);
+			Destroy(mPcManager);
+		}
+		//Utils
+		private bool CheckBlocking()
+		{
+			if (Blocking)
+			{
+				Debug.LogWarning(mTag + " is blocking");
+				return true;
+			}
+			return false;
+		}
 		//TRY Debug
 		public void DumbyStart()
 		{
+			if (CheckBlocking())
+				return;
+			mPluginManager.Call("Start");
 			StartCoroutine(StartPcMananger());
 			StartCoroutine(StartStreamManager());
+		}
+		public void DummyReset()
+		{
+			if (CheckBlocking())
+				return;
+			DestroyManagers();
+			ResetPlugin();
 		}
 	}
 }

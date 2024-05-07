@@ -13,7 +13,7 @@ namespace PCP.LibLime
 		}
 		protected override void OnDestroy()
 		{
-
+			base.OnDestroy();
 		}
 	}
 }

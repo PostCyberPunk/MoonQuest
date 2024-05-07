@@ -34,29 +34,17 @@ public class PluginManager {
     public void Init() {
         mActivity = UnityPlayer.currentActivity;
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
-
         //Try
-//        Setup default values
-        var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
-//        editor.putInt("seekbar_bitrate_kbps", 50000);
-        editor.putString("list_resolution", "3440x1440");
-//        editor.putBoolean("checkbox_host_audio", true);
-//        editor.putBoolean("checkbox_enable_sops", false);
-        editor.apply();
+        fakeSetup();
 
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
         LimeLog.debug("PluginManager Initialized");
         //TRY
-        ActivatePlugin(PluginType.PC, null);
+//        ActivatePlugin(PluginType.PC, null);
     }
 
     //Lifecycle-----------
-    public void Destroy() {
-        DestroyAllPlugins();
-        m_Instance = null;
-        mActivity = null;
-    }
 
     public void onResume() {
         for (UnityPluginObject plugin : m_PluginMap.values()) {
@@ -72,11 +60,10 @@ public class PluginManager {
         }
     }
 
-    public void onStop() {
-        for (UnityPluginObject plugin : m_PluginMap.values()) {
-            if (plugin != null)
-                plugin.onStop();
-        }
+    public void Destroy() {
+        DestroyAllPlugins();
+        m_Instance = null;
+        mActivity = null;
     }
 
     //plugins-----------
@@ -100,8 +87,11 @@ public class PluginManager {
         if (plugin != null) {
             LimeLog.debug("Plugin " + t + ":Deactivating");
             plugin.onDestroy();
-            m_PluginMap.remove(t);
         }
+    }
+
+    public void RemovePlugin(PluginType t) {
+        m_PluginMap.remove(t);
     }
 
     public void DestroyAllPlugins() {
@@ -121,8 +111,8 @@ public class PluginManager {
         return GetPlugin(PluginType.values()[t]);
     }
 
-    public boolean HasPluginRunning() {
-        return m_PluginMap.isEmpty();
+    public boolean HasRunningPlugin() {
+        return !m_PluginMap.isEmpty();
     }
 
     //Methods-----------
@@ -134,4 +124,18 @@ public class PluginManager {
         return mActivity;
     }
 
+    //TRY
+    public void StartPC() {
+        ActivatePlugin(PluginType.PC, null);
+    }
+
+    private void fakeSetup() {
+        var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
+        editor.putString("list_resolution", "3440x1440");
+//        editor.putInt("seekbar_bitrate_kbps", 50000);
+//        editor.putBoolean("checkbox_host_audio", true);
+//        editor.putBoolean("checkbox_enable_sops", false);
+        editor.apply();
+    }
+    //END OF CLASS
 }

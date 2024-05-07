@@ -62,6 +62,7 @@ public class PcPlugin extends UnityPluginObject {
         }
     };
 
+
     public PcPlugin(PluginManager p, Activity a) {
         super(p, a);
         mPluginType = PluginManager.PluginType.PC;
@@ -81,15 +82,6 @@ public class PcPlugin extends UnityPluginObject {
         pcList = new PcList();
     }
 
-    @Override
-    public void onDestroy() {
-
-        stopComputerUpdates(false);
-        if (managerBinder != null) {
-            unbindService(serviceConnection);
-        }
-        stopAddComputerManually();
-    }
 
     @Override
     public void onResume() {
@@ -108,9 +100,14 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     @Override
-    public void onStop() {
-        stopComputerUpdates(true);
+    public void onDestroy() {
+        stopComputerUpdates(false);
         stopAddComputerManually();
+
+        if (managerBinder != null) {
+            unbindService(serviceConnection);
+        }
+        RevmoveReference();
     }
 
     private void doPair(final ComputerDetails computer) {
@@ -302,5 +299,6 @@ public class PcPlugin extends UnityPluginObject {
             }
         }
     }
+
     //End of class-----------
 }
