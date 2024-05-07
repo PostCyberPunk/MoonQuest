@@ -16,4 +16,8 @@ public class UnityMessager {
     public static void Error(String msg) {
         UnityPlayer.UnitySendMessage("MessageManager", "Error", msg);
     }
+    public static void Debug(String msg){
+
+        UnityPlayer.UnitySendMessage("MessageManager", "Debug", msg);
+    }
 }

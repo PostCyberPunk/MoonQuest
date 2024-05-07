@@ -1,3 +1,4 @@
+#define DEBUGING
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class MessageManager : MonoBehaviour
 	private TextMeshProUGUI mTMP;
 	public static MessageManager Instance { get; private set; }
 
-	private Queue<string> messageQueue = new Queue<string>();
+	private readonly Queue<string> messageQueue = new();
 	public int maxMessages = 10;
 	//MonoLifeCycle-----------
 	private void Awake()
@@ -16,7 +17,7 @@ public class MessageManager : MonoBehaviour
 		if (Instance != null)
 		{
 			Destroy(gameObject);
-			Debug.LogError("MessageManager already exists in the scene");
+			UnityEngine.Debug.LogError("MessageManager already exists in the scene");
 			return;
 		}
 		Instance = this;
@@ -34,22 +35,6 @@ public class MessageManager : MonoBehaviour
 			Instance = null;
 		}
 	}
-	/* private void Update() */
-	/* { */
-	/* 	//Test The MessageManager */
-	/* 	if (Input.GetKeyDown(KeyCode.I)) */
-	/* 	{ */
-	/* 		Info("Info Message"); */
-	/* 	} */
-	/* 	if (Input.GetKeyDown(KeyCode.W)) */
-	/* 	{ */
-	/* 		Warning("Warning Message"); */
-	/* 	} */
-	/* 	if (Input.GetKeyDown(KeyCode.E)) */
-	/* 	{ */
-	/* 		Error("Error Message"); */
-	/* 	} */
-	/* } */
 	//---------Messages-------------
 	public void Info(string msg)
 	{
@@ -62,6 +47,12 @@ public class MessageManager : MonoBehaviour
 	public void Error(string msg)
 	{
 		AddMessage("<color=red>" + msg + "</color>");
+	}
+	public void Debug(string msg)
+	{
+#if DEBUGING
+		AddMessage("<color=green>" + msg + "</color>");
+#endif
 	}
 	private void AddMessage(string msg)
 	{
