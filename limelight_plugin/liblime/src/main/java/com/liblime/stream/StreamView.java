@@ -84,31 +84,4 @@ public class StreamView extends GLSurfaceView {
         super.requestRender();
     }
 
-    double desiredAspectRatio;
-    public void setDesiredAspectRatio(double aspectRatio) {
-        this.desiredAspectRatio = aspectRatio;
-    }
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // If no fixed aspect ratio has been provided, simply use the default onMeasure() behavior
-        if (desiredAspectRatio == 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
-        }
-
-        // Based on code from: https://www.buzzingandroid.com/2012/11/easy-measuring-of-custom-views-with-specific-aspect-ratio/
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int measuredHeight, measuredWidth;
-        LimeLog.temp("onMeasure: widthSize: " + widthSize + ", heightSize: " + heightSize);
-        if (widthSize > heightSize * desiredAspectRatio) {
-            measuredHeight = heightSize;
-            measuredWidth = (int)(measuredHeight * desiredAspectRatio);
-        } else {
-            measuredWidth = widthSize;
-            measuredHeight = (int)(measuredWidth / desiredAspectRatio);
-        }
-
-        setMeasuredDimension(measuredWidth, measuredHeight);
-    }
 }
