@@ -48,7 +48,7 @@ public class PluginManager {
         m_PluginMap = new EnumMap<>(PluginType.class);
         LimeLog.debug("PluginManager Initialized");
         //TRY
-        ActivatePlugin(PluginType.PC, null);
+//        ActivatePlugin(PluginType.PC, null);
     }
 
     //Lifecycle-----------
@@ -121,7 +121,7 @@ public class PluginManager {
         return GetPlugin(PluginType.values()[t]);
     }
 
-    public boolean HasPluginRunning() {
+    public boolean HasRunningPlugin() {
         return m_PluginMap.isEmpty();
     }
 
@@ -134,4 +134,8 @@ public class PluginManager {
         return mActivity;
     }
 
+    //TRY
+    public void Start() {
+        ActivatePlugin(PluginType.PC, null);
+    }
 }

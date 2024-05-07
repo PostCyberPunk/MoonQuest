@@ -81,6 +81,9 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         super(p, a, i);
         mPluginType = PluginManager.PluginType.STREAM;
         onCreate();
+
+        isInitialized = true;
+        LimeLog.debug("StreamPlugin initialized");
     }
 
     private final int mTexWidth = 3440;
@@ -561,8 +564,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         connected = true;
         connecting = false;
 
-        isInitialized = true;
-        LimeLog.debug("StreamPlugin initialized");
 
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
@@ -626,6 +627,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
             holder.getSurface().setFrameRate(desiredFrameRate,
                     Surface.FRAME_RATE_COMPATIBILITY_FIXED_SOURCE);
         }
+
     }
 
     @Override

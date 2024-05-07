@@ -62,6 +62,7 @@ public class PcPlugin extends UnityPluginObject {
         }
     };
 
+
     public PcPlugin(PluginManager p, Activity a) {
         super(p, a);
         mPluginType = PluginManager.PluginType.PC;

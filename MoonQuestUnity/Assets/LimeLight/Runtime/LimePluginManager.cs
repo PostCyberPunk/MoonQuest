@@ -80,7 +80,7 @@ namespace PCP.LibLime
 		}
 		public void DestroyAllPluginObjects()
 		{
-			mPluginManager.Call("DestroyAllPlugin");
+			mPluginManager.Call("DestroyAllPlugins");
 		}
 
 		public void ResetPlugin()
@@ -127,6 +127,7 @@ namespace PCP.LibLime
 			while (o == null)
 			{
 				yield return new WaitForSeconds(1);
+				Debug.Log("PcManager is null");
 				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
 			}
 			mPcManager.Init(o);
@@ -151,6 +152,7 @@ namespace PCP.LibLime
 		{
 			if (CheckBlocking())
 				return;
+			mPluginManager.Call("Start");
 			StartCoroutine(StartPcMananger());
 			StartCoroutine(StartStreamManager());
 		}
