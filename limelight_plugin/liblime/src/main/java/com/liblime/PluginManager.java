@@ -112,7 +112,7 @@ public class PluginManager {
     }
 
     public boolean HasRunningPlugin() {
-        return m_PluginMap.isEmpty();
+        return !m_PluginMap.isEmpty();
     }
 
     //Methods-----------
@@ -128,7 +128,6 @@ public class PluginManager {
     public void Start() {
         ActivatePlugin(PluginType.PC, null);
     }
-
 
     private void fakeSetup() {
         var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
