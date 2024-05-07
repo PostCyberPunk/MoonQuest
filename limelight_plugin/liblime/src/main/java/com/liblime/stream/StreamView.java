@@ -8,6 +8,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.Surface;
 
+import com.limelight.LimeLog;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -97,8 +99,8 @@ public class StreamView extends GLSurfaceView {
         // Based on code from: https://www.buzzingandroid.com/2012/11/easy-measuring-of-custom-views-with-specific-aspect-ratio/
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
         int measuredHeight, measuredWidth;
+        LimeLog.temp("onMeasure: widthSize: " + widthSize + ", heightSize: " + heightSize);
         if (widthSize > heightSize * desiredAspectRatio) {
             measuredHeight = heightSize;
             measuredWidth = (int)(measuredHeight * desiredAspectRatio);
