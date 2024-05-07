@@ -2,10 +2,8 @@ package com.limelight.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.view.Display;
 
 import com.limelight.nvstream.jni.MoonBridge;
 
@@ -17,13 +15,6 @@ public class PreferenceConfiguration {
         FORCE_H264,
     };
 
-    public enum AnalogStickForScrolling {
-        NONE,
-        RIGHT,
-        LEFT
-    }
-
-    private static final String LEGACY_RES_FPS_PREF_STRING = "list_resolution_fps";
     private static final String LEGACY_ENABLE_51_SURROUND_PREF_STRING = "checkbox_51_surround";
 
     static final String RESOLUTION_PREF_STRING = "list_resolution";
@@ -34,8 +25,6 @@ public class PreferenceConfiguration {
     private static final String SOPS_PREF_STRING = "checkbox_enable_sops";
     private static final String DISABLE_TOASTS_PREF_STRING = "checkbox_disable_warnings";
     private static final String HOST_AUDIO_PREF_STRING = "checkbox_host_audio";
-    private static final String DEADZONE_PREF_STRING = "seekbar_deadzone";
-    private static final String OSC_OPACITY_PREF_STRING = "seekbar_osc_opacity";
     static final String AUDIO_CONFIG_PREF_STRING = "list_audio_config";
     private static final String VIDEO_FORMAT_PREF_STRING = "video_format";
     private static final String ONLY_L3_R3_PREF_STRING = "checkbox_only_show_L3R3";
@@ -45,7 +34,6 @@ public class PreferenceConfiguration {
     static final String UNLOCK_FPS_STRING = "checkbox_unlock_fps";
     private static final String VIBRATE_FALLBACK_PREF_STRING = "checkbox_vibrate_fallback";
     private static final String VIBRATE_FALLBACK_STRENGTH_PREF_STRING = "seekbar_vibrate_fallback_strength";
-    private static final String FLIP_FACE_BUTTONS_PREF_STRING = "checkbox_flip_face_buttons";
     private static final String FRAME_PACING_PREF_STRING = "frame_pacing";
     private static final String ENABLE_AUDIO_FX_PREF_STRING = "checkbox_enable_audiofx";
     private static final String REDUCE_REFRESH_RATE_PREF_STRING = "checkbox_reduce_refresh_rate";
@@ -56,57 +44,26 @@ public class PreferenceConfiguration {
     private static final boolean DEFAULT_SOPS = true;
     private static final boolean DEFAULT_DISABLE_TOASTS = false;
     private static final boolean DEFAULT_HOST_AUDIO = false;
-    private static final int DEFAULT_DEADZONE = 7;
-    private static final int DEFAULT_OPACITY = 90;
-    public static final String DEFAULT_LANGUAGE = "default";
-    private static final boolean DEFAULT_MULTI_CONTROLLER = true;
-    private static final boolean DEFAULT_USB_DRIVER = true;
     private static final String DEFAULT_VIDEO_FORMAT = "auto";
-
-    private static final boolean ONSCREEN_CONTROLLER_DEFAULT = false;
     private static final boolean ONLY_L3_R3_DEFAULT = false;
     private static final boolean DEFAULT_ENABLE_HDR = false;
-    private static final boolean DEFAULT_ENABLE_PIP = false;
     private static final boolean DEFAULT_ENABLE_PERF_OVERLAY = false;
-    private static final boolean DEFAULT_BIND_ALL_USB = false;
-    private static final boolean DEFAULT_MOUSE_EMULATION = true;
-    private static final String DEFAULT_ANALOG_STICK_FOR_SCROLLING = "right";
-    private static final boolean DEFAULT_MOUSE_NAV_BUTTONS = false;
     private static final boolean DEFAULT_UNLOCK_FPS = false;
-    private static final boolean DEFAULT_VIBRATE_OSC = true;
     private static final boolean DEFAULT_VIBRATE_FALLBACK = false;
     private static final int DEFAULT_VIBRATE_FALLBACK_STRENGTH = 100;
-    private static final boolean DEFAULT_FLIP_FACE_BUTTONS = false;
-    private static final boolean DEFAULT_TOUCHSCREEN_TRACKPAD = true;
     private static final String DEFAULT_AUDIO_CONFIG = "2"; // Stereo
-    private static final boolean DEFAULT_LATENCY_TOAST = false;
     private static final String DEFAULT_FRAME_PACING = "latency";
-    private static final boolean DEFAULT_ABSOLUTE_MOUSE_MODE = false;
     private static final boolean DEFAULT_ENABLE_AUDIO_FX = false;
     private static final boolean DEFAULT_REDUCE_REFRESH_RATE = false;
     private static final boolean DEFAULT_FULL_RANGE = false;
-    private static final boolean DEFAULT_GAMEPAD_TOUCHPAD_AS_MOUSE = false;
-    private static final boolean DEFAULT_GAMEPAD_MOTION_SENSORS = true;
-    private static final boolean DEFAULT_GAMEPAD_MOTION_FALLBACK = false;
-
     public static final int FRAME_PACING_MIN_LATENCY = 0;
     public static final int FRAME_PACING_BALANCED = 1;
     public static final int FRAME_PACING_CAP_FPS = 2;
     public static final int FRAME_PACING_MAX_SMOOTHNESS = 3;
 
-    public static final String RES_360P = "640x360";
-    public static final String RES_480P = "854x480";
-    public static final String RES_720P = "1280x720";
-    public static final String RES_1080P = "1920x1080";
-    public static final String RES_1440P = "2560x1440";
-    public static final String RES_4K = "3840x2160";
-    public static final String RES_NATIVE = "Native";
-
     public int width, height, fps;
     public int bitrate;
     public FormatOption videoFormat;
-    public int deadzonePercentage;
-    public int oscOpacity;
     public boolean stretchVideo, enableSops, playHostAudio, disableWarnings;
     public String language;
     public boolean onlyL3R3;
@@ -115,46 +72,14 @@ public class PreferenceConfiguration {
     public boolean unlockFps;
     public boolean vibrateFallbackToDevice;
     public int vibrateFallbackToDeviceStrength;
-    public boolean touchscreenTrackpad;
     public MoonBridge.AudioConfiguration audioConfiguration;
     public int framePacing;
     public boolean enableAudioFx;
     public boolean reduceRefreshRate;
     public boolean fullRange;
-    public static boolean isNativeResolution(int width, int height) {
-        // It's not a native resolution if it matches an existing resolution option
-        if (width == 640 && height == 360) {
-            return false;
-        }
-        else if (width == 854 && height == 480) {
-            return false;
-        }
-        else if (width == 1280 && height == 720) {
-            return false;
-        }
-        else if (width == 1920 && height == 1080) {
-            return false;
-        }
-        else if (width == 2560 && height == 1440) {
-            return false;
-        }
-        else if (width == 3840 && height == 2160) {
-            return false;
-        }
-
-        return true;
-    }
 
     // If we have a screen that has semi-square dimensions, we may want to change our behavior
     // to allow any orientation and vertical+horizontal resolutions.
-    public static boolean isSquarishScreen(int width, int height) {
-        float longDim = Math.max(width, height);
-        float shortDim = Math.min(width, height);
-
-        // We just put the arbitrary cutoff for a square-ish screen at 1.3
-        return longDim / shortDim < 1.3f;
-    }
-
     private static int getWidthFromResolutionString(String resString) {
         return Integer.parseInt(resString.split("x")[0]);
     }
@@ -311,12 +236,6 @@ public class PreferenceConfiguration {
             // Use the new preference location
             String resStr = prefs.getString(RESOLUTION_PREF_STRING, PreferenceConfiguration.DEFAULT_RESOLUTION);
 
-            // Convert legacy resolution strings to the new style
-            if (!resStr.contains("x")) {
-                resStr = PreferenceConfiguration.convertFromLegacyResolutionString(resStr);
-                prefs.edit().putString(RESOLUTION_PREF_STRING, resStr).apply();
-            }
-
             config.width = PreferenceConfiguration.getWidthFromResolutionString(resStr);
             config.height = PreferenceConfiguration.getHeightFromResolutionString(resStr);
             config.fps = Integer.parseInt(prefs.getString(FPS_PREF_STRING, PreferenceConfiguration.DEFAULT_FPS));
@@ -341,23 +260,17 @@ public class PreferenceConfiguration {
         config.videoFormat = getVideoFormatValue(context);
         config.framePacing = getFramePacingValue(context);
 
-
-        config.deadzonePercentage = prefs.getInt(DEADZONE_PREF_STRING, DEFAULT_DEADZONE);
-
-        config.oscOpacity = prefs.getInt(OSC_OPACITY_PREF_STRING, DEFAULT_OPACITY);
-
-
         // Checkbox preferences
         config.disableWarnings = prefs.getBoolean(DISABLE_TOASTS_PREF_STRING, DEFAULT_DISABLE_TOASTS);
         config.enableSops = prefs.getBoolean(SOPS_PREF_STRING, DEFAULT_SOPS);
         config.stretchVideo = prefs.getBoolean(STRETCH_PREF_STRING, DEFAULT_STRETCH);
+        config.playHostAudio = prefs.getBoolean(HOST_AUDIO_PREF_STRING, DEFAULT_HOST_AUDIO);
         config.onlyL3R3 = prefs.getBoolean(ONLY_L3_R3_PREF_STRING, ONLY_L3_R3_DEFAULT);
         config.enableHdr = prefs.getBoolean(ENABLE_HDR_PREF_STRING, DEFAULT_ENABLE_HDR) && !isShieldAtvFirmwareWithBrokenHdr();
         config.enablePerfOverlay = prefs.getBoolean(ENABLE_PERF_OVERLAY_STRING, DEFAULT_ENABLE_PERF_OVERLAY);
         config.unlockFps = prefs.getBoolean(UNLOCK_FPS_STRING, DEFAULT_UNLOCK_FPS);
         config.vibrateFallbackToDevice = prefs.getBoolean(VIBRATE_FALLBACK_PREF_STRING, DEFAULT_VIBRATE_FALLBACK);
         config.vibrateFallbackToDeviceStrength = prefs.getInt(VIBRATE_FALLBACK_STRENGTH_PREF_STRING, DEFAULT_VIBRATE_FALLBACK_STRENGTH);
-        config.flipFaceButtons = prefs.getBoolean(FLIP_FACE_BUTTONS_PREF_STRING, DEFAULT_FLIP_FACE_BUTTONS);
         config.enableAudioFx = prefs.getBoolean(ENABLE_AUDIO_FX_PREF_STRING, DEFAULT_ENABLE_AUDIO_FX);
         config.reduceRefreshRate = prefs.getBoolean(REDUCE_REFRESH_RATE_PREF_STRING, DEFAULT_REDUCE_REFRESH_RATE);
         config.fullRange = prefs.getBoolean(FULL_RANGE_PREF_STRING, DEFAULT_FULL_RANGE);
