@@ -1,13 +1,10 @@
 package com.liblime;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.hardware.HardwareBuffer;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
@@ -17,12 +14,10 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 
 import com.limelight.LimeLog;
-import com.liblime.R;
+
 import com.limelight.binding.PlatformBinding;
 import com.limelight.binding.audio.AndroidAudioRenderer;
 import com.limelight.binding.video.CrashListener;
@@ -107,12 +102,8 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
             public void run() {
                 mRenderer = new StreamRenderer();
                 mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
-                RelativeLayout mLayout = new RelativeLayout(mActivity);
-                mLayout.setGravity(Gravity.BOTTOM);
-                mLayout.setX(10000);
-                mLayout.setY(10000);
-                mLayout.setBackgroundColor(0xFFFFFFFF);
                 streamView = new StreamView(mActivity);
+                streamView.setForegroundGravity(Gravity.CENTER);
                 streamView.setEGLContextClientVersion(3);
                 streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
                 streamView.setPreserveEGLContextOnPause(true);
@@ -120,9 +111,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                 streamView.setBackgroundColor(0x00000000);
 
-                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
-                mLayout.addView(streamView, new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
             }
         });
 
