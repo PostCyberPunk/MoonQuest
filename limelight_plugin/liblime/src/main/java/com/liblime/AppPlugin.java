@@ -91,7 +91,6 @@ public class AppPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
-        LimeLog.debug("AppPlugin created");
     }
 
     @Override
@@ -275,7 +274,7 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-                QuickStart();
+//                QuickStart();
             }
         });
     }
@@ -341,7 +340,7 @@ public class AppPlugin extends UnityPluginObject {
                     i++;
                 }
 
-                QuickStart();
+//                QuickStart();
             }
         });
     }
