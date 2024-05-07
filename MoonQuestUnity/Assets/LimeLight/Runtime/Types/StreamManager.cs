@@ -5,22 +5,24 @@ namespace PCP.LibLime
 {
 	public class StreamManager : BasePluginBride
 	{
-		private RawImage mRawImage;
+		[SerializeField] private RawImage mRawImage;
+		private Texture mPausingTex;
+		private Vector2 mPausingSize;
 		private int mTexWidth;
 		private int mTexHeight;
 		private IntPtr mRawObject;
 
-		public void Init(AndroidJavaObject o, RawImage img, int w, int h)
+		private void Awake()
 		{
-			mTexWidth = w;
-			mTexHeight = h;
-			mRawImage = img;
 			mTag = "StreamManager";
-			Init(o);
+			mPausingTex = mRawImage.texture;
+			mPausingSize = mRawImage.rectTransform.sizeDelta;
 		}
 
 		protected override void OnCreate()
 		{
+			GetResolution();
+			Debug.Log(mTag + ":Resolution " + mTexWidth + "x" + mTexHeight);
 			mRawObject = mPlugin.GetRawObject();
 			mRawImage.rectTransform.sizeDelta = new Vector2(mTexWidth, mTexHeight);
 			mRawImage.texture = new Texture2D(mTexWidth, mTexHeight, TextureFormat.ARGB32, false, false)
@@ -29,12 +31,18 @@ namespace PCP.LibLime
 				anisoLevel = 16
 			};
 		}
-
-		protected override void OnDestroy()
+		protected override void OnStop()
 		{
-			base.OnDestroy();
-			//TODO: Need to Fix this;
-			mRawImage.texture = null;
+			mRawImage.texture = mPausingTex;
+			mRawImage.rectTransform.sizeDelta = mPausingSize;
+		}
+		//Get Shared Texture
+		private void GetResolution()
+		{
+			string resolution = mPlugin.Call<string>("GetResolution");
+			string[] res = resolution.Split('x');
+			mTexWidth = int.Parse(res[0]);
+			mTexHeight = int.Parse(res[1]);
 		}
 		private IntPtr GetTexturePtr()
 		{
@@ -62,7 +70,16 @@ namespace PCP.LibLime
 		}
 		private void Update()
 		{
-			UpdateFrame();
+			try
+			{
+				UpdateFrame();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(mTag + "UpdateFrame failed:" + e.Message);
+				MessageManager.Instance.Error("UpdateFrame failed:" + e.Message);
+				enabled = false;
+			}
 		}
 	}
 }
