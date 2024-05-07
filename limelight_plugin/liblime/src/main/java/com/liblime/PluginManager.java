@@ -69,8 +69,9 @@ public class PluginManager {
     //plugins-----------
     public void ActivatePlugin(PluginType pluginType, Intent i) {
         if (m_PluginMap.get(pluginType) != null) {
-            DeActivePlugin(pluginType);
-            LimeLog.warning("Duplicated " + pluginType + " found,create a new one");
+//            DeActivePlugin(pluginType);
+            LimeLog.severe("Duplicated " + pluginType + " found,Stoped");
+            return;
         }
         LimeLog.debug("Plugin " + pluginType + ":Activating");
         if (pluginType == PluginType.PC) {
