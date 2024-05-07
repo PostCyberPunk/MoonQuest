@@ -1,4 +1,3 @@
-
 namespace PCP.LibLime
 {
 	public class PcManager : BasePluginBride
@@ -7,13 +6,13 @@ namespace PCP.LibLime
 		{
 			mTag = "PcManger";
 		}
-		protected override void OnCreate()
+		public void FakeStart()
 		{
+			if (!enabled)
+				return;
 			mPlugin.Call("fakeStart");
-		}
-		protected override void OnDestroy()
-		{
-			base.OnDestroy();
+			enabled = false;
+			LimePluginManager.Instance.StartManager(LimePluginManager.PluginType.App);
 		}
 	}
 }

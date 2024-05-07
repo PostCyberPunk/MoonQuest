@@ -6,19 +6,22 @@ namespace PCP.LibLime
 	/// <summary>
 	/// Base class for all Plugin Objects
 	/// </summary>
-	public abstract class BasePluginBride : MonoBehaviour
+	public class BasePluginBride : MonoBehaviour
 	{
 		protected string mTag;
+		[SerializeField] protected GameObject mPanel;
+
 		public enum PluginState
 		{
 			NONE,
 			INITIALISING,
 			INITIALIZED,
+			WORKING,
 		}
 		protected AndroidJavaObject mPlugin;
 		/* public IntPtr RawObject { get; protected set; } */
 
-		private float lodingTimeout = 10f;
+		private readonly float lodingTimeout = 10f;
 
 		public PluginState State { get; protected set; }
 		public bool IsInitialized => State == PluginState.INITIALIZED;
@@ -27,9 +30,16 @@ namespace PCP.LibLime
 
 		public void Init(AndroidJavaObject o)
 		{
+			if (State != PluginState.NONE)
+			{
+				Debug.LogError(mTag + "already Started");
+				return;
+			}
+			enabled = true;
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
 			_ = StartCoroutine(InitPlugin());
+			MessageManager.Instance.Info(mTag + " Initailizing");
 		}
 		private IEnumerator InitPlugin()
 		{
@@ -55,18 +65,43 @@ namespace PCP.LibLime
 			}
 			OnCreate();
 			State = PluginState.INITIALIZED;
+			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
-		protected abstract void OnCreate();
+		protected virtual void OnCreate()
+		{
+			if (mPanel != null)
+				mPanel.SetActive(true);
+		}
+		protected virtual void OnStop()
+		{
+			if (mPanel != null)
+				mPanel.SetActive(false);
+		}
 		protected virtual void OnDestroy()
 		{
-			mPlugin.Dispose();
-			State = PluginState.NONE;
+			StopManager();
 		}
-
+		protected virtual void OnDisable()
+		{
+			StopManager();
+		}
+		private void StopManager()
+		{
+			if (State == PluginState.NONE)
+				return;
+			StopAllCoroutines();
+			OnStop();
+			if (mPlugin != null)
+			{
+				mPlugin?.Dispose();
+				mPlugin = null;
+			}
+			State = PluginState.NONE;
+			MessageManager.Instance.Info(mTag + "Stopped");
+		}
 		///////////Methods////////////
-		///
-		//PERF:maybe a interface
+		///PERF:maybe a interface
 		public bool IsAlive()
 		{
 			if (mPlugin == null)
@@ -85,6 +120,6 @@ namespace PCP.LibLime
 			}
 			return true;
 		}
-
+		//////////Ui/////////////
 	}
 }

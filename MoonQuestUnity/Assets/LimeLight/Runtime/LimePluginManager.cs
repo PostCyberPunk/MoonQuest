@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace PCP.LibLime
 {
@@ -10,10 +9,12 @@ namespace PCP.LibLime
 		public static LimePluginManager Instance;
 
 		private readonly string mTag = "LimePluginManager";
+		private readonly float laodingTimeout = 10f;
 		private AndroidJavaObject mPluginManager;
 		private StreamManager mStreamManager;
 		private PcManager mPcManager;
-		private enum PluginType
+		private AppManager mAppManger;
+		public enum PluginType
 		{
 			Pc,
 			App,
@@ -30,13 +31,16 @@ namespace PCP.LibLime
 				return;
 			}
 			Instance = this;
+			mStreamManager = GetComponent<StreamManager>();
+			mPcManager = GetComponent<PcManager>();
+			mAppManger = GetComponent<AppManager>();
 		}
 
 		private void Start()
 		{
 			CreatePluginObject();
 		}
-		public void CreatePluginObject()
+		private void CreatePluginObject()
 		{
 			mPluginManager = new AndroidJavaObject("com.liblime.PluginManager");
 			mPluginManager.Call("Init");
@@ -45,6 +49,8 @@ namespace PCP.LibLime
 
 		private void OnDestroy()
 		{
+			StopAllCoroutines();
+			DestroyAllPluginObjects();
 			mPluginManager.Call("Destroy");
 			mPluginManager.Dispose();
 			mPluginManager = null;
@@ -52,7 +58,6 @@ namespace PCP.LibLime
 		//Plugin Methods///////////
 		public bool IsAlive()
 		{
-			Destroy(mStreamManager);
 			if (mPluginManager == null)
 			{
 				Debug.LogError(mTag + " is null");
@@ -74,9 +79,9 @@ namespace PCP.LibLime
 			return mPluginManager.Call<bool>("HasRunningPlugin");
 		}
 
-		public void DestroyPluginObject(string pluginName)
+		private void DestroyPluginObject(PluginType t)
 		{
-			mPluginManager.Call("DestroyPlugin", pluginName);
+			mPluginManager.Call("DestroyPlugin", (int)t);
 		}
 		public void DestroyAllPluginObjects()
 		{
@@ -89,8 +94,8 @@ namespace PCP.LibLime
 		}
 		private IEnumerator TaskResetPlugin()
 		{
-			Blocking = false;
-			if (mPluginManager == null || !IsAlive())
+			Blocking = true;
+			if (mPluginManager == null)
 			{
 				Debug.LogError("PluginManager is null");
 				yield break;
@@ -104,38 +109,49 @@ namespace PCP.LibLime
 			Blocking = false;
 		}
 		//Manager Methods///////////
-		public RawImage image;
-
-		private IEnumerator StartStreamManager()
+		public void StartManager(PluginType t)
 		{
-			int w = 3440;
-			int h = 1440;
-			mStreamManager = gameObject.AddComponent<StreamManager>();
-			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Stream);
+			if (t == PluginType.Pc)
+				mPluginManager.Call("StartPC");
+			StartCoroutine(InitManager(t));
+		}
+		private IEnumerator InitManager(PluginType t)
+		{
+			if (CheckBlocking())
+				yield break;
+			float timer = 0;
+			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 			while (o == null)
 			{
+				if (timer > laodingTimeout)
+				{
+					Debug.LogError(t.ToString() + "Loading Timeout:Cannot get plugin");
+					yield break;
+				}
 				yield return new WaitForSeconds(1);
-				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Stream);
+				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
+				timer += Time.deltaTime;
 			}
-			mStreamManager.Init(o, image, w, h);
-		}
-
-		private IEnumerator StartPcMananger()
-		{
-			mPcManager = gameObject.AddComponent<PcManager>();
-			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
-			while (o == null)
+			switch (t)
 			{
-				yield return new WaitForSeconds(1);
-				Debug.Log("PcManager is null");
-				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)PluginType.Pc);
+				case PluginType.Pc:
+					mPcManager.Init(o);
+					break;
+				case PluginType.Stream:
+					mStreamManager.Init(o);
+					break;
+				case PluginType.App:
+					mAppManger.Init(o);
+					break;
+				default:
+					break;
 			}
-			mPcManager.Init(o);
 		}
-		private void DestroyManagers()
+		private void StopManagers()
 		{
-			Destroy(mStreamManager);
-			Destroy(mPcManager);
+			mAppManger.enabled = false;
+			mPcManager.enabled = false;
+			mStreamManager.enabled = false;
 		}
 		//Utils
 		private bool CheckBlocking()
@@ -148,19 +164,15 @@ namespace PCP.LibLime
 			return false;
 		}
 		//TRY Debug
-		public void DumbyStart()
+		public void StartPc()
 		{
-			if (CheckBlocking())
-				return;
-			mPluginManager.Call("Start");
-			StartCoroutine(StartPcMananger());
-			StartCoroutine(StartStreamManager());
+			StartManager(PluginType.Pc);
 		}
 		public void DummyReset()
 		{
 			if (CheckBlocking())
 				return;
-			DestroyManagers();
+			StopManagers();
 			ResetPlugin();
 		}
 	}
