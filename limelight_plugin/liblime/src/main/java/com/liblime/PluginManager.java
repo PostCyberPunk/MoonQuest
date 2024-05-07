@@ -9,9 +9,7 @@ import com.limelight.LimeLog;
 import com.liblime.types.UnityPluginObject;
 import com.unity3d.player.UnityPlayer;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 
 public class PluginManager {
     private Activity mActivity;
@@ -57,6 +55,7 @@ public class PluginManager {
     public void Destroy() {
         DestroyAllPlugins();
         m_Instance = null;
+        mActivity = null;
     }
 
     public void onResume() {
