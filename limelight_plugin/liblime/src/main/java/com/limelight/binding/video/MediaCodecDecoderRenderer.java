@@ -1413,7 +1413,8 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
                 if (lastTwo.framesWithHostProcessingLatency > 0) {
                     sb.append("Host Processing Latency: ").append((float) lastTwo.minHostProcessingLatency / 10).append(", ").append((float) lastTwo.maxHostProcessingLatency / 10).append(", ").append((float) lastTwo.totalHostProcessingLatency / 10 / lastTwo.framesWithHostProcessingLatency).append('\n');
                     sb.append("Decode Time: ").append(decodeTimeMs);
-                    perfListener.onPerfUpdate(sb.toString());
+                }
+                perfListener.onPerfUpdate(sb.toString());
                 perfListener.onPerfUpdate(sb.toString());
             }
 

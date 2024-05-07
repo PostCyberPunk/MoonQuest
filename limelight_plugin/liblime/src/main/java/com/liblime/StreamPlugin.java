@@ -79,7 +79,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     public StreamPlugin(PluginManager p, Activity a, Intent i) {
         //super(p,a,i, PluginManager.PluginType.STREAM);
         super(p, a, i);
-        mPluginType= PluginManager.PluginType.STREAM;
+        mPluginType = PluginManager.PluginType.STREAM;
         onCreate();
         isInitialized = true;
         LimeLog.debug("StreamPlugin initialized");
@@ -436,15 +436,15 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                         LimeLog.todo("Video decoder init failed: " + errorCode);
                     }
 
-                    String dialogText = getResources().getString(R.string.conn_error_msg) + " " + stage + " (error " + errorCode + ")";
+                    String dialogText = "Connection error:" + " " + stage + " (error " + errorCode + ")";
 
                     if (portFlags != 0) {
-                        dialogText += "\n\n" + getResources().getString(R.string.check_ports_msg) + "\n" +
+                        dialogText += "\n\n" + "check port" + "\n" +
                                 MoonBridge.stringifyPortFlags(portFlags, "\n");
                     }
 
                     if (portTestResult != MoonBridge.ML_TEST_RESULT_INCONCLUSIVE && portTestResult != 0) {
-                        dialogText += "\n\n" + getResources().getString(R.string.nettest_text_blocked);
+                        dialogText += "\n\n Network blocked";
                     }
 
                     LimeLog.todo("COnnection failed:" + dialogText);
@@ -476,24 +476,25 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
                         if (portTestResult != MoonBridge.ML_TEST_RESULT_INCONCLUSIVE && portTestResult != 0) {
                             // If we got a blocked result, that supersedes any other error message
-                            message = getResources().getString(R.string.nettest_text_blocked);
+                            message = "Nested text bloacked";
                         } else {
                             switch (errorCode) {
                                 case MoonBridge.ML_ERROR_NO_VIDEO_TRAFFIC:
-                                    message = getResources().getString(R.string.no_video_received_error);
+                                    LimeLog.todo("no video received");
+                                    message = "no_video_received_error";
                                     break;
 
                                 case MoonBridge.ML_ERROR_NO_VIDEO_FRAME:
-                                    message = getResources().getString(R.string.no_frame_received_error);
+                                    message = "no_frame_received_error";
                                     break;
 
                                 case MoonBridge.ML_ERROR_UNEXPECTED_EARLY_TERMINATION:
                                 case MoonBridge.ML_ERROR_PROTECTED_CONTENT:
-                                    message = getResources().getString(R.string.early_termination_error);
+                                    message = "early_termination_error";
                                     break;
 
                                 case MoonBridge.ML_ERROR_FRAME_CONVERSION:
-                                    message = getResources().getString(R.string.frame_conversion_error);
+                                    message = "frame_conversion_error";
                                     break;
 
                                 default:
@@ -504,14 +505,13 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                                     } else {
                                         errorCodeString = Integer.toString(errorCode);
                                     }
-                                    message = getResources().getString(R.string.conn_terminated_msg) + "\n\n" +
-                                            getResources().getString(R.string.error_code_prefix) + " " + errorCodeString;
+                                    message = "Nested text error code: " + errorCodeString;
                                     break;
                             }
                         }
 
                         if (portFlags != 0) {
-                            message += "\n\n" + getResources().getString(R.string.check_ports_msg) + "\n" +
+                            message += "\n\n" + "checkport error" + "\n" +
                                     MoonBridge.stringifyPortFlags(portFlags, "\n");
                         }
                         LimeLog.todo("Connection terminated: " + message);
