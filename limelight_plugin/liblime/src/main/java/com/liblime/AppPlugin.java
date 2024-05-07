@@ -221,13 +221,6 @@ public class AppPlugin extends UnityPluginObject {
         }
     }
 
-    @Override
-    public void onDestroy() {
-
-        if (managerBinder != null) {
-            unbindService(serviceConnection);
-        }
-    }
 
     @Override
     public void onResume() {
@@ -243,6 +236,14 @@ public class AppPlugin extends UnityPluginObject {
         stopComputerUpdates();
     }
 
+    @Override
+    public void onDestroy() {
+        inForeground = false;
+        stopComputerUpdates();
+        if (managerBinder != null) {
+            unbindService(serviceConnection);
+        }
+    }
 
     //TODO:notify unity here
     private void updateUiWithServerinfo(final ComputerDetails details) {

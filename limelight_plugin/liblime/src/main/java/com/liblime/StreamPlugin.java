@@ -297,8 +297,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
     @Override
     public void onDestroy() {
-//        super.onDestroy();
-
 
         if (lowLatencyWifiLock != null) {
             lowLatencyWifiLock.release();
@@ -312,6 +310,13 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
             displayedFailureDialog = true;
             stopConnection();
+            // Clear the tombstone count if we terminated normally
+            if (!reportedCrash && tombstonePrefs.getInt("CrashCount", 0) != 0) {
+                tombstonePrefs.edit()
+                        .putInt("CrashCount", 0)
+                        .putInt("LastNotifiedCrashCount", 0)
+                        .apply();
+            }
         }
     }
 
@@ -323,69 +328,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     @Override
     public void onResume() {
         mIsPaused = false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-
-        if (conn != null) {
-            int videoFormat = decoderRenderer.getActiveVideoFormat();
-
-            displayedFailureDialog = true;
-            stopConnection();
-
-//            if (prefConfig.enableLatencyToast) {
-//                int averageEndToEndLat = decoderRenderer.getAverageEndToEndLatency();
-//                int averageDecoderLat = decoderRenderer.getAverageDecoderLatency();
-//                String message = null;
-//                if (averageEndToEndLat > 0) {
-//                    message = getResources().getString(R.string.conn_client_latency) + " " + averageEndToEndLat + " ms";
-//                    if (averageDecoderLat > 0) {
-//                        message += " (" + getResources().getString(R.string.conn_client_latency_hw) + " " + averageDecoderLat + " ms)";
-//                    }
-//                } else if (averageDecoderLat > 0) {
-//                    message = getResources().getString(R.string.conn_hardware_latency) + " " + averageDecoderLat + " ms";
-//                }
-//
-//                // Add the video codec to the post-stream toast
-//                if (message != null) {
-//                    message += " [";
-//
-//                    if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H264) != 0) {
-//                        message += "H.264";
-//                    } else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_H265) != 0) {
-//                        message += "HEVC";
-//                    } else if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_AV1) != 0) {
-//                        message += "AV1";
-//                    } else {
-//                        message += "UNKNOWN";
-//                    }
-//
-//                    if ((videoFormat & MoonBridge.VIDEO_FORMAT_MASK_10BIT) != 0) {
-//                        message += " HDR";
-//                    }
-//
-//                    message += "]";
-//                }
-//
-//                if (message != null) {
-//                    //TODO
-//                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-//                }
-//            }
-
-            // Clear the tombstone count if we terminated normally
-            if (!reportedCrash && tombstonePrefs.getInt("CrashCount", 0) != 0) {
-                tombstonePrefs.edit()
-                        .putInt("CrashCount", 0)
-                        .putInt("LastNotifiedCrashCount", 0)
-                        .apply();
-            }
-        }
-
-        finish();
     }
 
     @Override

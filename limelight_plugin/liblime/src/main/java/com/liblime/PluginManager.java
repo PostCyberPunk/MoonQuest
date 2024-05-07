@@ -52,11 +52,6 @@ public class PluginManager {
     }
 
     //Lifecycle-----------
-    public void Destroy() {
-        DestroyAllPlugins();
-        m_Instance = null;
-        mActivity = null;
-    }
 
     public void onResume() {
         for (UnityPluginObject plugin : m_PluginMap.values()) {
@@ -72,13 +67,11 @@ public class PluginManager {
         }
     }
 
-    public void onStop() {
-        for (UnityPluginObject plugin : m_PluginMap.values()) {
-            if (plugin != null)
-                plugin.onStop();
-        }
+    public void Destroy() {
+        DestroyAllPlugins();
+        m_Instance = null;
+        mActivity = null;
     }
-
     //plugins-----------
     public void ActivatePlugin(PluginType pluginType, Intent i) {
         if (m_PluginMap.get(pluginType) != null) {

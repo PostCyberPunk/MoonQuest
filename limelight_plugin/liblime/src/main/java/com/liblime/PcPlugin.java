@@ -82,15 +82,6 @@ public class PcPlugin extends UnityPluginObject {
         pcList = new PcList();
     }
 
-    @Override
-    public void onDestroy() {
-
-        stopComputerUpdates(false);
-        if (managerBinder != null) {
-            unbindService(serviceConnection);
-        }
-        stopAddComputerManually();
-    }
 
     @Override
     public void onResume() {
@@ -109,11 +100,15 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     @Override
-    public void onStop() {
-        stopComputerUpdates(true);
-        stopAddComputerManually();
-    }
+    public void onDestroy() {
 
+        stopComputerUpdates(false);
+        stopAddComputerManually();
+
+        if (managerBinder != null) {
+            unbindService(serviceConnection);
+        }
+    }
     private void doPair(final ComputerDetails computer) {
         if (computer.state == ComputerDetails.State.OFFLINE || computer.activeAddress == null) {
             LimeLog.todo("Computer is offline or has no active address");
