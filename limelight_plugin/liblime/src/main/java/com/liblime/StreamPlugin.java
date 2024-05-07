@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.limelight.LimeLog;
 
@@ -99,24 +100,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         tombstonePrefs = StreamPlugin.this.getSharedPreferences("DecoderTombstone", 0);
 
         //Initialize the StreamView
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRenderer = new StreamRenderer();
-                mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
-                streamView = new StreamView(mActivity);
-                streamView.setForegroundGravity(Gravity.CENTER);
-                streamView.setEGLContextClientVersion(3);
-                streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-                streamView.setPreserveEGLContextOnPause(true);
-                streamView.setRenderer(mRenderer);
-//                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                streamView.setBackgroundColor(0x00000000);
-
-                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
-            }
-        });
-
         // Warn the user if they're on a metered connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connMgr.isActiveNetworkMetered()) {
@@ -285,6 +268,28 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
             LimeLog.todo("This device or ROM doesn't support hardware accelerated H.264 playback.");
             return;
         }
+
+        mRenderer = new StreamRenderer();
+        mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
+        streamView = new StreamView(mActivity);
+        streamView.setX(mTexWidth);
+        streamView.setY(mTextHeight);
+//                streamView.setForegroundGravity(Gravity.CENTER);
+        streamView.setEGLContextClientVersion(3);
+        streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        streamView.setPreserveEGLContextOnPause(true);
+        streamView.setRenderer(mRenderer);
+//                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        streamView.setBackgroundColor(0x00000000);
+//                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
+
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LimeLog.temp("Adding StreamView to layout");
+                mActivity.addContentView(streamView, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
+            }
+        });
 
         // The connection will be started when the surface gets created
         streamView.getHolder().addCallback(this);
@@ -506,9 +511,17 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     @Override
     public void connectionStarted() {
 
-        connected = true;
-        connecting = false;
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
+                connected = true;
+                connecting = false;
+
+                // Update GameManager state to indicate we're in game
+//                UiHelper.notifyStreamConnected(Game.this);
+            }
+        });
 
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
