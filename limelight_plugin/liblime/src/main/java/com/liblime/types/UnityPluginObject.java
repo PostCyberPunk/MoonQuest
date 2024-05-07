@@ -91,18 +91,6 @@ public abstract class UnityPluginObject {
         return mActivity.getApplicationContext();
     }
 
-    protected WindowManager getWindowManager() {
-        return mActivity.getWindowManager();
-    }
-
-    protected Window getWindow() {
-        return mActivity.getWindow();
-    }
-
-    protected PackageManager getPackageManager() {
-        return mActivity.getPackageManager();
-    }
-
     protected Resources getResources() {
         return mActivity.getResources();
     }
