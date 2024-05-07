@@ -101,12 +101,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         prefConfig = PreferenceConfiguration.readPreferences(mActivity);
         tombstonePrefs = StreamPlugin.this.getSharedPreferences("DecoderTombstone", 0);
 
-        //TRY:Remove this
-        prefConfig.playHostAudio = true;
-        prefConfig.bitrate = 60000;
-        prefConfig.enablePerfOverlay = true;
-        prefConfig.enableSops = false;
-
         //Initialize the StreamView
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -272,14 +266,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
             }
         }
 
-        // Set to the optimal mode for streaming
-//        float displayRefreshRate = prepareDisplayForRendering();
-        //TRY
         float displayRefreshRate = 60;
-        prefConfig.width = mTexWidth;
-        prefConfig.height = mTextHeight;
-//        streamView.getHolder().setFixedSize(pref, 100);
-
         LimeLog.info("Display refresh rate: " + displayRefreshRate);
 
         // If the user requested frame pacing using a capped FPS, we will need to change our

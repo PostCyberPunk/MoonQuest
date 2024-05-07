@@ -37,6 +37,16 @@ public class PluginManager {
     public void Init() {
         mActivity = UnityPlayer.currentActivity;
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
+
+        //Try
+        //Setup default values
+//        var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
+//        editor.putInt("seekbar_bitrate_kbps", 50000);
+//        editor.putString("list_resolution", "3440x1440");
+//        editor.putBoolean("checkbox_host_audio", true);
+//        editor.putBoolean("checkbox_enable_sops", false);
+//        editor.apply();
+
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
         LimeLog.debug("PluginManager Initialized");
