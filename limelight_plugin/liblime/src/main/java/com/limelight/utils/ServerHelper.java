@@ -88,13 +88,9 @@ public class ServerHelper {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SpinnerDialog spinnerDialog = SpinnerDialog.displayDialog(parent,
-                        parent.getResources().getString(R.string.nettest_title_waiting),
-                        parent.getResources().getString(R.string.nettest_text_waiting),
-                        false);
-
+                LimeLog.todo("Starting network test");
                 int ret = MoonBridge.testClientConnectivity(CONNECTION_TEST_SERVER, 443, MoonBridge.ML_PORT_FLAG_ALL);
-                spinnerDialog.dismiss();
+                //spinnerDialog.dismiss();
 
                 String dialogSummary;
                 if (ret == MoonBridge.ML_TEST_RESULT_INCONCLUSIVE) {
