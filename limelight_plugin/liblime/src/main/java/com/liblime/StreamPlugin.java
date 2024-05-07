@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.limelight.LimeLog;
 
@@ -112,8 +113,17 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                 streamView.setRenderer(mRenderer);
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                 streamView.setBackgroundColor(0x00000000);
+//                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
 
-                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
+                RelativeLayout mLayout = new RelativeLayout(mActivity);
+                mLayout.setGravity(Gravity.CENTER);
+                mLayout.setX(10000);
+                mLayout.setY(10000);
+                mLayout.setBackgroundColor(0xFFFFFFFF);
+
+                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
+                mLayout.addView(streamView, new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             }
         });
 
