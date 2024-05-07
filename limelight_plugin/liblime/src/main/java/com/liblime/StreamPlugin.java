@@ -81,8 +81,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         super(p, a, i);
         mPluginType = PluginManager.PluginType.STREAM;
         onCreate();
-        isInitialized = true;
-        LimeLog.debug("StreamPlugin initialized");
     }
 
     private final int mTexWidth = 3440;
@@ -305,6 +303,13 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         if (highPerfWifiLock != null) {
             highPerfWifiLock.release();
         }
+
+        if (conn != null) {
+            int videoFormat = decoderRenderer.getActiveVideoFormat();
+
+            displayedFailureDialog = true;
+            stopConnection();
+        }
     }
 
     @Override
@@ -429,7 +434,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
                 if (!displayedFailureDialog) {
                     displayedFailureDialog = true;
-                    LimeLog.severe(stage + " failed: " + errorCode);
+                    UnityMessager.Error(stage + " failed: " + errorCode);
 
                     // If video initialization failed and the surface is still valid, display extra information for the user
                     if (stage.contains("video") && streamView.getHolder().getSurface().isValid()) {
@@ -447,7 +452,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                         dialogText += "\n\n Network blocked";
                     }
 
-                    LimeLog.todo("COnnection failed:" + dialogText);
+                    UnityMessager.Error("Connection failed:" + dialogText);
                 }
             }
         });
@@ -514,7 +519,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                             message += "\n\n" + "checkport error" + "\n" +
                                     MoonBridge.stringifyPortFlags(portFlags, "\n");
                         }
-                        LimeLog.todo("Connection terminated: " + message);
+                        UnityMessager.Error("Connection terminated: " + message);
                     } else {
                         finish();
                     }
@@ -552,17 +557,12 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
     @Override
     public void connectionStarted() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
-                connected = true;
-                connecting = false;
+        connected = true;
+        connecting = false;
 
-                // Update GameManager state to indicate we're in game
-//                UiHelper.notifyStreamConnected(Game.this);
-            }
-        });
+        isInitialized = true;
+        LimeLog.debug("StreamPlugin initialized");
 
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
