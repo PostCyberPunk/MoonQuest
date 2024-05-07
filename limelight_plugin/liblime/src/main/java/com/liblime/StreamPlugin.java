@@ -106,7 +106,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                 mRenderer = new StreamRenderer();
                 mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
                 streamView = new StreamView(mActivity);
-                streamView.setForegroundGravity(Gravity.CENTER);
+//                streamView.setForegroundGravity(Gravity.CENTER);
                 streamView.setEGLContextClientVersion(3);
                 streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
                 streamView.setPreserveEGLContextOnPause(true);
