@@ -506,9 +506,17 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     @Override
     public void connectionStarted() {
 
-        connected = true;
-        connecting = false;
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
+                connected = true;
+                connecting = false;
+
+                // Update GameManager state to indicate we're in game
+//                UiHelper.notifyStreamConnected(Game.this);
+            }
+        });
 
         // Report this shortcut being used (off the main thread to prevent ANRs)
         ComputerDetails computer = new ComputerDetails();
