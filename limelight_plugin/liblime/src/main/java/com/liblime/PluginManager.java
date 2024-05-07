@@ -125,7 +125,7 @@ public class PluginManager {
     }
 
     //TRY
-    public void Start() {
+    public void StartPC() {
         ActivatePlugin(PluginType.PC, null);
     }
 
