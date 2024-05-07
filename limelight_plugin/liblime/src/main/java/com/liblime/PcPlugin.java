@@ -84,6 +84,7 @@ public class PcPlugin extends UnityPluginObject {
     @Override
     public void onDestroy() {
 
+        stopComputerUpdates(false);
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
