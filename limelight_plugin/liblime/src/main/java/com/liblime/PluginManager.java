@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 
 import com.limelight.LimeLog;
-import com.liblime.R;
 import com.liblime.types.UnityPluginObject;
 import com.unity3d.player.UnityPlayer;
 

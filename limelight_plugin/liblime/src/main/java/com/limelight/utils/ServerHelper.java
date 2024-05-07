@@ -2,12 +2,10 @@ package com.limelight.utils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.liblime.StreamPlugin;
 import com.limelight.LimeLog;
 import com.liblime.PluginManager;
-import com.liblime.R;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.computers.ComputerManagerService;
 import com.limelight.nvstream.http.ComputerDetails;
@@ -78,7 +76,6 @@ public class ServerHelper {
                                ComputerManagerService.ComputerManagerBinder managerBinder) {
         if (computer.state == ComputerDetails.State.OFFLINE || computer.activeAddress == null) {
             LimeLog.todo("Attempted to start app on offline computer");
-//            Toast.makeText(parent, parent.getResources().getString(R.string.pair_pc_offline), Toast.LENGTH_SHORT).show();
             return;
         }
         parent.ActivatePlugin(PluginManager.PluginType.STREAM, createStartIntent(parent.GetActivity(), app, computer, managerBinder));
@@ -94,14 +91,12 @@ public class ServerHelper {
 
                 String dialogSummary;
                 if (ret == MoonBridge.ML_TEST_RESULT_INCONCLUSIVE) {
-                    dialogSummary = parent.getResources().getString(R.string.nettest_text_inconclusive);
+                    LimeLog.todo("Network test result: inconclusive");
                 } else if (ret == 0) {
-                    dialogSummary = parent.getResources().getString(R.string.nettest_text_success);
+                    LimeLog.todo("Network test result: success");
                 } else {
-                    dialogSummary = parent.getResources().getString(R.string.nettest_text_failure);
-                    dialogSummary += MoonBridge.stringifyPortFlags(ret, "\n");
+                    LimeLog.todo("Network test result: failure");
                 }
-                LimeLog.todo("Network test result: " + dialogSummary);
             }
         }).start();
     }
@@ -111,7 +106,7 @@ public class ServerHelper {
                               final NvApp app,
                               final ComputerManagerService.ComputerManagerBinder managerBinder,
                               final Runnable onComplete) {
-        Toast.makeText(parent, parent.getResources().getString(R.string.applist_quit_app) + " " + app.getAppName() + "...", Toast.LENGTH_SHORT).show();
+        LimeLog.todo("Quitting app " + app.getAppName());
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -121,9 +116,9 @@ public class ServerHelper {
                     httpConn = new NvHTTP(ServerHelper.getCurrentAddressFromComputer(computer), computer.httpsPort,
                             managerBinder.getUniqueId(), computer.serverCert, PlatformBinding.getCryptoProvider(parent));
                     if (httpConn.quitApp()) {
-                        message = parent.getResources().getString(R.string.applist_quit_success) + " " + app.getAppName();
+                        message = "Success quited " + " " + app.getAppName();
                     } else {
-                        message = parent.getResources().getString(R.string.applist_quit_fail) + " " + app.getAppName();
+                        message = "Failed to quit" + " " + app.getAppName();
                     }
                 } catch (HostHttpResponseException e) {
                     if (e.getErrorCode() == 599) {
@@ -134,9 +129,10 @@ public class ServerHelper {
                         message = e.getMessage();
                     }
                 } catch (UnknownHostException e) {
-                    message = parent.getResources().getString(R.string.error_unknown_host);
+                    message = "Failed to resolve host";
                 } catch (FileNotFoundException e) {
-                    message = parent.getResources().getString(R.string.error_404);
+                    message = "GFE returned an HTTP 404 error. Make sure your PC is running a supported GPU.\n" +
+                            "\t    Using remote desktop software can also cause this error. Try rebooting your machine or reinstalling GFE."
                 } catch (IOException | XmlPullParserException e) {
                     message = e.getMessage();
                     e.printStackTrace();
@@ -147,12 +143,7 @@ public class ServerHelper {
                 }
 
                 final String toastMessage = message;
-                parent.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(parent, toastMessage, Toast.LENGTH_LONG).show();
-                    }
-                });
+                LimeLog.todo(toastMessage);
             }
         }).start();
     }
