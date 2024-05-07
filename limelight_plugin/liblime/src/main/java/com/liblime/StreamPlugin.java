@@ -652,6 +652,10 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
     private int[] mHWBFboID;
     private boolean mIsPaused = false;
 
+    public String GetResolution() {
+        return mTexWidth + "x" + mTextHeight;
+    }
+
     public int getTexturePtr() {
         return mHWBFboTextureId == null ? 0 : mHWBFboTextureId[0];
     }
