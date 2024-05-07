@@ -101,14 +101,15 @@ public class PcPlugin extends UnityPluginObject {
 
     @Override
     public void onDestroy() {
-
         stopComputerUpdates(false);
         stopAddComputerManually();
 
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
+        RevmoveReference();
     }
+
     private void doPair(final ComputerDetails computer) {
         if (computer.state == ComputerDetails.State.OFFLINE || computer.activeAddress == null) {
             LimeLog.todo("Computer is offline or has no active address");
@@ -298,5 +299,6 @@ public class PcPlugin extends UnityPluginObject {
             }
         }
     }
+
     //End of class-----------
 }

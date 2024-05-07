@@ -2,6 +2,7 @@ package com.liblime;
 
 
 import android.app.Activity;
+import android.app.appsearch.RemoveByDocumentIdRequest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -318,6 +319,8 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                         .apply();
             }
         }
+
+        RevmoveReference();
     }
 
     @Override

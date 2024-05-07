@@ -34,15 +34,8 @@ public class PluginManager {
     public void Init() {
         mActivity = UnityPlayer.currentActivity;
         PreferenceManager.setDefaultValues(mActivity, R.xml.preferences, false);
-
         //Try
-//        Setup default values
-        var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
-//        editor.putInt("seekbar_bitrate_kbps", 50000);
-        editor.putString("list_resolution", "3440x1440");
-//        editor.putBoolean("checkbox_host_audio", true);
-//        editor.putBoolean("checkbox_enable_sops", false);
-        editor.apply();
+        fakeSetup();
 
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
@@ -72,6 +65,7 @@ public class PluginManager {
         m_Instance = null;
         mActivity = null;
     }
+
     //plugins-----------
     public void ActivatePlugin(PluginType pluginType, Intent i) {
         if (m_PluginMap.get(pluginType) != null) {
@@ -93,8 +87,11 @@ public class PluginManager {
         if (plugin != null) {
             LimeLog.debug("Plugin " + t + ":Deactivating");
             plugin.onDestroy();
-            m_PluginMap.remove(t);
         }
+    }
+
+    public void RemovePlugin(PluginType t) {
+        m_PluginMap.remove(t);
     }
 
     public void DestroyAllPlugins() {
@@ -131,4 +128,15 @@ public class PluginManager {
     public void Start() {
         ActivatePlugin(PluginType.PC, null);
     }
+
+
+    private void fakeSetup() {
+        var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
+        editor.putString("list_resolution", "3440x1440");
+//        editor.putInt("seekbar_bitrate_kbps", 50000);
+//        editor.putBoolean("checkbox_host_audio", true);
+//        editor.putBoolean("checkbox_enable_sops", false);
+        editor.apply();
+    }
+    //END OF CLASS
 }

@@ -40,9 +40,20 @@ public abstract class UnityPluginObject {
     }
 
     protected abstract void onCreate();
+
     public abstract void onPause();
+
     public abstract void onResume();
+
     public abstract void onDestroy();
+
+    protected void RevmoveReference() {
+        mPluginManager.RemovePlugin(mPluginType);
+        mActivity = null;
+        mIntent = null;
+        mPluginManager = null;
+    }
+
     public boolean IsInitialized() {
         return isInitialized;
     }

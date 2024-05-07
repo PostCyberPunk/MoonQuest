@@ -243,6 +243,7 @@ public class AppPlugin extends UnityPluginObject {
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
+        RevmoveReference();
     }
 
     //TODO:notify unity here
