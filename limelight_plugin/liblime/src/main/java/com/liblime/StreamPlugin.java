@@ -269,32 +269,25 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
             return;
         }
 
-                mRenderer = new StreamRenderer();
-                mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
-                streamView = new StreamView(mActivity);
-                streamView.setX
+        mRenderer = new StreamRenderer();
+        mRenderer.SetTextureResolution(mTexWidth, mTextHeight);
+        streamView = new StreamView(mActivity);
+        streamView.setX(mTexWidth);
+        streamView.setY(mTextHeight);
 //                streamView.setForegroundGravity(Gravity.CENTER);
-                streamView.setEGLContextClientVersion(3);
-                streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-                streamView.setPreserveEGLContextOnPause(true);
-                streamView.setRenderer(mRenderer);
+        streamView.setEGLContextClientVersion(3);
+        streamView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        streamView.setPreserveEGLContextOnPause(true);
+        streamView.setRenderer(mRenderer);
 //                streamView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                streamView.setBackgroundColor(0x00000000);
+        streamView.setBackgroundColor(0x00000000);
 //                mActivity.addContentView(streamView, new ViewGroup.LayoutParams(mTexWidth, mTextHeight));
-
-                RelativeLayout mLayout = new RelativeLayout(mActivity);
-                mLayout.setGravity(Gravity.CENTER);
-                mLayout.setX(10000);
-                mLayout.setY(10000);
-                mLayout.setBackgroundColor(0xFFFFFFFF);
 
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 LimeLog.temp("Adding StreamView to layout");
-                mActivity.addContentView(mLayout, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
-                mLayout.addView(streamView, new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                mActivity.addContentView(streamView, new RelativeLayout.LayoutParams(mTexWidth, mTextHeight));
             }
         });
 
