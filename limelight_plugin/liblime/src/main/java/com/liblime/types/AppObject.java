@@ -21,11 +21,11 @@ public class AppObject {
         return app.getAppName();
     }
 
-    public String ToData() {
-        return new Gson().toJson(new AppData(app));
+    public AppData ToData() {
+        return new AppData(app);
     }
 
-    private static class AppData implements Serializable {
+    public static class AppData implements Serializable {
         public String appName;
         public int appId = -1;
         public boolean initialized = false;

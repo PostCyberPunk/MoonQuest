@@ -276,7 +276,8 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-//                QuickStart();
+                if (updated)
+                    notifyUpdateList();
             }
         });
     }
@@ -342,9 +343,20 @@ public class AppPlugin extends UnityPluginObject {
                     i++;
                 }
 
-//                QuickStart();
+                if (updated)
+                    notifyUpdateList();
             }
         });
+    }
+
+    //Bridge
+    public String GetList() {
+        return m_AppList.getUpdatedList();
+    }
+
+    private void notifyUpdateList() {
+        LimeLog.verbose("notify unity to update the computer list view");
+        mPluginManager.Callback("applist");
     }
 
     private void QuickStart() {
