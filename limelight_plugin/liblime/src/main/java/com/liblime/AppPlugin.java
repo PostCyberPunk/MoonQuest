@@ -91,6 +91,8 @@ public class AppPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
+        //TODO: that's lazy
+        mPluginManager.Callback("pcdone1");
     }
 
     @Override
@@ -274,7 +276,8 @@ public class AppPlugin extends UnityPluginObject {
                     }
                 }
 
-//                QuickStart();
+                if (updated)
+                    notifyUpdateList();
             }
         });
     }
@@ -340,19 +343,26 @@ public class AppPlugin extends UnityPluginObject {
                     i++;
                 }
 
-//                QuickStart();
+                if (updated)
+                    notifyUpdateList();
             }
         });
     }
 
-    private void QuickStart() {
-        int count = m_AppList.getCount();
-        LimeLog.debug("App count" + count);
-        if (count > 0) {
-            final AppObject app = (AppObject) m_AppList.getItem(0);
-            LimeLog.info("Starting app: " + app.app.getAppName());
-            ServerHelper.doStart(mPluginManager, app.app, computer, managerBinder);
-        }
+    //Bridge
+    public String GetList() {
+        return m_AppList.getUpdatedList();
+    }
+
+    private void notifyUpdateList() {
+        LimeLog.verbose("notify unity to update the computer list view");
+        mPluginManager.Callback("applist");
+    }
+
+    private void StartApp(int id) {
+        final AppObject app = (AppObject) m_AppList.getItemByID(id);
+        LimeLog.info("Starting app: " + app.app.getAppName());
+        ServerHelper.doStart(mPluginManager, app.app, computer, managerBinder);
     }
 
 }

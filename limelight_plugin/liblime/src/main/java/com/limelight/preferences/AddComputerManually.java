@@ -177,7 +177,6 @@ public class AddComputerManually {
         }
         if (success) {
             LimeLog.todo("Successfully added computer: " + rawUserInput);
-            mPlugin.fakePair();
         }
     }
 
@@ -224,13 +223,15 @@ public class AddComputerManually {
             joinAddThread();
             mActivity.unbindService(serviceConnection);
         }
+        mPlugin=null;
+        mActivity=null;
     }
-    private final PcPlugin mPlugin;
-    public AddComputerManually(Activity activity, PcPlugin plugin) {
+    private PcPlugin mPlugin;
+    public AddComputerManually(Activity activity, PcPlugin plugin,String url) {
         mActivity = activity;
         mPlugin = plugin;
         //TRY:fix ip
-        computersToAdd.add("192.168.123.192");
+        computersToAdd.add(url);
         // Bind to the ComputerManager service
         mActivity.bindService(new Intent(mActivity,
                 ComputerManagerService.class), serviceConnection, Service.BIND_AUTO_CREATE);

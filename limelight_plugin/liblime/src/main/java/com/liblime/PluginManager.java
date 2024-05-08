@@ -39,6 +39,7 @@ public class PluginManager {
 
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
+        UnityMessager.Error("PluginManager Initialized");
         LimeLog.debug("PluginManager Initialized");
         //TRY
 //        ActivatePlugin(PluginType.PC, null);
@@ -123,6 +124,32 @@ public class PluginManager {
 
     public Activity GetActivity() {
         return mActivity;
+    }
+
+    //Bridge
+    public enum MessageLevel {
+        NORMAL,
+        WARNING,
+        FATAL,
+    }
+
+    public void Callback(String msg) {
+        UnityPlayer.UnitySendMessage("LimePluginManager", "OnCallback", msg);
+    }
+    public void Notify(String msg){
+       UnityPlayer.UnitySendMessage("LimeManager", "OnNotify", msg);
+    }
+    public void Dialog(String msg) {
+        Dialog(msg, MessageLevel.NORMAL);
+    }
+    public void DialogWarning(String msg) {
+        Dialog(msg, MessageLevel.WARNING);
+    }
+    public void DialogFatal(String msg) {
+        Dialog(msg, MessageLevel.FATAL);
+    }
+    public void Dialog(String msg, MessageLevel level) {
+        UnityPlayer.UnitySendMessage("LimeManager", "OnDialog", msg + "|" +level.ordinal());
     }
 
     //TRY

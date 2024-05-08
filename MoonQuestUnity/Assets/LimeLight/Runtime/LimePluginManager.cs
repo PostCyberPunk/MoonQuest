@@ -135,13 +135,13 @@ namespace PCP.LibLime
 			switch (t)
 			{
 				case PluginType.Pc:
-					mPcManager.Init(o);
+					mPcManager.Init(o, this);
 					break;
 				case PluginType.Stream:
-					mStreamManager.Init(o);
+					mStreamManager.Init(o, this);
 					break;
 				case PluginType.App:
-					mAppManger.Init(o);
+					mAppManger.Init(o, this);
 					break;
 				default:
 					break;
@@ -162,6 +162,36 @@ namespace PCP.LibLime
 				return true;
 			}
 			return false;
+		}
+		//Message Handlers
+		public delegate void JavaCallbackHandler(string msg);
+		public JavaCallbackHandler OnJavaCallback;
+		public void OnCallback(string msg)
+		{
+			Debug.Log(mTag + "JavaCallback Received:" + msg);
+			OnJavaCallback?.Invoke(msg);
+		}
+
+		//TODO: make
+		public static void OnDialog(string m)
+		{
+			string[] msglsit = m.Split('|');
+			string msg = msglsit[0];
+			int level = int.Parse(msglsit[1]);
+			switch (level)
+			{
+				case 0:
+					MessageManager.Instance.Info(msg);
+					break;
+				case 1:
+					MessageManager.Instance.Warn(msg);
+					break;
+				case 2:
+					MessageManager.Instance.Error(msg);
+					break;
+				default:
+					break;
+			}
 		}
 		//TRY Debug
 		public void StartPc()

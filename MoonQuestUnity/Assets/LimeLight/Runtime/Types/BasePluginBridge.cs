@@ -10,7 +10,9 @@ namespace PCP.LibLime
 	{
 		protected string mTag;
 		[SerializeField] protected GameObject mPanel;
-
+		public GameObject Blocker;
+		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;
+		private void OnCallback(string m) => mCallBackHanlder?.Invoke(m);
 		public enum PluginState
 		{
 			NONE,
@@ -19,6 +21,7 @@ namespace PCP.LibLime
 			WORKING,
 		}
 		protected AndroidJavaObject mPlugin;
+		protected LimePluginManager mPluginManager;
 		/* public IntPtr RawObject { get; protected set; } */
 
 		private readonly float lodingTimeout = 10f;
@@ -28,13 +31,16 @@ namespace PCP.LibLime
 
 		public GameObject GameObject => gameObject;
 
-		public void Init(AndroidJavaObject o)
+		public void Init(AndroidJavaObject o, LimePluginManager m)
 		{
 			if (State != PluginState.NONE)
 			{
 				Debug.LogError(mTag + "already Started");
 				return;
 			}
+			Blocker.SetActive(true);
+			mPluginManager = m;
+			mPluginManager.OnJavaCallback += OnCallback;
 			enabled = true;
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
@@ -63,21 +69,16 @@ namespace PCP.LibLime
 				}
 				yield return null;
 			}
-			OnCreate();
 			State = PluginState.INITIALIZED;
+			OnCreate();
+			if (mPanel != null)
+				mPanel.SetActive(true);
+			Blocker.SetActive(false);
 			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
-		protected virtual void OnCreate()
-		{
-			if (mPanel != null)
-				mPanel.SetActive(true);
-		}
-		protected virtual void OnStop()
-		{
-			if (mPanel != null)
-				mPanel.SetActive(false);
-		}
+		protected virtual void OnCreate() { }
+		protected virtual void OnStop() { }
 		protected virtual void OnDestroy()
 		{
 			StopManager();
@@ -90,6 +91,8 @@ namespace PCP.LibLime
 		{
 			if (State == PluginState.NONE)
 				return;
+			if (mPanel != null)
+				mPanel.SetActive(false);
 			StopAllCoroutines();
 			OnStop();
 			if (mPlugin != null)
@@ -98,6 +101,8 @@ namespace PCP.LibLime
 				mPlugin = null;
 			}
 			State = PluginState.NONE;
+			mPluginManager.OnJavaCallback -= OnCallback;
+			mPluginManager = null;
 			MessageManager.Instance.Info(mTag + "Stopped");
 		}
 		///////////Methods////////////
