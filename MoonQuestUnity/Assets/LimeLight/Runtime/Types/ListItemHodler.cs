@@ -21,17 +21,16 @@ namespace PCP.LibLime
 		{
 			if (mManager == null)
 			{
-
 				Debug.LogError("ItemOnClick :PcManager Not Found");
 				return;
 			}
-			if (mData.pairState != PairState.PAIRED)
-			{
-				mManager.PairComputer(mData.uuid);
-			}
-			else
+			if (mData.pairState == PairState.PAIRED)
 			{
 				mManager.StartAppList(mData.uuid);
+			}
+			else if (mData.pairState is not PairState.ALREADY_IN_PROGRESS)
+			{
+				mManager.PairComputer(mData.uuid);
 			}
 		}
 	}

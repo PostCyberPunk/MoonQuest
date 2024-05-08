@@ -91,6 +91,8 @@ public class AppPlugin extends UnityPluginObject {
         mPluginType = PluginManager.PluginType.APP;
         onCreate();
         isInitialized = true;
+        //TODO: that's lazy
+        mPluginManager.Callback("pcdone1");
     }
 
     @Override
