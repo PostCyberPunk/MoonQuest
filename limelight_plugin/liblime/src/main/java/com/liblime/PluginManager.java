@@ -39,6 +39,7 @@ public class PluginManager {
 
         m_Instance = this;
         m_PluginMap = new EnumMap<>(PluginType.class);
+        UnityMessager.Error("PluginManager Initialized");
         LimeLog.debug("PluginManager Initialized");
         //TRY
 //        ActivatePlugin(PluginType.PC, null);

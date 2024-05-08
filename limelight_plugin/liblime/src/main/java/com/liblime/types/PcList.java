@@ -3,6 +3,8 @@ package com.liblime.types;
 import com.google.gson.Gson;
 import com.limelight.LimeLog;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,12 +35,18 @@ public class PcList {
         for (int i = 0; i < updatedList.size(); i++) {
             dataList[i] = updatedList.get(i).ToData();
         }
-        String result = new Gson().toJson(dataList);
+        String result = new Gson().toJson(new ComputerDataWrapper(dataList));
         updatedList.clear();
         return result;
     }
 
+    private static class ComputerDataWrapper implements Serializable {
+        public ComputerObject.ComputerData[] data;
 
+        public ComputerDataWrapper(ComputerObject.ComputerData[] data) {
+            this.data = data;
+        }
+    }
 
     private void sortList() {
         Collections.sort(itemList, new Comparator<ComputerObject>() {

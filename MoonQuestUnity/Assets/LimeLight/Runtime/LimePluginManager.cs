@@ -166,7 +166,11 @@ namespace PCP.LibLime
 		//Message Handlers
 		public delegate void JavaCallbackHandler(string msg);
 		public JavaCallbackHandler OnJavaCallback;
-		public static void OnCallback(string msg) => Instance.OnJavaCallback?.Invoke(msg);
+		public void OnCallback(string msg)
+		{
+			Debug.Log(mTag + "JavaCallback Received:" + msg);
+			OnJavaCallback?.Invoke(msg);
+		}
 
 		//TODO: make
 		public static void OnDialog(string m)

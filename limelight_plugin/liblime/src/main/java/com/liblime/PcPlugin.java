@@ -278,7 +278,7 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     //Bridge
-    public String GetPcList() {
+    public String GetList() {
         String result = pcList.getUpdatedList();
         freezeUpdates = false;
         return result;
@@ -287,6 +287,7 @@ public class PcPlugin extends UnityPluginObject {
     private void notifyUpdateList() {
         if (pcList.needUpdate() || !freezeUpdates) {
             LimeLog.verbose("notify unity to update the computer list view");
+            UnityMessager.Error("notify unity to update the computer list view");
             mPluginManager.Callback("pclist");
             freezeUpdates = true;
 //            LimeLog.temp("pclist" + GetPcList());

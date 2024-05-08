@@ -12,6 +12,7 @@ namespace PCP.LibLime
 		[SerializeField] protected GameObject mPanel;
 		public GameObject Blocker;
 		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;
+		private void OnCallback(string m) => mCallBackHanlder?.Invoke(m);
 		public enum PluginState
 		{
 			NONE,
@@ -39,7 +40,7 @@ namespace PCP.LibLime
 			}
 			Blocker.SetActive(true);
 			mPluginManager = m;
-			mPluginManager.OnJavaCallback += mCallBackHanlder;
+			mPluginManager.OnJavaCallback += OnCallback;
 			enabled = true;
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
@@ -104,7 +105,7 @@ namespace PCP.LibLime
 				mPlugin = null;
 			}
 			State = PluginState.NONE;
-			mPluginManager.OnJavaCallback -= mCallBackHanlder;
+			mPluginManager.OnJavaCallback -= OnCallback;
 			mPluginManager = null;
 			MessageManager.Instance.Info(mTag + "Stopped");
 		}

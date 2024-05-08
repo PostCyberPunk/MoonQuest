@@ -86,17 +86,22 @@ namespace PCP.LibLime
 			string rawList = mPlugin.Call<string>("GetList");
 			if (rawList == null || rawList == string.Empty)
 				return;
+			Debug.Log(mTag + ":RawList:" + rawList);
 			ComputerData[] list;
 			try
 			{
-				list = JsonUtility.FromJson<ComputerData[]>(rawList);
+				list = JsonUtility.FromJson<ComputerDataWrapper>(rawList).data;
 			}
 			catch (System.Exception e)
 			{
-				Debug.LogError(mTag + ":Error Parsing List" + e.Message);
+				Debug.LogError(mTag + ":Error Parsing List:" + e.Message);
 				return;
 			}
-
+			if (list == null)
+			{
+				Debug.LogError(mTag + ":Error Parsing List:List is null");
+				return;
+			}
 			if (list.Length == 0)
 			{
 				Debug.LogWarning(mTag + ":No Computer need update");
