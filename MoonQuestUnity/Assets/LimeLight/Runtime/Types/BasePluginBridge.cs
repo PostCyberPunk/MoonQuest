@@ -39,7 +39,7 @@ namespace PCP.LibLime
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
 			_ = StartCoroutine(InitPlugin());
-			MessageManager.Instance.Info(mTag + " Initailizing");
+			MessageManager.Info(mTag + " Initailizing");
 		}
 		private IEnumerator InitPlugin()
 		{
@@ -65,7 +65,7 @@ namespace PCP.LibLime
 			}
 			OnCreate();
 			State = PluginState.INITIALIZED;
-			MessageManager.Instance.Info(mTag + "Initialized");
+			MessageManager.Info(mTag + "Initialized");
 		}
 
 		protected virtual void OnCreate()
@@ -98,7 +98,7 @@ namespace PCP.LibLime
 				mPlugin = null;
 			}
 			State = PluginState.NONE;
-			MessageManager.Instance.Info(mTag + "Stopped");
+			MessageManager.Info(mTag + "Stopped");
 		}
 		///////////Methods////////////
 		///PERF:maybe a interface

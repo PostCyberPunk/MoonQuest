@@ -77,7 +77,7 @@ namespace PCP.LibLime
 			catch (Exception e)
 			{
 				Debug.LogError(mTag + "UpdateFrame failed:" + e.Message);
-				MessageManager.Instance.Error("UpdateFrame failed:" + e.Message);
+				MessageManager.Error("UpdateFrame failed:" + e.Message);
 				enabled = false;
 			}
 		}
