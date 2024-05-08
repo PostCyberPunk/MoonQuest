@@ -293,29 +293,6 @@ public class PcPlugin extends UnityPluginObject {
         ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
         doPair(computer.details);
     }
-
-    //Try
-    private void fakeAdd() {
-        m_addComputerManually = new AddComputerManually(mActivity, this);
-    }
-
-    public void fakePair() {
-        LimeLog.debug("Start fakePair");
-        ComputerObject computer = (ComputerObject) pcList.getItem(0);
-        doPair(computer.details);
-    }
-
-    public void fakeStart() {
-        if (pcList.getCount() == 0) {
-            fakeAdd();
-        } else {
-            ComputerObject computer = (ComputerObject) pcList.getItem(0);
-            if (computer.details.pairState == PairState.NOT_PAIRED) {
-                fakePair();
-            } else {
-                doAppList(computer.details, false, false);
-            }
-        }
     public void StartAppList(String uuid) {
         ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
         doAppList(computer.details, false, false);
