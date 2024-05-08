@@ -177,13 +177,13 @@ namespace PCP.LibLime
 			switch (level)
 			{
 				case 0:
-					MessageManager.Info(msg);
+					MessageManager.Instance.Info(msg);
 					break;
 				case 1:
-					MessageManager.Warn(msg);
+					MessageManager.Instance.Warn(msg);
 					break;
 				case 2:
-					MessageManager.Error(msg);
+					MessageManager.Instance.Error(msg);
 					break;
 				default:
 					break;

@@ -44,7 +44,7 @@ namespace PCP.LibLime
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
 			_ = StartCoroutine(InitPlugin());
-			MessageManager.Info(mTag + " Initailizing");
+			MessageManager.Instance.Info(mTag + " Initailizing");
 		}
 		private IEnumerator InitPlugin()
 		{
@@ -71,7 +71,7 @@ namespace PCP.LibLime
 			State = PluginState.INITIALIZED;
 			OnCreate();
 			Blocker.SetActive(false);
-			MessageManager.Info(mTag + "Initialized");
+			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
 		protected virtual void OnCreate()
@@ -106,7 +106,7 @@ namespace PCP.LibLime
 			State = PluginState.NONE;
 			mPluginManager.OnJavaCallback -= mCallBackHanlder;
 			mPluginManager = null;
-			MessageManager.Info(mTag + "Stopped");
+			MessageManager.Instance.Info(mTag + "Stopped");
 		}
 		///////////Methods////////////
 		///PERF:maybe a interface

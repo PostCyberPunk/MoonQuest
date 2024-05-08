@@ -36,22 +36,22 @@ public class MessageManager : MonoBehaviour
 		}
 	}
 	//---------Messages-------------
-	public static void Info(string msg)
+	public void Info(string msg)
 	{
-		Instance.AddMessage(msg);
+		AddMessage(msg);
 	}
-	public static void Warn(string msg)
+	public void Warn(string msg)
 	{
-		Instance.AddMessage("<color=yellow>" + msg + "</color>");
+		AddMessage("<color=yellow>" + msg + "</color>");
 	}
-	public static void Error(string msg)
+	public void Error(string msg)
 	{
-		Instance.AddMessage("<color=red>" + msg + "</color>");
+		AddMessage("<color=red>" + msg + "</color>");
 	}
-	public static void Debug(string msg)
+	public void Debug(string msg)
 	{
 #if DEBUGING
-		Instance.AddMessage("<color=green>" + msg + "</color>");
+		AddMessage("<color=green>" + msg + "</color>");
 #endif
 	}
 	private void AddMessage(string msg)
