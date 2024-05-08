@@ -10,7 +10,8 @@ namespace PCP.LibLime
 	{
 		protected string mTag;
 		[SerializeField] protected GameObject mPanel;
-
+		public GameObject Blocker;
+		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;
 		public enum PluginState
 		{
 			NONE,
@@ -19,6 +20,7 @@ namespace PCP.LibLime
 			WORKING,
 		}
 		protected AndroidJavaObject mPlugin;
+		protected LimePluginManager mPluginManager;
 		/* public IntPtr RawObject { get; protected set; } */
 
 		private readonly float lodingTimeout = 10f;
@@ -28,13 +30,16 @@ namespace PCP.LibLime
 
 		public GameObject GameObject => gameObject;
 
-		public void Init(AndroidJavaObject o)
+		public void Init(AndroidJavaObject o, LimePluginManager m)
 		{
 			if (State != PluginState.NONE)
 			{
 				Debug.LogError(mTag + "already Started");
 				return;
 			}
+			Blocker.SetActive(true);
+			mPluginManager = m;
+			mPluginManager.OnJavaCallback += mCallBackHanlder;
 			enabled = true;
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
@@ -65,6 +70,7 @@ namespace PCP.LibLime
 			}
 			OnCreate();
 			State = PluginState.INITIALIZED;
+			Blocker.SetActive(false);
 			MessageManager.Info(mTag + "Initialized");
 		}
 
@@ -98,6 +104,8 @@ namespace PCP.LibLime
 				mPlugin = null;
 			}
 			State = PluginState.NONE;
+			mPluginManager.OnJavaCallback -= mCallBackHanlder;
+			mPluginManager = null;
 			MessageManager.Info(mTag + "Stopped");
 		}
 		///////////Methods////////////

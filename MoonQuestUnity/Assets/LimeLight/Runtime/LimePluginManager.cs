@@ -135,13 +135,13 @@ namespace PCP.LibLime
 			switch (t)
 			{
 				case PluginType.Pc:
-					mPcManager.Init(o);
+					mPcManager.Init(o, this);
 					break;
 				case PluginType.Stream:
-					mStreamManager.Init(o);
+					mStreamManager.Init(o, this);
 					break;
 				case PluginType.App:
-					mAppManger.Init(o);
+					mAppManger.Init(o, this);
 					break;
 				default:
 					break;
