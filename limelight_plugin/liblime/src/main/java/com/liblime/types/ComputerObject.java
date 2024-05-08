@@ -21,8 +21,8 @@ public class ComputerObject {
         return details.name;
     }
 
-    public String ToData() {
-        return new Gson().toJson(new ComputerData(details));
+    public ComputerData ToData() {
+        return new ComputerData(details);
     }
 
     public static class ComputerData implements Serializable {

@@ -1,6 +1,6 @@
 package com.liblime.types;
 
-import android.text.style.UpdateAppearance;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,28 +8,29 @@ import java.util.Comparator;
 
 public class PcList {
     private final ArrayList<ComputerObject> itemList = new ArrayList<>();
-    private ArrayList<ComputerObject> udpatedList = new ArrayList<>();
+    private ArrayList<ComputerObject> updatedList = new ArrayList<>();
 
     public void addComputer(ComputerObject computer) {
         itemList.add(computer);
         sortList();
-        udpatedList.add(computer);
+        updatedList.add(computer);
     }
 
     public void updateComputer(ComputerObject computer) {
-        udpatedList.add(computer);
+        updatedList.add(computer);
     }
 
-    public String[] getUpdatedList() {
-        if (udpatedList.isEmpty()) {
+    public String getUpdatedList() {
+        if (updatedList.isEmpty()) {
             return null;
         }
-        String[] updated = new String[udpatedList.size()];
-        for (int i = 0; i < udpatedList.size(); i++) {
-            updated[i] = udpatedList.get(i).ToData();
+        var dataList = new ComputerObject.ComputerData[updatedList.size()];
+        for (int i = 0; i < updatedList.size(); i++) {
+            dataList[i] = updatedList.get(i).ToData();
         }
-        udpatedList.clear();
-        return updated;
+        String result = new Gson().toJson(dataList);
+        updatedList.clear();
+        return result;
     }
 
 
@@ -49,7 +50,8 @@ public class PcList {
     public Object getItem(int i) {
         return itemList.get(i);
     }
-    public  Object getItem(String uuid){
+
+    public Object getItem(String uuid) {
         for (ComputerObject computerObject : itemList) {
             if (computerObject.details.uuid.equals(uuid)) {
                 return computerObject;

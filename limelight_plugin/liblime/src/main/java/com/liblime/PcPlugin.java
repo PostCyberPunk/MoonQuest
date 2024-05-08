@@ -278,11 +278,11 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     //Bridge
-    public String[] GetPcList() {
+    public String GetPcList() {
         freezeUpdates = true;
-        String[] updated = pcList.getUpdatedList();
+        String result = pcList.getUpdatedList();
         freezeUpdates = true;
-        return updated;
+        return result;
     }
 
     public void AddComputerManually(String url) {
