@@ -20,10 +20,22 @@ public class PcList {
     }
 
     public void updateComputer(ComputerObject computer) {
+        for (ComputerObject computerObject : itemList) {
+            if (computerObject.details.uuid.equals(computer.details.uuid)) {
+                computerObject.details = computer.details;
+                return;
+            }
+        }
         updatedList.add(computer);
     }
 
     public boolean needUpdate() {
+        for (ComputerObject computerObject : itemList) {
+            //TODO: that's very bad practise ,would some compute became null?
+            if (computerObject.details.state == null || computerObject.details.pairState == null) {
+                return false;
+            }
+        }
         return !updatedList.isEmpty();
     }
 

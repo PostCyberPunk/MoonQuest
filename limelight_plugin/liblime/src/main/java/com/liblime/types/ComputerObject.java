@@ -28,14 +28,23 @@ public class ComputerObject {
     public static class ComputerData implements Serializable {
         public String uuid;
         public String name;
-        public ComputerDetails.State state;
-        public PairingManager.PairState pairState;
+        public int state;
+        public int pairState;
 
         public ComputerData(ComputerDetails details) {
             this.uuid = details.uuid;
             this.name = details.name;
-            this.state = details.state;
-            this.pairState = details.pairState;
+            if (details.state == null) {
+                state = 0;
+            } else {
+
+                this.state = details.state.ordinal();
+            }
+            if (details.pairState == null) {
+                pairState = 0;
+            } else {
+                this.pairState = details.pairState.ordinal();
+            }
         }
     }
 }

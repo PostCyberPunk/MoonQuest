@@ -259,6 +259,12 @@ public class PcPlugin extends UnityPluginObject {
         }
 
         if (existingEntry != null) {
+            //check if the existinEntry is same as the updated one
+            //TODO:add equal overload this,ok differ not working
+//            if (existingEntry.details.pairState != details.pairState
+//                    || existingEntry.details.state != details.state
+//                    || details.name != existingEntry.details.name) {
+//            }
             // Replace the information in the existing entry
             existingEntry.details = details;
             pcList.updateComputer(existingEntry);
@@ -285,12 +291,10 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     private void notifyUpdateList() {
-        if (pcList.needUpdate() || !freezeUpdates) {
+        if (pcList.needUpdate() && !freezeUpdates) {
             LimeLog.verbose("notify unity to update the computer list view");
-            UnityMessager.Error("notify unity to update the computer list view");
             mPluginManager.Callback("pclist");
             freezeUpdates = true;
-//            LimeLog.temp("pclist" + GetPcList());
         }
     }
 
