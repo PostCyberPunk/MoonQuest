@@ -276,6 +276,10 @@ public class PcPlugin extends UnityPluginObject {
         }
     }
 
+    //Bridge
+    public void AddComputerManually(String url){
+        m_addComputerManually = new AddComputerManually(mActivity, this, url);
+    }
     //Try
     private void fakeAdd() {
         m_addComputerManually = new AddComputerManually(mActivity, this);
