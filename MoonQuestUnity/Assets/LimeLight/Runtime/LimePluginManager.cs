@@ -163,6 +163,32 @@ namespace PCP.LibLime
 			}
 			return false;
 		}
+		//Message Handlers
+		public delegate void JavaCallbackHandler(string msg);
+		public JavaCallbackHandler OnJavaCallback;
+		public static void JavaCallback(string msg) => Instance.OnJavaCallback?.Invoke(msg);
+
+		//TODO: make
+		public static void OnDialog(string m)
+		{
+			string[] msglsit = m.Split('|');
+			string msg = msglsit[0];
+			int level = int.Parse(msglsit[1]);
+			switch (level)
+			{
+				case 0:
+					MessageManager.Info(msg);
+					break;
+				case 1:
+					MessageManager.Warn(msg);
+					break;
+				case 2:
+					MessageManager.Error(msg);
+					break;
+				default:
+					break;
+			}
+		}
 		//TRY Debug
 		public void StartPc()
 		{
