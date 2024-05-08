@@ -71,20 +71,14 @@ namespace PCP.LibLime
 			}
 			State = PluginState.INITIALIZED;
 			OnCreate();
+			if (mPanel != null)
+				mPanel.SetActive(true);
 			Blocker.SetActive(false);
 			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
-		protected virtual void OnCreate()
-		{
-			if (mPanel != null)
-				mPanel.SetActive(true);
-		}
-		protected virtual void OnStop()
-		{
-			if (mPanel != null)
-				mPanel.SetActive(false);
-		}
+		protected virtual void OnCreate() { }
+		protected virtual void OnStop() { }
 		protected virtual void OnDestroy()
 		{
 			StopManager();
@@ -97,6 +91,8 @@ namespace PCP.LibLime
 		{
 			if (State == PluginState.NONE)
 				return;
+			if (mPanel != null)
+				mPanel.SetActive(false);
 			StopAllCoroutines();
 			OnStop();
 			if (mPlugin != null)
