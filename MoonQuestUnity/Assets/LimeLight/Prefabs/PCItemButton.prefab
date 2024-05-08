@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2329723620813581759}
   - component: {fileID: 3418639369479246809}
   - component: {fileID: 6237942928204397747}
-  - component: {fileID: 2922498731422491855}
+  - component: {fileID: 404645461781722679}
   m_Layer: 0
   m_Name: PCItemButton
   m_TagString: Untagged
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2922498731422491855}
+      - m_Target: {fileID: 404645461781722679}
         m_TargetAssemblyTypeName: PCP.LibLime.PCListItemHodler, Assembly-CSharp
         m_MethodName: OnClick
         m_Mode: 1
@@ -135,7 +135,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2922498731422491855
+--- !u!114 &404645461781722679
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5046537203380408112}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f57897fc4d7303e258b76fcc7d5933cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 036fd06575e7fdc56a17fa65e9e1d751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mText: {fileID: 6257596211489225715}
