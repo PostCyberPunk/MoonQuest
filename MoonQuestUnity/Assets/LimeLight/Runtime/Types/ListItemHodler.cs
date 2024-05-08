@@ -4,16 +4,11 @@ namespace PCP.LibLime
 {
 	public class PCListItemHodler : MonoBehaviour
 	{
-		private TMP_Text mText;
-		private GameObject mPairIcon;
+		[SerializeField] private TMP_Text mText;
+		[SerializeField] private GameObject mPairIcon;
 		private ComputerData mData;
 		private PcManager mManager;
 		public string GetUUID() => mData.uuid;
-		private void Awake()
-		{
-			mText = GetComponentInChildren<TMP_Text>();
-			mPairIcon = transform.GetChild(1).gameObject;
-		}
 		internal void UpdateItem(ComputerData data, PcManager m)
 		{
 			mData = data;
