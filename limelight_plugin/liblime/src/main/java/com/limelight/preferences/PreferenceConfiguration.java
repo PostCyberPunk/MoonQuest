@@ -38,12 +38,12 @@ public class PreferenceConfiguration {
     private static final String ENABLE_AUDIO_FX_PREF_STRING = "checkbox_enable_audiofx";
     private static final String REDUCE_REFRESH_RATE_PREF_STRING = "checkbox_reduce_refresh_rate";
     private static final String FULL_RANGE_PREF_STRING = "checkbox_full_range";
-    static final String DEFAULT_RESOLUTION = "1280x720";
+    static final String DEFAULT_RESOLUTION = "1920X1080";
     static final String DEFAULT_FPS = "60";
     private static final boolean DEFAULT_STRETCH = false;
-    private static final boolean DEFAULT_SOPS = true;
+    private static final boolean DEFAULT_SOPS = false;
     private static final boolean DEFAULT_DISABLE_TOASTS = false;
-    private static final boolean DEFAULT_HOST_AUDIO = false;
+    private static final boolean DEFAULT_HOST_AUDIO = true;
     private static final String DEFAULT_VIDEO_FORMAT = "auto";
     private static final boolean ONLY_L3_R3_DEFAULT = false;
     private static final boolean DEFAULT_ENABLE_HDR = false;
