@@ -224,8 +224,10 @@ public class AddComputerManually {
             joinAddThread();
             mActivity.unbindService(serviceConnection);
         }
+        mPlugin=null;
+        mActivity=null;
     }
-    private final PcPlugin mPlugin;
+    private PcPlugin mPlugin;
     public AddComputerManually(Activity activity, PcPlugin plugin) {
         mActivity = activity;
         mPlugin = plugin;
