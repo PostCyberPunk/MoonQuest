@@ -49,6 +49,14 @@ public class PcList {
     public Object getItem(int i) {
         return itemList.get(i);
     }
+    public  Object getItem(String uuid){
+        for (ComputerObject computerObject : itemList) {
+            if (computerObject.details.uuid.equals(uuid)) {
+                return computerObject;
+            }
+        }
+        return null;
+    }
 
     public int getCount() {
         return itemList.size();
