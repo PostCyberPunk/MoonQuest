@@ -69,10 +69,9 @@ namespace PCP.LibLime
 			/* 	return; */
 			/* if (m[^1] != '1') */
 			/* 	return; */
-			enabled = false;
-			Blocker.SetActive(false);
 			mPluginManager.StartManager(LimePluginManager.PluginType.App);
 			mCallBackHanlder -= ChangeUIhandler;
+			enabled = false;
 		}
 		private void UdpateListHandler(string m)
 		{
