@@ -41,7 +41,8 @@ namespace PCP.LibLime
 		{
 			if (!enabled)
 				return;
-			string url = AddPcDialog.GetComponent<TMP_InputField>().text;
+			string url = AddPcDialog.GetComponentInChildren<TMP_InputField>().text;
+			AddPcDialog.SetActive(false);
 			mPlugin?.Call("AddComputerManually", url);
 		}
 		public void PairComputer(string uuid)
