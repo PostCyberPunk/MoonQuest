@@ -276,16 +276,24 @@ public class PcPlugin extends UnityPluginObject {
             m_addComputerManually = null;
         }
     }
+
     //Bridge
-    public String[] GetPcList(){
+    public String[] GetPcList() {
         freezeUpdates = true;
         String[] updated = pcList.getUpdatedList();
         freezeUpdates = true;
         return updated;
     }
-    public void AddComputerManually(String url){
+
+    public void AddComputerManually(String url) {
         m_addComputerManually = new AddComputerManually(mActivity, this, url);
     }
+
+    public void PairComputer(String uuid) {
+        ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
+        doPair(computer.details);
+    }
+
     //Try
     private void fakeAdd() {
         m_addComputerManually = new AddComputerManually(mActivity, this);
