@@ -316,6 +316,9 @@ public class PcPlugin extends UnityPluginObject {
                 doAppList(computer.details, false, false);
             }
         }
+    public void StartAppList(String uuid) {
+        ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
+        doAppList(computer.details, false, false);
     }
 
     //End of class-----------
