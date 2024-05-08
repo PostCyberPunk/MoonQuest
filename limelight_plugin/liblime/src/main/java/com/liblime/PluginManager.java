@@ -133,7 +133,7 @@ public class PluginManager {
     }
 
     public void Callback(String msg) {
-        UnityPlayer.UnitySendMessage("LimeManager", "OnCall", msg);
+        UnityPlayer.UnitySendMessage("LimePluginManager", "OnCallback", msg);
     }
     public void Notify(String msg){
        UnityPlayer.UnitySendMessage("LimeManager", "OnNotify", msg);

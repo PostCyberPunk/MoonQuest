@@ -68,8 +68,8 @@ namespace PCP.LibLime
 				}
 				yield return null;
 			}
-			OnCreate();
 			State = PluginState.INITIALIZED;
+			OnCreate();
 			Blocker.SetActive(false);
 			MessageManager.Info(mTag + "Initialized");
 		}

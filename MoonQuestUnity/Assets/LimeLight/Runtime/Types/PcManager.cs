@@ -18,6 +18,7 @@ namespace PCP.LibLime
 
 		protected override void OnCreate()
 		{
+			/* UpdateList(); */
 			mCallBackHanlder += UdpateListHandler;
 		}
 		protected override void OnStop()
@@ -77,11 +78,24 @@ namespace PCP.LibLime
 		{
 			if (!m.StartsWith("pclist"))
 				return;
+			UpdateList();
+		}
+		private void UpdateList()
+		{
 			//Strarting Updtae List
 			string rawList = mPlugin.Call<string>("GetList");
 			if (rawList == null || rawList == string.Empty)
 				return;
-			ComputerData[] list = JsonUtility.FromJson<ComputerData[]>(rawList);
+			ComputerData[] list;
+			try
+			{
+				list = JsonUtility.FromJson<ComputerData[]>(rawList);
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(mTag + ":Error Parsing List" + e.Message);
+				return;
+			}
 
 			if (list.Length == 0)
 			{

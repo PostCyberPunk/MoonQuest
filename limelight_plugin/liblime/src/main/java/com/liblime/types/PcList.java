@@ -1,6 +1,7 @@
 package com.liblime.types;
 
 import com.google.gson.Gson;
+import com.limelight.LimeLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,10 @@ public class PcList {
         updatedList.add(computer);
     }
 
+    public boolean needUpdate() {
+        return !updatedList.isEmpty();
+    }
+
     public String getUpdatedList() {
         if (updatedList.isEmpty()) {
             return null;
@@ -32,6 +37,7 @@ public class PcList {
         updatedList.clear();
         return result;
     }
+
 
 
     private void sortList() {

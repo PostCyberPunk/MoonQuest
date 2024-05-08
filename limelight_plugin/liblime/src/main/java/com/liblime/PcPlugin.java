@@ -261,13 +261,13 @@ public class PcPlugin extends UnityPluginObject {
         if (existingEntry != null) {
             // Replace the information in the existing entry
             existingEntry.details = details;
-            updateComputer(existingEntry.details);
+            pcList.updateComputer(existingEntry);
         } else {
             // Add a new entry
             pcList.addComputer(new ComputerObject(details));
 
         }
-        LimeLog.verbose("Update the computer list view");
+        notifyUpdateList();
     }
 
     public void stopAddComputerManually() {
@@ -279,10 +279,18 @@ public class PcPlugin extends UnityPluginObject {
 
     //Bridge
     public String GetPcList() {
-        freezeUpdates = true;
         String result = pcList.getUpdatedList();
-        freezeUpdates = true;
+        freezeUpdates = false;
         return result;
+    }
+
+    private void notifyUpdateList() {
+        if (pcList.needUpdate() || !freezeUpdates) {
+            LimeLog.verbose("notify unity to update the computer list view");
+            mPluginManager.Callback("pclist");
+            freezeUpdates = true;
+//            LimeLog.temp("pclist" + GetPcList());
+        }
     }
 
     public void AddComputerManually(String url) {
@@ -293,6 +301,7 @@ public class PcPlugin extends UnityPluginObject {
         ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
         doPair(computer.details);
     }
+
     public void StartAppList(String uuid) {
         ComputerObject computer = (ComputerObject) pcList.getItem(uuid);
         doAppList(computer.details, false, false);
