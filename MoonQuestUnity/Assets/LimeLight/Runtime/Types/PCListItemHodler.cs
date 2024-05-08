@@ -24,6 +24,10 @@ namespace PCP.LibLime
 				Debug.LogError("ItemOnClick :PcManager Not Found");
 				return;
 			}
+			if (mData.state != ComputerState.ONLINE)
+			{
+				return;
+			}
 			if (mData.pairState == PairState.PAIRED)
 			{
 				mManager.StartAppList(mData.uuid);
