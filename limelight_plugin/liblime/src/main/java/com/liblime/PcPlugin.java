@@ -261,6 +261,7 @@ public class PcPlugin extends UnityPluginObject {
         if (existingEntry != null) {
             // Replace the information in the existing entry
             existingEntry.details = details;
+            updateComputer(existingEntry.details);
         } else {
             // Add a new entry
             pcList.addComputer(new ComputerObject(details));
@@ -275,8 +276,13 @@ public class PcPlugin extends UnityPluginObject {
             m_addComputerManually = null;
         }
     }
-
     //Bridge
+    public String[] GetPcList(){
+        freezeUpdates = true;
+        String[] updated = pcList.getUpdatedList();
+        freezeUpdates = true;
+        return updated;
+    }
     public void AddComputerManually(String url){
         m_addComputerManually = new AddComputerManually(mActivity, this, url);
     }
