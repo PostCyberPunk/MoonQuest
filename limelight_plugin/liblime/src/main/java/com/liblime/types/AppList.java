@@ -53,6 +53,15 @@ public class AppList {
         return allApps.get(position);
     }
 
+    public Object getItemByID(int id) {
+        for (AppObject app : allApps) {
+            if (app.app.getAppId() == id) {
+                return app;
+            }
+        }
+        return null;
+    }
+
     public int getCount() {
         return allApps.size();
     }
