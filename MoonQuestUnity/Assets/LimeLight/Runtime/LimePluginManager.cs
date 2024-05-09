@@ -34,6 +34,7 @@ namespace PCP.LibLime
 			mStreamManager = GetComponent<StreamManager>();
 			mPcManager = GetComponent<PcManager>();
 			mAppManger = GetComponent<AppManager>();
+			OnJavaCallback += ChangeUIHandler;
 		}
 
 		private void Start()
@@ -200,6 +201,34 @@ namespace PCP.LibLime
 				default:
 					break;
 			}
+		}
+		//UI
+		public void ChangeUIHandler(string msg)
+		{
+			if (!msg.StartsWith("UI"))
+				return;
+			msg = msg[2..];
+			switch (msg)
+			{
+				case "PC":
+					ChangeUIRoot(PluginType.Pc);
+					break;
+				case "APP":
+					ChangeUIRoot(PluginType.App);
+					break;
+				case "STM":
+					ChangeUIRoot(PluginType.Stream);
+					break;
+				default:
+					break;
+			}
+		}
+		public void ChangeUIRoot(PluginType t)
+		{
+			//TODO: need a map for that
+			mPcManager.enabled = t == PluginType.Pc;
+			mAppManger.enabled = t == PluginType.App;
+			mStreamManager.enabled = t == PluginType.Stream;
 		}
 		//TRY Debug
 		public void StartPc()

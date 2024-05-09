@@ -75,6 +75,7 @@ namespace PCP.LibLime
 			if (mPanel != null)
 				mPanel.SetActive(true);
 			Blocker.SetActive(false);
+			mPluginManager.ChangeUIRoot(Type);
 			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
