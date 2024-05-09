@@ -233,9 +233,12 @@ namespace PCP.LibLime
 		{
 			Debug.Log("ChangeUIRoot:" + t);
 			//TODO: need a map for that
-			mPcManager.enabled = t == PluginType.Pc;
-			mAppManger.enabled = t == PluginType.App;
-			mStreamManager.enabled = t == PluginType.Stream;
+			if (t != PluginType.Pc)
+				mPcManager.enabled = false;
+			if (t != PluginType.App)
+				mAppManger.enabled = false;
+			if (t != PluginType.Stream)
+				mStreamManager.enabled = false;
 		}
 		//TRY Debug
 		public void StartPc()
