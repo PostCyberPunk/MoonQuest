@@ -52,7 +52,6 @@ namespace PCP.LibLime
 		{
 			State = PluginState.INITIALISING;
 			float loadingTime = Time.time + lodingTimeout;
-			yield return new WaitForEndOfFrame();
 
 			if (mPlugin == null)
 			{
@@ -68,14 +67,13 @@ namespace PCP.LibLime
 					Debug.LogError(mTag + ": Plugin Loading Timeout");
 					yield break;
 				}
-				yield return null;
+				yield return new WaitForEndOfFrame();
 			}
-			State = PluginState.INITIALIZED;
 			OnCreate();
 			if (mPanel != null)
 				mPanel.SetActive(true);
 			Blocker.SetActive(false);
-			mPluginManager.ChangeUIRoot(Type);
+			State = PluginState.INITIALIZED;
 			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
