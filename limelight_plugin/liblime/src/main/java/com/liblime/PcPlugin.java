@@ -18,6 +18,7 @@ import com.limelight.nvstream.http.PairingManager.PairState;
 import com.limelight.preferences.AddComputerManually;
 import com.liblime.types.UnityPluginObject;
 import com.limelight.utils.ServerHelper;
+import com.unity3d.player.UnityPlayer;
 
 import android.app.Activity;
 import android.app.Service;
@@ -137,16 +138,14 @@ public class PcPlugin extends UnityPluginObject {
                     if (httpConn.getPairState() == PairState.PAIRED) {
                         // Don't display any toast, but open the app list
                         //TODO:open the app list
-                        doAppList(computer, false, false);
+                        success = true;
                         LimeLog.todo("Already paired");
-
                     } else {
                         final String pinStr = PairingManager.generatePinString();
 
                         // Spin the dialog off in a thread because it blocks
-                        LimeLog.todo("Displaying Pairing Dialog");
-                        UnityMessager.Warn("PIN" + pinStr);
-                        LimeLog.severe("PIN: " + pinStr);
+                        mPluginManager.Callback("pairc|" + pinStr);
+                        LimeLog.warning("PIN: " + pinStr);
 
                         PairingManager pm = httpConn.getPairingManager();
 
@@ -163,6 +162,7 @@ public class PcPlugin extends UnityPluginObject {
                             LimeLog.todo("Pairing failed: Already in progress");
                         } else if (pairState == PairState.PAIRED) {
                             LimeLog.todo("Pairing successful");
+                            success = true;
                             // Just navigate to the app view without displaying a toast
 
                             // Pin this certificate for later HTTPS use
@@ -184,9 +184,20 @@ public class PcPlugin extends UnityPluginObject {
                     e.printStackTrace();
                     LimeLog.todo("Pairing failed: " + e.getMessage());
                 }
-
-                LimeLog.todo("Pairing complete");
-                doAppList(computer, true, false);
+                final boolean finalSuccess = success;
+                UnityPlayer.currentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LimeLog.todo("Pairing complete");
+                        if (finalSuccess) {
+                            doAppList(computer, true, false);
+                            PluginManager.GetInstance().Callback("pairc|1");
+                        } else {
+                            PluginManager.GetInstance().Callback("pairc|0");
+                            startComputerUpdates();
+                        }
+                    }
+                });
             }
         }).start();
     }
@@ -205,6 +216,9 @@ public class PcPlugin extends UnityPluginObject {
         i.putExtra(AppPlugin.NAME_EXTRA, computer.name);
         i.putExtra(AppPlugin.UUID_EXTRA, computer.uuid);
         LimeLog.debug("Starting AppPlugin");
+        if (newlyPaired) {
+            mPluginManager.Callback("pairc|1");
+        }
         mPluginManager.ActivatePlugin(PluginManager.PluginType.APP, i);
         finish();
     }

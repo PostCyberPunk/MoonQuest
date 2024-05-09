@@ -49,8 +49,17 @@ namespace PCP.LibLime
 		{
 			if (!enabled)
 				return;
+			PairingDialog.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+			PairingDialog.SetActive(true);
+			mCallBackHanlder += PairingHanlder;
 			mPlugin?.Call("PairComputer", uuid);
-
+		}
+		public void StopPariring()
+		{
+			if (!enabled)
+				return;
+			mCallBackHanlder -= PairingHanlder;
+			PairingDialog.SetActive(false);
 		}
 		public void StartAppList(string uuid)
 		{
@@ -58,7 +67,8 @@ namespace PCP.LibLime
 				return;
 			Blocker.SetActive(true);
 			mCallBackHanlder += ChangeUIhandler;
-			mPlugin?.Call("StartAppList", uuid);
+			if (uuid != "")
+				mPlugin?.Call("StartAppList", uuid);
 		}
 
 		//Handlers///////////
@@ -127,6 +137,27 @@ namespace PCP.LibLime
 			foreach (PCListItemHodler child in ListParent.GetComponentsInChildren<PCListItemHodler>())
 			{
 				mComputerMap.Add(child.GetUUID(), child);
+			}
+		}
+		private void PairingHanlder(string msg)
+		{
+			if (msg.StartsWith("pairc"))
+			{
+				string result = msg[6..];
+				switch (result)
+				{
+					case "0":
+						PairingDialog.SetActive(false);
+						mCallBackHanlder -= PairingHanlder;
+						break;
+					case "1":
+						StartAppList("");
+						mCallBackHanlder -= PairingHanlder;
+						break;
+					default:
+						PairingDialog.transform.GetChild(0).GetComponent<TMP_Text>().text = result;
+						break;
+				}
 			}
 		}
 	}
