@@ -138,18 +138,23 @@ public class PluginManager {
     public void Callback(String msg) {
         UnityPlayer.UnitySendMessage("LimePluginManager", "OnCallback", msg);
     }
+
     public void Notify(String msg) {
         UnityPlayer.UnitySendMessage("LimePluginManager", "OnNotify", msg);
     }
+
     public void Dialog(String msg) {
         Dialog(msg, MessageLevel.NORMAL);
     }
+
     public void DialogWarning(String msg) {
         Dialog(msg, MessageLevel.WARNING);
     }
+
     public void DialogFatal(String msg) {
         Dialog(msg, MessageLevel.FATAL);
     }
+
     public void Dialog(String msg, MessageLevel level) {
         UnityPlayer.UnitySendMessage("LimePluginManager", "OnDialog", msg + "|" + level.ordinal());
     }
@@ -157,6 +162,13 @@ public class PluginManager {
     //TRY
     public void StartPC() {
         ActivatePlugin(PluginType.PC, null);
+    }
+
+    public void TestDialog(boolean t) {
+        Dialog("Test Dialog", (t ? MessageLevel.FATAL : MessageLevel.NORMAL));
+    }
+    public void TestNotify(String msg) {
+        Notify(msg);
     }
 
     private void fakeSetup() {

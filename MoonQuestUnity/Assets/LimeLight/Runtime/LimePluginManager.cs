@@ -263,5 +263,13 @@ namespace PCP.LibLime
 			mPluginManager.Call("StartPC");
 			StartManager(PluginType.Pc);
 		}
+		public void TestDialog(bool t)
+		{
+			mPluginManager.Call("TestDialog", t);
+		}
+		public void TestNotify(string m)
+		{
+			mPluginManager.Call("TestNotify", m);
+		}
 	}
 }
