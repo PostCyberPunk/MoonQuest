@@ -130,6 +130,8 @@ namespace PCP.LibLime
 			if (CheckBlocking())
 				yield break;
 			float timer = 0;
+			//TODO: if we are using plugin callback to start manager, we can remove this.but what if
+			//plugin failed to load?
 			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 			while (o == null)
 			{
