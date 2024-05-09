@@ -214,6 +214,16 @@ namespace PCP.LibLime
 					break;
 			}
 		}
+		public NotificationPool notificationPool;
+
+		public void OnNotify(string message)
+		{
+			Notification notification = notificationPool.Get();
+			if (notification != null)
+			{
+				notification.Display(message);
+			}
+		}
 		//UI
 		public void ChangeUIHandler(string msg)
 		{
