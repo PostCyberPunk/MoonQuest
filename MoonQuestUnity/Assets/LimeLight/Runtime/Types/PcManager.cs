@@ -67,24 +67,11 @@ namespace PCP.LibLime
 			if (!enabled)
 				return;
 			Blocker.SetActive(true);
-			mCallBackHanlder += ChangeUIhandler;
 			if (uuid != "")
 				mPlugin?.Call("StartAppList", uuid);
 		}
 
 		//Handlers///////////
-		private void ChangeUIhandler(string m)
-		{
-			if (m != "pcdone1")
-				return;
-			/* if (!m.StartsWith("pcdone")) */
-			/* 	return; */
-			/* if (m[^1] != '1') */
-			/* 	return; */
-			mPluginManager.StartManager(LimePluginManager.PluginType.App);
-			mCallBackHanlder -= ChangeUIhandler;
-			enabled = false;
-		}
 		private void UdpateListHandler(string m)
 		{
 			if (!m.StartsWith("pclist"))
