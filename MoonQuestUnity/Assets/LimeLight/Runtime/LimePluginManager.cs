@@ -120,8 +120,8 @@ namespace PCP.LibLime
 		//Manager Methods///////////
 		public void StartManager(PluginType t)
 		{
-			if (t == PluginType.Pc)
-				mPluginManager.Call("StartPC");
+			/* if (t == PluginType.Pc) */
+			/* 	mPluginManager.Call("StartPC"); */
 			StartCoroutine(InitManager(t));
 		}
 		private IEnumerator InitManager(PluginType t)
@@ -240,6 +240,7 @@ namespace PCP.LibLime
 		//TRY Debug
 		public void StartPc()
 		{
+			mPluginManager.Call("StartPC");
 			StartManager(PluginType.Pc);
 		}
 	}
