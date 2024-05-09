@@ -146,7 +146,6 @@ namespace PCP.LibLime
 				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 				timer += Time.deltaTime;
 			}
-			Debug.Log("Plugin founded:" + t);
 			switch (t)
 			{
 				case PluginType.Pc:
