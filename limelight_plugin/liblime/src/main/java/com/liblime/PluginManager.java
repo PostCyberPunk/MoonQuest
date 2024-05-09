@@ -161,8 +161,8 @@ public class PluginManager {
         var editor = PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
         editor.putString("list_resolution", "3440x1440");
 //        editor.putInt("seekbar_bitrate_kbps", 50000);
-//        editor.putBoolean("checkbox_host_audio", true);
-//        editor.putBoolean("checkbox_enable_sops", false);
+        editor.putBoolean("checkbox_host_audio", true);
+        editor.putBoolean("checkbox_enable_sops", false);
         editor.apply();
     }
     //END OF CLASS
