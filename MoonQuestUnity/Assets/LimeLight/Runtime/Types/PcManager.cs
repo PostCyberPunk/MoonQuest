@@ -13,6 +13,7 @@ namespace PCP.LibLime
 		private readonly Dictionary<string, PCListItemHodler> mComputerMap = new();
 		private void Awake()
 		{
+			Type = LimePluginManager.PluginType.Pc;
 			mTag = "PcManger";
 		}
 

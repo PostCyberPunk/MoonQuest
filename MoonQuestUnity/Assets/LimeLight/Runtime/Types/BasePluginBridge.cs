@@ -9,6 +9,7 @@ namespace PCP.LibLime
 	public class BasePluginBride : MonoBehaviour
 	{
 		protected string mTag;
+		public LimePluginManager.PluginType Type { get; protected set; }
 		[SerializeField] protected GameObject mPanel;
 		public GameObject Blocker;
 		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;

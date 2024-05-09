@@ -11,6 +11,7 @@ namespace PCP.LibLime
 		private readonly Dictionary<int, NvAppListItemHodler> mAppMap = new();
 		private void Awake()
 		{
+			Type = LimePluginManager.PluginType.App;
 			mTag = "AppManger";
 		}
 		protected override void OnCreate()

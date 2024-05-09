@@ -14,6 +14,7 @@ namespace PCP.LibLime
 
 		private void Awake()
 		{
+			Type = LimePluginManager.PluginType.Stream;
 			mTag = "StreamManager";
 			mPausingTex = mRawImage.texture;
 			mPausingSize = mRawImage.rectTransform.sizeDelta;
