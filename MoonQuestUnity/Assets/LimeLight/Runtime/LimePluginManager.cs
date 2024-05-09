@@ -126,6 +126,7 @@ namespace PCP.LibLime
 		}
 		private IEnumerator InitManager(PluginType t)
 		{
+			Debug.Log("Try to find Plugin:" + t);
 			if (CheckBlocking())
 				yield break;
 			float timer = 0;
@@ -137,10 +138,12 @@ namespace PCP.LibLime
 					Debug.LogError(t.ToString() + "Loading Timeout:Cannot get plugin");
 					yield break;
 				}
+				Debug.Log("Foudning plugin:" + t + "Time:" + timer);
 				yield return new WaitForSeconds(1);
 				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 				timer += Time.deltaTime;
 			}
+			Debug.Log("Plugin founded:" + t);
 			switch (t)
 			{
 				case PluginType.Pc:
@@ -222,9 +225,11 @@ namespace PCP.LibLime
 				default:
 					break;
 			}
+			Debug.Log("UI Changed to:" + msg);
 		}
 		public void ChangeUIRoot(PluginType t)
 		{
+			Debug.Log("ChangeUIRoot:" + t);
 			//TODO: need a map for that
 			mPcManager.enabled = t == PluginType.Pc;
 			mAppManger.enabled = t == PluginType.App;

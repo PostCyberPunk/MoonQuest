@@ -39,6 +39,7 @@ namespace PCP.LibLime
 				Debug.LogError(mTag + "already Started");
 				return;
 			}
+			MessageManager.Instance.Info(mTag + " Initailizing");
 			Blocker.SetActive(true);
 			mPluginManager = m;
 			mPluginManager.OnJavaCallback += OnCallback;
@@ -46,7 +47,6 @@ namespace PCP.LibLime
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
 			_ = StartCoroutine(InitPlugin());
-			MessageManager.Instance.Info(mTag + " Initailizing");
 		}
 		private IEnumerator InitPlugin()
 		{
