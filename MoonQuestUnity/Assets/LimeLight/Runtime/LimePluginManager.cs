@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace PCP.LibLime
@@ -188,20 +189,26 @@ namespace PCP.LibLime
 
 		//TODO: make
 		public GameObject Blocker;
+		public GameObject DialogWindow;
+		public TMP_Text DialogText;
+		public void OnDialog(string m)
 		{
 			string[] msglsit = m.Split('|');
 			string msg = msglsit[0];
 			int level = int.Parse(msglsit[1]);
+			DialogText.text = msg;
+			DialogWindow.SetActive(true);
 			switch (level)
 			{
 				case 0:
-					MessageManager.Instance.Info(msg);
+					/* MessageManager.Instance.Info(msg); */
 					break;
 				case 1:
-					MessageManager.Instance.Warn(msg);
+					/* MessageManager.Instance.Warn(msg); */
 					break;
 				case 2:
-					MessageManager.Instance.Error(msg);
+					/* MessageManager.Instance.Error(msg); */
+					DoReset();
 					break;
 				default:
 					break;
