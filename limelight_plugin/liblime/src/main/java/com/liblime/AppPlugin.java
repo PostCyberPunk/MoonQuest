@@ -92,7 +92,7 @@ public class AppPlugin extends UnityPluginObject {
         onCreate();
         isInitialized = true;
         //TODO: that's lazy
-        mPluginManager.Callback("pcdone1");
+        mPluginManager.Callback("UIAPP");
     }
 
     @Override

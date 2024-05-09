@@ -70,6 +70,7 @@ public class PcPlugin extends UnityPluginObject {
         onCreate();
         isInitialized = true;
         LimeLog.debug("PcPlugin Initialized");
+        mPluginManager.Callback("UIPC");
     }
 
     @Override
