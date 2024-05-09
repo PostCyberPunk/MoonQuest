@@ -58,6 +58,11 @@ namespace PCP.LibLime
 			mPluginManager = null;
 		}
 		//Plugin Methods///////////
+		public void StartPc()
+		{
+			mPluginManager.Call("StartPC");
+			StartManager(PluginType.Pc);
+		}
 		public bool IsAlive()
 		{
 			if (mPluginManager == null)
@@ -186,7 +191,7 @@ namespace PCP.LibLime
 			OnJavaCallback?.Invoke(msg);
 		}
 
-		//TODO: make
+		//Dialog and Notification
 		public GameObject Blocker;
 		public GameObject DialogWindow;
 		public TMP_Text DialogText;
@@ -257,11 +262,6 @@ namespace PCP.LibLime
 				mStreamManager.enabled = false;
 		}
 		//TRY Debug
-		public void StartPc()
-		{
-			mPluginManager.Call("StartPC");
-			StartManager(PluginType.Pc);
-		}
 		public void TestDialog(bool t)
 		{
 			mPluginManager.Call("TestDialog", t);
