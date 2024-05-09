@@ -73,6 +73,7 @@ namespace PCP.LibLime
 		}
 
 		//Handlers///////////
+		//TODO: maybe move this to a helper class or a interface
 		private void UdpateListHandler(string m)
 		{
 			if (!m.StartsWith("pclist"))

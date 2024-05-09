@@ -67,6 +67,9 @@ public class PluginManager {
     }
 
     //plugins-----------
+    public void StartPC() {
+        ActivatePlugin(PluginType.PC, null);
+    }
     public void ActivatePlugin(PluginType pluginType, Intent i) {
         if (m_PluginMap.get(pluginType) != null) {
 //            DeActivePlugin(pluginType);
@@ -159,9 +162,6 @@ public class PluginManager {
     }
 
     //TRY
-    public void StartPC() {
-        ActivatePlugin(PluginType.PC, null);
-    }
 
     public void TestDialog(boolean t) {
         Dialog("Test Dialog", (t ? MessageLevel.FATAL : MessageLevel.NORMAL));
