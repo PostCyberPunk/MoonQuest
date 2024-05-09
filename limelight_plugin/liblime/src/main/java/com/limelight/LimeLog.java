@@ -1,5 +1,7 @@
 package com.limelight;
 
+import com.liblime.UnityMessager;
+
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -23,7 +25,7 @@ public class LimeLog {
     private static final boolean VERBOSE = false;
 
     public static void todo(String msg) {
-        LOGGER.severe(msg);
+        UnityMessager.Debug("TODO:" + msg);
     }
 
     public static void debug(String msg) {
