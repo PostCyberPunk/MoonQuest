@@ -97,6 +97,8 @@ public class PluginManager {
     }
 
     public void DestroyAllPlugins() {
+        if(m_PluginMap.isEmpty())
+            return;
         LimeLog.debug("Destroying all plugins");
         for (UnityPluginObject plugin : m_PluginMap.values()) {
             if (plugin != null)

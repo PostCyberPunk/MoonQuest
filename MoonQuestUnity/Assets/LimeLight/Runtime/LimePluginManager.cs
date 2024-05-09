@@ -88,6 +88,14 @@ namespace PCP.LibLime
 			mPluginManager.Call("DestroyAllPlugins");
 		}
 
+		public void DoReset()
+		{
+			if (CheckBlocking())
+				return;
+			//Check if there is any running manager
+			StopManagers();
+			ResetPlugin();
+		}
 		public void ResetPlugin()
 		{
 			StartCoroutine(TaskResetPlugin());
@@ -197,13 +205,6 @@ namespace PCP.LibLime
 		public void StartPc()
 		{
 			StartManager(PluginType.Pc);
-		}
-		public void DummyReset()
-		{
-			if (CheckBlocking())
-				return;
-			StopManagers();
-			ResetPlugin();
 		}
 	}
 }
