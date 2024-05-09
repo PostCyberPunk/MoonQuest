@@ -199,10 +199,9 @@ public class AppPlugin extends UnityPluginObject {
             managerBinder.stopPolling();
         }
 
-        if (m_AppList != null) {
-
-            LimeLog.todo("AppList is not null");
-        }
+        //TODO: Do we clear our list here?and how aobut unity
+//        if (m_AppList != null) {
+//        }
     }
 
     private void populateAppGridWithCache() {

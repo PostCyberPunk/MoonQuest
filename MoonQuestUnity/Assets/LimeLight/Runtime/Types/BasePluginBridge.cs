@@ -76,7 +76,7 @@ namespace PCP.LibLime
 				mPanel.SetActive(true);
 			Blocker.SetActive(false);
 			State = PluginState.INITIALIZED;
-			MessageManager.Instance.Info(mTag + "Initialized");
+			Debug.Log(mTag + "Initialized");
 		}
 
 		protected virtual void OnCreate() { }
