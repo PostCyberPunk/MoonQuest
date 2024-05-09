@@ -13,6 +13,7 @@ namespace PCP.LibLime
 		private readonly Dictionary<string, PCListItemHodler> mComputerMap = new();
 		private void Awake()
 		{
+			Type = LimePluginManager.PluginType.Pc;
 			mTag = "PcManger";
 		}
 
@@ -66,24 +67,12 @@ namespace PCP.LibLime
 			if (!enabled)
 				return;
 			Blocker.SetActive(true);
-			mCallBackHanlder += ChangeUIhandler;
+			mPluginManager.StartManager(LimePluginManager.PluginType.App);
 			if (uuid != "")
 				mPlugin?.Call("StartAppList", uuid);
 		}
 
 		//Handlers///////////
-		private void ChangeUIhandler(string m)
-		{
-			if (m != "pcdone1")
-				return;
-			/* if (!m.StartsWith("pcdone")) */
-			/* 	return; */
-			/* if (m[^1] != '1') */
-			/* 	return; */
-			mPluginManager.StartManager(LimePluginManager.PluginType.App);
-			mCallBackHanlder -= ChangeUIhandler;
-			enabled = false;
-		}
 		private void UdpateListHandler(string m)
 		{
 			if (!m.StartsWith("pclist"))

@@ -34,6 +34,7 @@ namespace PCP.LibLime
 			mStreamManager = GetComponent<StreamManager>();
 			mPcManager = GetComponent<PcManager>();
 			mAppManger = GetComponent<AppManager>();
+			OnJavaCallback += ChangeUIHandler;
 		}
 
 		private void Start()
@@ -119,15 +120,18 @@ namespace PCP.LibLime
 		//Manager Methods///////////
 		public void StartManager(PluginType t)
 		{
-			if (t == PluginType.Pc)
-				mPluginManager.Call("StartPC");
+			/* if (t == PluginType.Pc) */
+			/* 	mPluginManager.Call("StartPC"); */
 			StartCoroutine(InitManager(t));
 		}
 		private IEnumerator InitManager(PluginType t)
 		{
+			Debug.Log("Try to find Plugin:" + t);
 			if (CheckBlocking())
 				yield break;
 			float timer = 0;
+			//TODO: if we are using plugin callback to start manager, we can remove this.but what if
+			//plugin failed to load?
 			AndroidJavaObject o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 			while (o == null)
 			{
@@ -136,10 +140,12 @@ namespace PCP.LibLime
 					Debug.LogError(t.ToString() + "Loading Timeout:Cannot get plugin");
 					yield break;
 				}
+				Debug.Log("Foudning plugin:" + t + "Time:" + timer);
 				yield return new WaitForSeconds(1);
 				o = mPluginManager.Call<AndroidJavaObject>("GetPlugin", (int)t);
 				timer += Time.deltaTime;
 			}
+			Debug.Log("Plugin founded:" + t);
 			switch (t)
 			{
 				case PluginType.Pc:
@@ -201,9 +207,43 @@ namespace PCP.LibLime
 					break;
 			}
 		}
+		//UI
+		public void ChangeUIHandler(string msg)
+		{
+			if (!msg.StartsWith("UI"))
+				return;
+			msg = msg[2..];
+			switch (msg)
+			{
+				case "PC":
+					ChangeUIRoot(PluginType.Pc);
+					break;
+				case "APP":
+					ChangeUIRoot(PluginType.App);
+					break;
+				case "STM":
+					ChangeUIRoot(PluginType.Stream);
+					break;
+				default:
+					break;
+			}
+			Debug.Log("UI Changed to:" + msg);
+		}
+		public void ChangeUIRoot(PluginType t)
+		{
+			Debug.Log("ChangeUIRoot:" + t);
+			//TODO: need a map for that
+			if (t != PluginType.Pc)
+				mPcManager.enabled = false;
+			if (t != PluginType.App)
+				mAppManger.enabled = false;
+			if (t != PluginType.Stream)
+				mStreamManager.enabled = false;
+		}
 		//TRY Debug
 		public void StartPc()
 		{
+			mPluginManager.Call("StartPC");
 			StartManager(PluginType.Pc);
 		}
 	}

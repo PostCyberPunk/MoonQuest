@@ -86,7 +86,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
 
         isInitialized = true;
         LimeLog.debug("StreamPlugin initialized");
-        mPluginManager.Callback("appdone1");
+        mPluginManager.Callback("UISTM");
     }
 
     private final int mTexWidth = 3440;

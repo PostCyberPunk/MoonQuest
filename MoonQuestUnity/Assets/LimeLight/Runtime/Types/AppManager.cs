@@ -11,11 +11,12 @@ namespace PCP.LibLime
 		private readonly Dictionary<int, NvAppListItemHodler> mAppMap = new();
 		private void Awake()
 		{
+			Type = LimePluginManager.PluginType.App;
 			mTag = "AppManger";
 		}
 		protected override void OnCreate()
 		{
-			/* UpdateList(); */
+			UpdateList();
 			mCallBackHanlder += UdpateListHandler;
 		}
 		protected override void OnStop()
@@ -29,25 +30,13 @@ namespace PCP.LibLime
 				Destroy(child.gameObject);
 			}
 		}
-		private void ChangeUIhandler(string m)
-		{
-			if (m != "appdone1")
-				return;
-			/* if (!m.StartsWith("pcdone")) */
-			/* 	return; */
-			/* if (m[^1] != '1') */
-			/* 	return; */
-			mPluginManager.StartManager(LimePluginManager.PluginType.Stream);
-			mCallBackHanlder -= ChangeUIhandler;
-			enabled = false;
-		}
 
 		public void StartApp(int appid)
 		{
 			if (!enabled)
 				return;
 			Blocker.SetActive(true);
-			mCallBackHanlder += ChangeUIhandler;
+			mPluginManager.StartManager(LimePluginManager.PluginType.Stream);
 			mPlugin?.Call("StartApp", appid);
 		}
 

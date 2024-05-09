@@ -9,6 +9,7 @@ namespace PCP.LibLime
 	public class BasePluginBride : MonoBehaviour
 	{
 		protected string mTag;
+		public LimePluginManager.PluginType Type { get; protected set; }
 		[SerializeField] protected GameObject mPanel;
 		public GameObject Blocker;
 		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;
@@ -38,6 +39,7 @@ namespace PCP.LibLime
 				Debug.LogError(mTag + "already Started");
 				return;
 			}
+			Debug.Log(mTag + " Initailizing");
 			Blocker.SetActive(true);
 			mPluginManager = m;
 			mPluginManager.OnJavaCallback += OnCallback;
@@ -45,13 +47,11 @@ namespace PCP.LibLime
 			mPlugin = o;
 			/* RawObject = o.GetRawObject(); */
 			_ = StartCoroutine(InitPlugin());
-			MessageManager.Instance.Info(mTag + " Initailizing");
 		}
 		private IEnumerator InitPlugin()
 		{
 			State = PluginState.INITIALISING;
 			float loadingTime = Time.time + lodingTimeout;
-			yield return new WaitForEndOfFrame();
 
 			if (mPlugin == null)
 			{
@@ -67,13 +67,13 @@ namespace PCP.LibLime
 					Debug.LogError(mTag + ": Plugin Loading Timeout");
 					yield break;
 				}
-				yield return null;
+				yield return new WaitForEndOfFrame();
 			}
-			State = PluginState.INITIALIZED;
 			OnCreate();
 			if (mPanel != null)
 				mPanel.SetActive(true);
 			Blocker.SetActive(false);
+			State = PluginState.INITIALIZED;
 			MessageManager.Instance.Info(mTag + "Initialized");
 		}
 
@@ -103,7 +103,7 @@ namespace PCP.LibLime
 			State = PluginState.NONE;
 			mPluginManager.OnJavaCallback -= OnCallback;
 			mPluginManager = null;
-			MessageManager.Instance.Info(mTag + "Stopped");
+			Debug.Log(mTag + "Stopped");
 		}
 		///////////Methods////////////
 		///PERF:maybe a interface
