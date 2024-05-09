@@ -39,7 +39,7 @@ namespace PCP.LibLime
 				Debug.LogError(mTag + "already Started");
 				return;
 			}
-			MessageManager.Instance.Info(mTag + " Initailizing");
+			Debug.Log(mTag + " Initailizing");
 			Blocker.SetActive(true);
 			mPluginManager = m;
 			mPluginManager.OnJavaCallback += OnCallback;
@@ -105,7 +105,7 @@ namespace PCP.LibLime
 			State = PluginState.NONE;
 			mPluginManager.OnJavaCallback -= OnCallback;
 			mPluginManager = null;
-			MessageManager.Instance.Info(mTag + "Stopped");
+			Debug.Log(mTag + "Stopped");
 		}
 		///////////Methods////////////
 		///PERF:maybe a interface

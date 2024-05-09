@@ -93,6 +93,7 @@ public class AppPlugin extends UnityPluginObject {
         isInitialized = true;
         //TODO: that's lazy
         mPluginManager.Callback("UIAPP");
+        LimeLog.debug("AppPlugin Initialized");
     }
 
     @Override
