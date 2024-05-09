@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace PCP.LibLime
@@ -187,24 +188,40 @@ namespace PCP.LibLime
 		}
 
 		//TODO: make
-		public static void OnDialog(string m)
+		public GameObject Blocker;
+		public GameObject DialogWindow;
+		public TMP_Text DialogText;
+		public void OnDialog(string m)
 		{
 			string[] msglsit = m.Split('|');
 			string msg = msglsit[0];
 			int level = int.Parse(msglsit[1]);
+			DialogText.text = msg;
+			DialogWindow.SetActive(true);
 			switch (level)
 			{
 				case 0:
-					MessageManager.Instance.Info(msg);
+					/* MessageManager.Instance.Info(msg); */
 					break;
 				case 1:
-					MessageManager.Instance.Warn(msg);
+					/* MessageManager.Instance.Warn(msg); */
 					break;
 				case 2:
-					MessageManager.Instance.Error(msg);
+					/* MessageManager.Instance.Error(msg); */
+					DoReset();
 					break;
 				default:
 					break;
+			}
+		}
+		public NotificationPool notificationPool;
+
+		public void OnNotify(string message)
+		{
+			Notification notification = notificationPool.Get();
+			if (notification != null)
+			{
+				notification.Display(message);
 			}
 		}
 		//UI
@@ -245,6 +262,14 @@ namespace PCP.LibLime
 		{
 			mPluginManager.Call("StartPC");
 			StartManager(PluginType.Pc);
+		}
+		public void TestDialog(bool t)
+		{
+			mPluginManager.Call("TestDialog", t);
+		}
+		public void TestNotify(string m)
+		{
+			mPluginManager.Call("TestNotify", m);
 		}
 	}
 }

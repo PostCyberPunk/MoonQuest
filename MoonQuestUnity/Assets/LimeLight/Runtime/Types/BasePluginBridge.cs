@@ -11,7 +11,7 @@ namespace PCP.LibLime
 		protected string mTag;
 		public LimePluginManager.PluginType Type { get; protected set; }
 		[SerializeField] protected GameObject mPanel;
-		public GameObject Blocker;
+		protected GameObject Blocker;
 		protected LimePluginManager.JavaCallbackHandler mCallBackHanlder;
 		private void OnCallback(string m) => mCallBackHanlder?.Invoke(m);
 		public enum PluginState
@@ -40,8 +40,10 @@ namespace PCP.LibLime
 				return;
 			}
 			Debug.Log(mTag + " Initailizing");
-			Blocker.SetActive(true);
+			//TODO: maybe move this to Awake
 			mPluginManager = m;
+			Blocker = mPluginManager.Blocker;
+			Blocker.SetActive(true);
 			mPluginManager.OnJavaCallback += OnCallback;
 			enabled = true;
 			mPlugin = o;
