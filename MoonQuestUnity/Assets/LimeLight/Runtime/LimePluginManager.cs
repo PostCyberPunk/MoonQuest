@@ -187,7 +187,7 @@ namespace PCP.LibLime
 		}
 
 		//TODO: make
-		public static void OnDialog(string m)
+		public GameObject Blocker;
 		{
 			string[] msglsit = m.Split('|');
 			string msg = msglsit[0];
