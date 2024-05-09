@@ -67,6 +67,7 @@ namespace PCP.LibLime
 			if (!enabled)
 				return;
 			Blocker.SetActive(true);
+			mPluginManager.StartManager(LimePluginManager.PluginType.App);
 			if (uuid != "")
 				mPlugin?.Call("StartAppList", uuid);
 		}

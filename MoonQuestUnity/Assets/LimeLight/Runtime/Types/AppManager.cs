@@ -36,6 +36,7 @@ namespace PCP.LibLime
 			if (!enabled)
 				return;
 			Blocker.SetActive(true);
+			mPluginManager.StartManager(LimePluginManager.PluginType.Stream);
 			mPlugin?.Call("StartApp", appid);
 		}
 
