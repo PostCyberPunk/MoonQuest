@@ -16,7 +16,7 @@ namespace PCP.LibLime
 		}
 		protected override void OnCreate()
 		{
-			/* UpdateList(); */
+			UpdateList();
 			mCallBackHanlder += UdpateListHandler;
 		}
 		protected override void OnStop()
