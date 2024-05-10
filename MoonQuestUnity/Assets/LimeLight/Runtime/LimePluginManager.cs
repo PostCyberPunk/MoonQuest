@@ -100,6 +100,7 @@ namespace PCP.LibLime
 			if (CheckBlocking())
 				return;
 			//Check if there is any running manager
+			StopAllCoroutines();
 			StopManagers();
 			ResetPlugin();
 		}
