@@ -2,14 +2,16 @@ using TMPro;
 using UnityEngine;
 namespace PCP.LibLime
 {
-	public class PCListItemHodler : MonoBehaviour
+	public class PCListItemHodler : MonoBehaviour, IListHolder<ComputerData, PcManager, string>
 	{
 		[SerializeField] private TMP_Text mText;
+		public TMP_Text TitleText { get => mText; set => mText = value; }
 		[SerializeField] private GameObject mPairIcon;
 		private ComputerData mData;
 		private PcManager mManager;
-		public string GetUUID() => mData.uuid;
-		internal void UpdateItem(ComputerData data, PcManager m)
+
+		public string GetID() => mData.uuid;
+		public void UpdateItem(ComputerData data, PcManager m)
 		{
 			mData = data;
 			mManager = m;
@@ -37,6 +39,7 @@ namespace PCP.LibLime
 				mManager.PairComputer(mData.uuid);
 			}
 		}
+
 	}
 }
 

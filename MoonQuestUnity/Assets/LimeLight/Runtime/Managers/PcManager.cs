@@ -123,7 +123,7 @@ namespace PCP.LibLime
 			mComputerMap.Clear();
 			foreach (PCListItemHodler child in ListParent.GetComponentsInChildren<PCListItemHodler>())
 			{
-				mComputerMap.Add(child.GetUUID(), child);
+				mComputerMap.Add(child.GetID(), child);
 			}
 		}
 		private void UpdateList(char choice)

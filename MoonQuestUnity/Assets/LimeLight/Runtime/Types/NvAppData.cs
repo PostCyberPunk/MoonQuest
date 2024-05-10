@@ -3,7 +3,7 @@ using System;
 namespace PCP.LibLime
 {
 	[Serializable]
-	internal struct NvAppData
+	public struct NvAppData
 	{
 		public string appName;
 		public int appId;

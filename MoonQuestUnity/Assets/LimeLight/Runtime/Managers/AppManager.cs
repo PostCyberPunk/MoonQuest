@@ -92,7 +92,7 @@ namespace PCP.LibLime
 			mAppMap.Clear();
 			foreach (NvAppListItemHodler child in ListParent.GetComponentsInChildren<NvAppListItemHodler>())
 			{
-				mAppMap.Add(child.GetAppID(), child);
+				mAppMap.Add(child.GetID(), child);
 			}
 		}
 	}

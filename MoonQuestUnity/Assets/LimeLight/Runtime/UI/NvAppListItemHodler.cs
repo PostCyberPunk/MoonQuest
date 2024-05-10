@@ -3,13 +3,14 @@ using UnityEngine;
 
 namespace PCP.LibLime
 {
-	public class NvAppListItemHodler : MonoBehaviour
+	public class NvAppListItemHodler : MonoBehaviour, IListHolder<NvAppData, AppManager, int>
 	{
 		[SerializeField] private TMP_Text mText;
+		public TMP_Text TitleText { get => mText; set => mText = value; }
 		private NvAppData mData;
 		private AppManager mManager;
-		public int GetAppID() => mData.appId;
-		internal void UpdateItem(NvAppData data, AppManager m)
+		public int GetID() => mData.appId;
+		public void UpdateItem(NvAppData data, AppManager m)
 		{
 			mData = data;
 			mManager = m;

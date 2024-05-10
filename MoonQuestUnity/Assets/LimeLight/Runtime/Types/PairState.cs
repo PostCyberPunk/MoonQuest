@@ -1,6 +1,6 @@
 namespace PCP.LibLime
 {
-	internal enum PairState
+	public enum PairState
 	{
 		NOT_PAIRED,
 		PAIRED,

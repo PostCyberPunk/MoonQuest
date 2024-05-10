@@ -2,7 +2,7 @@ using System;
 namespace PCP.LibLime
 {
 	[Serializable]
-	internal struct ComputerData
+	public struct ComputerData
 	{
 		public string uuid;
 		public string name;
