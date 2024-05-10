@@ -350,13 +350,13 @@ public class AppPlugin extends UnityPluginObject {
     }
 
     //Bridge
-    public String GetList() {
+    public String GetList(boolean add) {
         return m_AppList.getUpdatedList();
     }
 
     private void notifyUpdateList() {
         LimeLog.verbose("notify unity to update the computer list view");
-        mPluginManager.Callback("applist");
+        mPluginManager.Callback("applist1");
     }
 
     private void StartApp(int id) {
