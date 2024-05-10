@@ -15,6 +15,7 @@ namespace PCP.LibLime
 		private StreamManager mStreamManager;
 		private PcManager mPcManager;
 		private AppManager mAppManger;
+		private bool shouldResume = false;
 		public enum PluginType
 		{
 			Pc,
@@ -51,9 +52,18 @@ namespace PCP.LibLime
 
 		private void OnApplicationPause(bool pause)
 		{
-			Debug.LogError("OnPause" + pause);
 			if (pause)
+			{
+				if (mStreamManager.IsInitialized)
+					shouldResume = true;
 				DoReset();
+			}
+			else if (shouldResume)
+			{
+				shouldResume = false;
+				Debug.Log("Resuming Last Stream");
+				StartLastApp();
+			}
 		}
 
 
@@ -131,6 +141,7 @@ namespace PCP.LibLime
 				yield return new WaitForSeconds(1);
 			}
 			Blocking = false;
+			Blocker.SetActive(false);
 		}
 		//Manager Methods///////////
 		public void StartManager(PluginType t)
@@ -236,6 +247,26 @@ namespace PCP.LibLime
 			{
 				notification.Display(message);
 			}
+		}
+		//Shortcut
+		internal void StartShortcut(ShortcutData sd)
+		{
+			StartManager(PluginType.Stream);
+			mPluginManager.Call("DoShortcut", sd.uuid, sd.appName, sd.appID.ToString());
+		}
+		//TODO:use file and array to store the last app,should check out if can access the persistent
+		//data path
+		/* internal void UpdateLastApp(ShortcutData sd) */
+		/* { */
+		/* 	PlayerPrefs.SetString("LastApp", JsonUtility.ToJson(sd)); */
+		/* } */
+		public void StartLastApp()
+		{
+			string la = PlayerPrefs.GetString("LastApp", "");
+			if (la == "")
+				return;
+			Blocker.SetActive(true);
+			StartShortcut(JsonUtility.FromJson<ShortcutData>(la));
 		}
 		//UI
 		public void ChangeUIHandler(string msg)
