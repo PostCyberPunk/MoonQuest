@@ -18,6 +18,8 @@ import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
+import com.liblime.types.ShortcutWrapper;
 import com.limelight.LimeLog;
 
 import com.limelight.binding.PlatformBinding;
@@ -718,6 +720,12 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         sharedTexture.bindTexture(mHWBFboTextureId[0]);
         mSharedTexture = sharedTexture;
         mShareBuffer = sb;
+    }
+
+    //Shortcut
+    public String GetShortcut() {
+        return new Gson().toJson(new ShortcutWrapper(mIntent.getStringExtra(EXTRA_PC_UUID),
+                mIntent.getStringExtra(EXTRA_APP_NAME), mIntent.getIntExtra(EXTRA_APP_ID, 0)));
     }
     //End of class
 }
