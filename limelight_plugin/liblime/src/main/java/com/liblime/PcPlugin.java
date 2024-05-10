@@ -288,7 +288,7 @@ public class PcPlugin extends UnityPluginObject {
             pcList.addComputer(new ComputerObject(details));
 
         }
-        notifyUpdateList();
+        notifyUpdateList(true);
     }
 
     public void stopAddComputerManually() {
@@ -299,16 +299,16 @@ public class PcPlugin extends UnityPluginObject {
     }
 
     //Bridge
-    public String GetList() {
-        String result = pcList.getUpdatedList();
+    public String GetList(boolean add) {
+        String result = add ? pcList.getUpdatedList() : pcList.getRemoveList();
         freezeUpdates = false;
         return result;
     }
 
-    private void notifyUpdateList() {
+    private void notifyUpdateList(boolean add) {
         if (pcList.needUpdate() && !freezeUpdates) {
             LimeLog.verbose("notify unity to update the computer list view");
-            mPluginManager.Callback("pclist");
+            mPluginManager.Callback("pclist" + (add ? "1" : "0"));
             freezeUpdates = true;
         }
     }
@@ -327,5 +327,16 @@ public class PcPlugin extends UnityPluginObject {
         doAppList(computer.details, false, false);
     }
 
+    //TRY
+    public void DumRemove() {
+        ComputerObject pc = (ComputerObject) pcList.getItem(0);
+        if (pc == null) {
+            LimeLog.debug("cant remove pc,list is null");
+        } else {
+            managerBinder.removeComputer(pc.details);
+            pcList.removeComputer(pc);
+            notifyUpdateList(false);
+        }
+    }
     //End of class-----------
 }

@@ -12,6 +12,7 @@ import java.util.Comparator;
 public class PcList {
     private final ArrayList<ComputerObject> itemList = new ArrayList<>();
     private ArrayList<ComputerObject> updatedList = new ArrayList<>();
+    private ArrayList<ComputerObject> removeList = new ArrayList<>();
 
     public void addComputer(ComputerObject computer) {
         itemList.add(computer);
@@ -36,19 +37,26 @@ public class PcList {
                 return false;
             }
         }
-        return !updatedList.isEmpty();
+        return !updatedList.isEmpty()||!removeList.isEmpty();
     }
 
     public String getUpdatedList() {
-        if (updatedList.isEmpty()) {
+        return getList(updatedList);
+    }
+
+    public String getRemoveList() {
+        return getList(removeList);
+    }
+
+    private String getList(ArrayList<ComputerObject> list) {
+        if (list.isEmpty())
             return null;
+        var dataList = new ComputerObject.ComputerData[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            dataList[i] = list.get(i).ToData();
         }
-        var dataList = new ComputerObject.ComputerData[updatedList.size()];
-        for (int i = 0; i < updatedList.size(); i++) {
-            dataList[i] = updatedList.get(i).ToData();
-        }
-        String result = new Gson().toJson(new ComputerDataWrapper(dataList));
-        updatedList.clear();
+        var result = new Gson().toJson(new ComputerDataWrapper(dataList));
+        list.clear();
         return result;
     }
 
@@ -70,10 +78,19 @@ public class PcList {
     }
 
     public boolean removeComputer(ComputerObject computer) {
-        return itemList.remove(computer);
+
+        if (itemList.remove(computer)) {
+            removeList.add(computer);
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public Object getItem(int i) {
+        if (itemList.isEmpty())
+            return null;
         return itemList.get(i);
     }
 
