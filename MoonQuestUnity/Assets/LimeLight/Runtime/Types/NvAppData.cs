@@ -3,11 +3,12 @@ using System;
 namespace PCP.LibLime
 {
 	[Serializable]
-	internal struct NvAppData
+	public struct NvAppData : IIdProvider<int>
 	{
 		public string appName;
 		public int appId;
 		public bool initialized;
+		public readonly int GetID() => appId;
 	}
 	[Serializable]
 	internal struct NvAppDataWrapper

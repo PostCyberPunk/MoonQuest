@@ -1,6 +1,6 @@
 namespace PCP.LibLime
 {
-	internal enum ComputerState
+	public enum ComputerState
 	{
 		ONLINE,
 		OFFLINE,
