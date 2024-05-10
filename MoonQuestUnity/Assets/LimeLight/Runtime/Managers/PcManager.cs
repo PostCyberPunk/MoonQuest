@@ -78,12 +78,58 @@ namespace PCP.LibLime
 		{
 			if (!m.StartsWith("pclist"))
 				return;
-			UpdateList();
+			UpdateList(m[6]);
 		}
-		private void UpdateList()
+		private void RemoveItems(ComputerData[] list)
+		{
+			List<string> toRemove = new();
+			foreach (ComputerData data in list)
+			{
+				if (mComputerMap.ContainsKey(data.uuid))
+				{
+					Destroy(mComputerMap[data.uuid].gameObject);
+					toRemove.Add(data.uuid);
+				}
+				else
+				{
+					Debug.LogWarning(mTag + ":RemoveItem:Item not found:" + data.uuid);
+				}
+			}
+			if (toRemove.Count == 0)
+				return;
+			foreach (string i in toRemove)
+			{
+				mComputerMap.Remove(i);
+			}
+		}
+		private void AddItems(ComputerData[] list)
+		{
+			foreach (ComputerData data in list)
+			{
+				if (mComputerMap.ContainsKey(data.uuid))
+				{
+					mComputerMap[data.uuid].UpdateItem(data, this);
+				}
+				else
+				{
+					GameObject go = Instantiate(ListItemPrefab, ListParent);
+					go.GetComponent<PCListItemHodler>().UpdateItem(data, this);
+				}
+			}
+
+			//Update Item Dictionary
+			if (ListParent == null)
+				return;
+			mComputerMap.Clear();
+			foreach (PCListItemHodler child in ListParent.GetComponentsInChildren<PCListItemHodler>())
+			{
+				mComputerMap.Add(child.GetUUID(), child);
+			}
+		}
+		private void UpdateList(char choice)
 		{
 			//Strarting Updtae List
-			string rawList = mPlugin.Call<string>("GetList");
+			string rawList = mPlugin.Call<string>("GetList", choice == '1');
 			if (rawList == null || rawList == string.Empty)
 				return;
 			Debug.Log(mTag + ":RawList:" + rawList);
@@ -107,27 +153,10 @@ namespace PCP.LibLime
 				Debug.LogWarning(mTag + ":No Computer need update");
 				return;
 			}
-			foreach (ComputerData data in list)
-			{
-				if (mComputerMap.ContainsKey(data.uuid))
-				{
-					mComputerMap[data.uuid].UpdateItem(data, this);
-				}
-				else
-				{
-					GameObject go = Instantiate(ListItemPrefab, ListParent);
-					go.GetComponent<PCListItemHodler>().UpdateItem(data, this);
-				}
-			}
-
-			//Update Item Dictionary
-			if (ListParent == null)
-				return;
-			mComputerMap.Clear();
-			foreach (PCListItemHodler child in ListParent.GetComponentsInChildren<PCListItemHodler>())
-			{
-				mComputerMap.Add(child.GetUUID(), child);
-			}
+			if (choice == '0')
+				RemoveItems(list);
+			else
+				AddItems(list);
 		}
 		private void PairingHanlder(string msg)
 		{
@@ -149,6 +178,10 @@ namespace PCP.LibLime
 						break;
 				}
 			}
+		}
+		public void DumRemove()
+		{
+			mPlugin.Call("DumRemove");
 		}
 	}
 }
