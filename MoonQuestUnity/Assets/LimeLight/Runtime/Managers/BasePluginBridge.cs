@@ -103,6 +103,7 @@ namespace PCP.LibLime
 				mPlugin = null;
 			}
 			State = PluginState.NONE;
+			StopAllCoroutines();
 			mPluginManager.OnJavaCallback -= OnCallback;
 			mPluginManager = null;
 			Debug.Log(mTag + "Stopped");
