@@ -49,6 +49,14 @@ namespace PCP.LibLime
 			Blocking = false;
 		}
 
+		private void OnApplicationPause(bool pause)
+		{
+			Debug.LogError("OnPause" + pause);
+			if (pause)
+				DoReset();
+		}
+
+
 		private void OnDestroy()
 		{
 			StopAllCoroutines();
