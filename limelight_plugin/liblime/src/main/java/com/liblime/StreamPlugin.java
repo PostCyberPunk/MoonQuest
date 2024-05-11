@@ -326,16 +326,18 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                         .apply();
             }
         }
-        if(streamView != null) {
+        if (streamView != null) {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (mSharedTexture != null) {
+                        LimeLog.temp("release SharedTexture");
+                        releaseSharedTexture();
+                    }
                     ((ViewGroup) streamView.getParent()).removeView(streamView);
+                    LimeLog.temp("OnUI removed StreamView");
                 }
             });
-        }
-        if(mSharedTexture != null) {
-            releaseSharedTexture();
         }
         RevmoveReference();
     }

@@ -49,6 +49,10 @@ public class StreamView extends GLSurfaceView {
          */
         @Override
         public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
+            LimeLog.temp("Streamview on DestroyContext");
+            //TODO: there still maybe no context
+            egl.eglDestroyContext(display, context);
+            mRenderer.Destroy();
         }
 
         /**
