@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.liblime.PluginManager;
 import com.limelight.LimeLog;
@@ -47,7 +44,7 @@ public abstract class UnityPluginObject {
 
     public abstract void onDestroy();
 
-    protected void RevmoveReference() {
+    protected void RemoveReference() {
         mPluginManager.RemovePlugin(mPluginType);
         mActivity = null;
         mIntent = null;

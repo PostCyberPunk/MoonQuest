@@ -6,7 +6,7 @@ namespace PCP.LibLime
 	/// <summary>
 	/// Base class for all Plugin Objects
 	/// </summary>
-	public class BasePluginBride : MonoBehaviour
+	public class BasePluginBridge : MonoBehaviour
 	{
 		protected string mTag;
 		public LimePluginManager.PluginType Type { get; protected set; }

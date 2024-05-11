@@ -2,7 +2,6 @@ package com.liblime;
 
 
 import android.app.Activity;
-import android.app.appsearch.RemoveByDocumentIdRequest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +10,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.opengl.GLES30;
 import android.os.Build;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
@@ -339,7 +336,7 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                 }
             });
         }
-        RevmoveReference();
+        RemoveReference();
     }
 
     @Override

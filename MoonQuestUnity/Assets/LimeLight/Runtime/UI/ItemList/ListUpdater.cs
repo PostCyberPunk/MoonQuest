@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PCP.LibLime
 {
-	public abstract class ListUpdater<T, U, V, W> where T : IIdProvider<V> where U : BasePluginBride, IListPluginManager where W : MonoBehaviour, IListHolder<T, U, V>
+	public abstract class ListUpdater<T, U, V, W> where T : IIdProvider<V> where U : BasePluginBridge, IListPluginManager where W : MonoBehaviour, IListHolder<T, U, V>
 	{
 		protected readonly string mTag;
 		protected readonly string mCmdPrefix;

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace PCP.LibLime
 {
-	public class StreamManager : BasePluginBride
+	public class StreamManager : BasePluginBridge
 	{
 		[SerializeField] private RawImage mRawImage;
 		private Texture mPausingTex;

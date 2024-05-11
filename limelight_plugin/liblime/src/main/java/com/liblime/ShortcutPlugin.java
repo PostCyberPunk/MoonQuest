@@ -1,7 +1,6 @@
 package com.liblime;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -15,10 +14,8 @@ import com.limelight.computers.ComputerManagerService;
 import com.limelight.nvstream.http.ComputerDetails;
 import com.limelight.nvstream.http.NvApp;
 import com.limelight.nvstream.http.PairingManager;
-import com.limelight.nvstream.wol.WakeOnLanSender;
 import com.limelight.utils.ServerHelper;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class ShortcutPlugin extends UnityPluginObject {
@@ -257,7 +254,7 @@ public class ShortcutPlugin extends UnityPluginObject {
             unbindService(serviceConnection);
             managerBinder = null;
         }
-        RevmoveReference();
+        RemoveReference();
     }
 }
 

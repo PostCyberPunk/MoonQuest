@@ -109,7 +109,7 @@ public class PcPlugin extends UnityPluginObject {
         if (managerBinder != null) {
             unbindService(serviceConnection);
         }
-        RevmoveReference();
+        RemoveReference();
     }
 
     private void doPair(final ComputerDetails computer) {

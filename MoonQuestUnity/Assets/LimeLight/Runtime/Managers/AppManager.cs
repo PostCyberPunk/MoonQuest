@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace PCP.LibLime
 {
-	public class AppManager : BasePluginBride, IListPluginManager
+	public class AppManager : BasePluginBridge, IListPluginManager
 	{
 
 		private NvAppLIstUpdater mListUpdater;
