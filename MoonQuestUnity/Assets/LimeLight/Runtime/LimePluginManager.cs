@@ -69,8 +69,9 @@ namespace PCP.LibLime
 
 		private void OnDestroy()
 		{
-			StopAllCoroutines();
-			DestroyAllPluginObjects();
+			/* StopAllCoroutines(); */
+			/* DestroyAllPluginObjects(); */
+			DoReset();
 			mPluginManager.Call("Destroy");
 			mPluginManager.Dispose();
 			mPluginManager = null;
@@ -135,11 +136,12 @@ namespace PCP.LibLime
 				yield break;
 			}
 			DestroyAllPluginObjects();
-			yield return new WaitForSeconds(1);
+			yield return new WaitForEndOfFrame();
 			while (HasRunningPlugin())
 			{
 				yield return new WaitForSeconds(1);
 			}
+			Debug.Log("All Plugin Destroyed");
 			Blocking = false;
 			Blocker.SetActive(false);
 		}
@@ -191,6 +193,7 @@ namespace PCP.LibLime
 			mAppManger.enabled = false;
 			mPcManager.enabled = false;
 			mStreamManager.enabled = false;
+			Debug.Log("All Managers Stopped");
 		}
 		//Utils
 		private bool CheckBlocking()
