@@ -25,7 +25,8 @@ public class PluginManager {
     public enum PluginType {
         PC,
         APP,
-        STREAM
+        STREAM,
+        SHORTCUT
     }
 
     private EnumMap<PluginType, UnityPluginObject> m_PluginMap;
@@ -70,6 +71,16 @@ public class PluginManager {
     public void StartPC() {
         ActivatePlugin(PluginType.PC, null);
     }
+
+    public void DoShortcut(String uuid, String appname, String appid) {
+        LimeLog.debug("Starting Shortcut:" + appname);
+        var intent = new Intent(mActivity, ShortcutPlugin.class);
+        intent.putExtra(ShortcutPlugin.UUID_EXTRA, uuid);
+        intent.putExtra(ShortcutPlugin.EXTRA_APP_NAME, appname);
+        intent.putExtra(ShortcutPlugin.EXTRA_APP_ID, appid);
+        ActivatePlugin(PluginType.SHORTCUT, intent);
+    }
+
     public void ActivatePlugin(PluginType pluginType, Intent i) {
         if (m_PluginMap.get(pluginType) != null) {
 //            DeActivePlugin(pluginType);
@@ -83,6 +94,8 @@ public class PluginManager {
             m_PluginMap.put(pluginType, new AppPlugin(this, mActivity, i));
         } else if (pluginType == PluginType.STREAM) {
             m_PluginMap.put(pluginType, new StreamPlugin(this, mActivity, i));
+        } else if (pluginType == PluginType.SHORTCUT) {
+            m_PluginMap.put(pluginType, new ShortcutPlugin(this, mActivity, i));
         }
     }
 
@@ -166,6 +179,7 @@ public class PluginManager {
     public void TestDialog(boolean t) {
         Dialog("Test Dialog", (t ? MessageLevel.FATAL : MessageLevel.NORMAL));
     }
+
     public void TestNotify(String msg) {
         Notify(msg);
     }

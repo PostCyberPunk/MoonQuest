@@ -15,6 +15,7 @@ namespace PCP.LibLime
 		private StreamManager mStreamManager;
 		private PcManager mPcManager;
 		private AppManager mAppManger;
+		private bool shouldResume = false;
 		public enum PluginType
 		{
 			Pc,
@@ -49,10 +50,28 @@ namespace PCP.LibLime
 			Blocking = false;
 		}
 
+		private void OnApplicationPause(bool pause)
+		{
+			if (pause)
+			{
+				if (mStreamManager.IsInitialized)
+					shouldResume = true;
+				DoReset(false);
+			}
+			else if (shouldResume)
+			{
+				shouldResume = false;
+				Debug.Log("Resuming Last Stream");
+				StartLastApp();
+			}
+		}
+
+
 		private void OnDestroy()
 		{
-			StopAllCoroutines();
-			DestroyAllPluginObjects();
+			/* StopAllCoroutines(); */
+			/* DestroyAllPluginObjects(); */
+			DoReset(false);
 			mPluginManager.Call("Destroy");
 			mPluginManager.Dispose();
 			mPluginManager = null;
@@ -95,34 +114,43 @@ namespace PCP.LibLime
 			mPluginManager.Call("DestroyAllPlugins");
 		}
 
-		public void DoReset()
+		public void DoReset(bool wait = true)
 		{
 			if (CheckBlocking())
 				return;
 			//Check if there is any running manager
 			StopAllCoroutines();
 			StopManagers();
-			ResetPlugin();
+			ResetPlugin(wait);
 		}
-		public void ResetPlugin()
-		{
-			StartCoroutine(TaskResetPlugin());
-		}
-		private IEnumerator TaskResetPlugin()
+		public void ResetPlugin(bool wait)
 		{
 			Blocking = true;
 			if (mPluginManager == null)
 			{
 				Debug.LogError("PluginManager is null");
-				yield break;
+				return;
 			}
 			DestroyAllPluginObjects();
-			yield return new WaitForSeconds(1);
+			if (wait)
+				StartCoroutine(TaskResetPlugin());
+			else
+			{
+				Debug.Log("Reset Plugin without waiting");
+				Blocking = false;
+				Blocker.SetActive(false);
+			}
+		}
+		private IEnumerator TaskResetPlugin()
+		{
+			yield return new WaitForEndOfFrame();
 			while (HasRunningPlugin())
 			{
-				yield return new WaitForSeconds(1);
+				yield return new WaitForEndOfFrame();
 			}
+			Debug.Log("All Plugin Destroyed");
 			Blocking = false;
+			Blocker.SetActive(false);
 		}
 		//Manager Methods///////////
 		public void StartManager(PluginType t)
@@ -172,6 +200,7 @@ namespace PCP.LibLime
 			mAppManger.enabled = false;
 			mPcManager.enabled = false;
 			mStreamManager.enabled = false;
+			Debug.Log("All Managers Stopped");
 		}
 		//Utils
 		private bool CheckBlocking()
@@ -228,6 +257,26 @@ namespace PCP.LibLime
 			{
 				notification.Display(message);
 			}
+		}
+		//Shortcut
+		internal void StartShortcut(ShortcutData sd)
+		{
+			StartManager(PluginType.Stream);
+			mPluginManager.Call("DoShortcut", sd.uuid, sd.appName, sd.appID.ToString());
+		}
+		//TODO:use file and array to store the last app,should check out if can access the persistent
+		//data path
+		/* internal void UpdateLastApp(ShortcutData sd) */
+		/* { */
+		/* 	PlayerPrefs.SetString("LastApp", JsonUtility.ToJson(sd)); */
+		/* } */
+		public void StartLastApp()
+		{
+			string la = PlayerPrefs.GetString("LastApp", "");
+			if (la == "")
+				return;
+			Blocker.SetActive(true);
+			StartShortcut(JsonUtility.FromJson<ShortcutData>(la));
 		}
 		//UI
 		public void ChangeUIHandler(string msg)

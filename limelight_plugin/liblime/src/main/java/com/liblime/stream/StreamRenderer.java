@@ -199,7 +199,7 @@ public class StreamRenderer implements GLSurfaceView.Renderer {
         mSurfaceTexture.setDefaultBufferSize(width, height);
     }
 
-    public final void destroy() {
+    public final void Destroy() {
         mInitialized = false;
 
         destroyHWBFboTexture();

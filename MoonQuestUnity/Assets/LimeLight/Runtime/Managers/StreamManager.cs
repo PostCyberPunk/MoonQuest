@@ -31,6 +31,7 @@ namespace PCP.LibLime
 				filterMode = FilterMode.Trilinear,
 				anisoLevel = 16
 			};
+			SaveLastApp();
 		}
 		protected override void OnStop()
 		{
@@ -81,6 +82,14 @@ namespace PCP.LibLime
 				MessageManager.Instance.Error("UpdateFrame failed:" + e.Message);
 				enabled = false;
 			}
+		}
+		private void SaveLastApp()
+		{
+			if (mPlugin == null)
+				return;
+			var raw = mPlugin.Call<string>("GetShortcut");
+			Debug.Log(mTag + "SaveLastApp:" + raw);
+			PlayerPrefs.SetString("LastApp", raw);
 		}
 	}
 }
