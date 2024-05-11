@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 namespace PCP.LibLime
 {
-	public class PcManager : BasePluginBride, IListPluginManager
+	public class PcManager : BasePluginBridge, IListPluginManager
 	{
 		public GameObject PairingDialog;
 		public GameObject AddPcDialog;
