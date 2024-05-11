@@ -313,7 +313,6 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
         if (highPerfWifiLock != null) {
             highPerfWifiLock.release();
         }
-
         if (conn != null) {
             int videoFormat = decoderRenderer.getActiveVideoFormat();
 
@@ -327,7 +326,17 @@ public class StreamPlugin extends UnityPluginObject implements SurfaceHolder.Cal
                         .apply();
             }
         }
-
+        if(streamView != null) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((ViewGroup) streamView.getParent()).removeView(streamView);
+                }
+            });
+        }
+        if(mSharedTexture != null) {
+            releaseSharedTexture();
+        }
         RevmoveReference();
     }
 
