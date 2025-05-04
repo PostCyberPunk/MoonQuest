@@ -21,10 +21,10 @@ import com.limelight.LimeLog;
 
 public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceListener {
     private static final String SERVICE_TYPE = "_nvstream._tcp.local.";
-    private WifiManager.MulticastLock multicastLock;
+//    private WifiManager.MulticastLock multicastLock;
     private Thread discoveryThread;
     private HashSet<String> pendingResolution = new HashSet<>();
-    
+
     // The resolver factory's instance member has a static lifetime which
     // means our ref count and listener must be static also.
     private static int resolverRefCount = 0;
@@ -33,14 +33,14 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
         @Override
         public void serviceAdded(ServiceEvent event) {
             HashSet<ServiceListener> localListeners;
-            
+
             // Copy the listener set into a new set so we can invoke
             // the callbacks without holding the listeners monitor the
             // whole time.
             synchronized (listeners) {
                 localListeners = new HashSet<ServiceListener>(listeners);
             }
-            
+
             for (ServiceListener listener : localListeners) {
                 listener.serviceAdded(event);
             }
@@ -49,14 +49,14 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
         @Override
         public void serviceRemoved(ServiceEvent event) {
             HashSet<ServiceListener> localListeners;
-            
+
             // Copy the listener set into a new set so we can invoke
             // the callbacks without holding the listeners monitor the
             // whole time.
             synchronized (listeners) {
                 localListeners = new HashSet<ServiceListener>(listeners);
             }
-            
+
             for (ServiceListener listener : localListeners) {
                 listener.serviceRemoved(event);
             }
@@ -65,14 +65,14 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
         @Override
         public void serviceResolved(ServiceEvent event) {
             HashSet<ServiceListener> localListeners;
-            
+
             // Copy the listener set into a new set so we can invoke
             // the callbacks without holding the listeners monitor the
             // whole time.
             synchronized (listeners) {
                 localListeners = new HashSet<ServiceListener>(listeners);
             }
-            
+
             for (ServiceListener listener : localListeners) {
                 listener.serviceResolved(event);
             }
@@ -144,8 +144,8 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
 
         // Create the multicast lock required to receive mDNS traffic
         WifiManager wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        multicastLock = wifiMgr.createMulticastLock("Limelight mDNS");
-        multicastLock.setReferenceCounted(false);
+//        multicastLock = wifiMgr.createMulticastLock("Limelight mDNS");
+//        multicastLock.setReferenceCounted(false);
     }
 
     private void handleResolvedServiceInfo(ServiceInfo info) {
@@ -165,31 +165,31 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
     private void handleServiceInfo(ServiceInfo info) throws UnsupportedEncodingException {
         reportNewComputer(info.getName(), info.getPort(), info.getInet4Addresses(), info.getInet6Addresses());
     }
-    
+
     public void startDiscovery(final int discoveryIntervalMs) {
         // Kill any existing discovery before starting a new one
         stopDiscovery();
 
         // Acquire the multicast lock to start receiving mDNS traffic
-        multicastLock.acquire();
-        
+//        multicastLock.acquire();
+
         // Add our listener to the set
         synchronized (listeners) {
             listeners.add(JmDNSDiscoveryAgent.this);
         }
-        
+
         discoveryThread = new Thread() {
             @Override
             public void run() {
                 // This may result in listener callbacks so we must register
                 // our listener first.
                 JmmDNS resolver = referenceResolver();
-                
+
                 try {
                     while (!Thread.interrupted()) {
                         // Start an mDNS request
                         resolver.requestServiceInfo(SERVICE_TYPE, null, discoveryIntervalMs);
-                        
+
                         // Run service resolution again for pending machines
                         ArrayList<String> pendingNames;
                         synchronized (pendingResolution) {
@@ -205,7 +205,7 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
                                 }
                             }
                         }
-                        
+
                         // Wait for the next polling interval
                         try {
                             Thread.sleep(discoveryIntervalMs);
@@ -223,16 +223,16 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
         discoveryThread.setName("mDNS Discovery Thread");
         discoveryThread.start();
     }
-    
+
     public void stopDiscovery() {
         // Release the multicast lock to stop receiving mDNS traffic
-        multicastLock.release();
+//        multicastLock.release();
 
         // Remove our listener from the set
         synchronized (listeners) {
             listeners.remove(JmDNSDiscoveryAgent.this);
         }
-        
+
         // If there's already a running thread, interrupt it
         if (discoveryThread != null) {
             discoveryThread.interrupt();
@@ -252,7 +252,7 @@ public class JmDNSDiscoveryAgent extends MdnsDiscoveryAgent implements ServiceLi
             }
             return;
         }
-        
+
         LimeLog.info("mDNS: Resolved (blocking)");
         handleResolvedServiceInfo(info);
     }
