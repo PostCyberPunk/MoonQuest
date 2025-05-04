@@ -32,7 +32,7 @@ MonoBehaviour:
   skipUnneededShaders: 0
   enableIL2CPPLTO: 0
   focusAware: 1
-  requiresSystemKeyboard: 0
+  requiresSystemKeyboard: 1
   experimentalFeaturesEnabled: 0
   insightPassthroughEnabled: 0
   _insightPassthroughSupport: 1
